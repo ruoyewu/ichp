@@ -8,21 +8,46 @@ import java.io.InputStream
 
 /**
  * Created by wuruoye on 2017/9/26.
- * this file is to do
+ * this file is to do file operator
  */
 object FileUtil {
+    fun checkDirectory(directory: String): Boolean {
+        val file = File(directory)
+        return file.isDirectory
+    }
 
-    fun createFile(filePath: String): File{
-        checkDirectory()
+    fun checkFile(filePath: String): Boolean {
         val file = File(filePath)
-        file.createNewFile()
+        return file.isFile
+    }
+
+    fun createDirectory(directory: String): Boolean {
+        val file = File(directory)
+        if (! file.isDirectory) {
+            return file.mkdirs()
+        }
+        return true
+    }
+
+    fun createFile(filePath: String): File {
+        val file = File(filePath)
+        if (! file.isFile) {
+            file.createNewFile()
+        }
         return file
     }
 
-    fun saveImage(bitmap: Bitmap, fileName: String): String{
-        checkDirectory()
+    fun removeFile(filePath: String): Boolean {
+        val file = File(filePath)
+        return if (file.isFile) {
+            file.delete()
+        }else {
+            !file.isDirectory
+        }
+    }
 
-        val file = File(Config.IMAGE_PATH + fileName)
+    fun saveBitmap(bitmap: Bitmap, fileName: String): String{
+        val file = createFile(fileName)
         val fos = FileOutputStream(file)
 
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
@@ -33,8 +58,6 @@ object FileUtil {
     }
 
     fun writeFile(filePath: String, inStream: InputStream){
-        checkDirectory()
-
         val fos = FileOutputStream(filePath)
         val buf = ByteArray(1024)
         var len: Int
@@ -49,17 +72,5 @@ object FileUtil {
         }
         fos.flush()
         inStream.close()
-    }
-
-    private fun checkDirectory(){
-        val file = File(Config.FILE_PATH)
-        val image = File(Config.IMAGE_PATH)
-
-        if (!file.exists()){
-            file.mkdirs()
-        }
-        if (!image.exists()){
-            image.mkdirs()
-        }
     }
 }

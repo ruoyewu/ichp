@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Created by wuruoye on 2017/9/16.
- * this file is to do
+ * this file is to do net request
  */
 object NetUtil {
     private var mCookies = arrayListOf<Cookie>()

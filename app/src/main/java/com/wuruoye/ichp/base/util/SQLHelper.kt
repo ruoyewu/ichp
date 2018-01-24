@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 
 /**
  * Created by wuruoye on 2017/11/5.
- * this file is to do
+ * this file is to do sql operator
  */
 
 class SQLHelper : SQLiteOpenHelper {

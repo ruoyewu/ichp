@@ -11,7 +11,7 @@ import android.provider.MediaStore
 
 /**
  * Created by wuruoye on 2017/9/26.
- * this file is to do
+ * this file is to do get filePath from Uri
  */
 object FilePathUtil {
     /**

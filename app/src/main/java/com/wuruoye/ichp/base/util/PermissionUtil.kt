@@ -6,9 +6,9 @@ import android.os.Build
 
 /**
  * Created by wuruoye on 2017/9/26.
- * this file is to do
+ * this file is to do permission request
  */
-class PermissionUtil(val activity: Activity) {
+class PermissionUtil(private val activity: Activity) {
 
     fun requestPermission(permissions: Array<String>): Boolean{
         var isOk = true

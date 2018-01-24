@@ -4,7 +4,7 @@ import java.util.*
 
 /**
  * Created by wuruoye on 2017/9/21.
- * this file is to do
+ * this file is to do get time and date
  */
 object DateUtil {
 

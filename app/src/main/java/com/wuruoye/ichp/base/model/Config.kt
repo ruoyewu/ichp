@@ -8,29 +8,21 @@ import android.os.Environment
  * this file is to do
  */
 object Config {
-    private val REMOTE_HOST = "https://ddp.wuruoye.com/"
-    val USER_REGISTER = REMOTE_HOST + "user/register_user"
-    val USER_LOGIN = REMOTE_HOST + "user/login_user"
-    val USER_LOGOUT = REMOTE_HOST + "user/logout_user"
-    val USER_AVATAR = REMOTE_HOST + "user/avatar"
-    val USER_TEST = REMOTE_HOST + "user/test"
+    // 系统确定变量
+    private const val REMOTE_HOST = "https://ddp.wuruoye.com/"
+    private const val PACKAGE_NAME = "com.wuruoye.ichp"
 
-    val COURSE_ADD_EA = REMOTE_HOST + "course/add_ea"
-    val COURSE_ADD_LABEL = REMOTE_HOST + "course/add_label"
-    val COURSE_ADD_EA_LABEL = REMOTE_HOST + "course/add_ea_label"
-    val COURSE_ADD_EA_LABEL_LIST = REMOTE_HOST + "course/add_ea_label_list"
-    val COURSE_QUERY_LABEL = REMOTE_HOST + "course/query_label"
-    val COURSE_QUERY_LABEL_EA = REMOTE_HOST + "course/query_label_ea"
-    val COURSE_DELETE_EA = REMOTE_HOST + "course/delete_ea"
-    val COURSE_DELETE_LABEL = REMOTE_HOST + "course/delete_label"
+    // 网络设置
+    const val CONNECT_TIME_OUT = 30L
+    const val READ_TIME_OUT = 30L
 
-    val CONNECT_TIME_OUT = 30L
-    val READ_TIME_OUT = 30L
-
-    private val APP_PATH = Environment.getExternalStorageDirectory().absolutePath + "/com.wuruoye.ichp/"
+    // 文件路径设置
+    private val APP_PATH = Environment.getExternalStorageDirectory().absolutePath + PACKAGE_NAME
     val FILE_PATH = APP_PATH + "file/"
-    val IMAGE_PATH = Environment.getExternalStorageDirectory().absolutePath + "/DCIM/Camera/"
-    val PROVIDER_AUTHORITY = "com.wuruoye.ichp.fileprovider"
+    val SYSTEM_IMAGE_PATH = Environment.getExternalStorageDirectory().absolutePath + "/DCIM/Camera/"
+    const val PROVIDER_AUTHORITY = PACKAGE_NAME + ".fileprovider"
+
+    // 动态申请权限
     val FILE_PERMISSION = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE

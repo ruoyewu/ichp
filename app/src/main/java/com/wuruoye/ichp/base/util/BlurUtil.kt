@@ -9,7 +9,7 @@ import android.support.v8.renderscript.ScriptIntrinsicBlur
 
 /**
  * Created by wuruoye on 2017/9/24.
- * this file is to do
+ * this file is to do blur a bitmap
  */
 object BlurUtil {
 

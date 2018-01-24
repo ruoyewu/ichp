@@ -5,7 +5,7 @@ import android.graphics.Typeface
 
 /**
  * Created by wuruoye on 2017/10/19.
- * this file is to do
+ * this file is to do use custom font
  */
 object FontUtil {
     fun changeFont(context: Context, name: String){
