@@ -31,20 +31,4 @@ public class MainActivity extends BaseActivity {
     public void initView() {
 
     }
-
-    @NotNull
-    @Override
-    public IPresenter getPresenter() {
-        return null;
-    }
-
-    @Override
-    public void onResultWorn(@NotNull final String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 }

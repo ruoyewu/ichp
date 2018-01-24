@@ -11,23 +11,20 @@ import com.wuruoye.ichp.base.util.loge
  * this file is to do
  */
 
-abstract class BaseActivity : AppCompatActivity(), IView{
+abstract class BaseActivity : AppCompatActivity(){
     abstract val contentView: Int
     abstract fun initData(bundle: Bundle?)
     abstract fun initView()
-    abstract val presenter: IPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(contentView)
-        presenter.attachView(this)
 
         initData(intent.extras)
         initView()
     }
 
     override fun onDestroy() {
-        presenter.detachView()
         super.onDestroy()
     }
 

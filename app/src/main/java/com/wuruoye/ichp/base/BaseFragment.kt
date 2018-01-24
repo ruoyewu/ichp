@@ -12,16 +12,14 @@ import com.wuruoye.ichp.base.presenter.IView
  * Created by wuruoye on 2017/9/15.
  * this file is to do
  */
-abstract class BaseFragment : Fragment(), IView {
+abstract class BaseFragment : Fragment(){
     abstract val contentView: Int
     abstract fun initData(bundle: Bundle?)
     abstract fun initView(view: View)
-    abstract val presenter: IPresenter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = LayoutInflater.from(context)
                 .inflate(contentView, null)
-        presenter.attachView(this)
 
         initData(arguments)
         return view
@@ -33,7 +31,6 @@ abstract class BaseFragment : Fragment(), IView {
     }
 
     override fun onDestroy() {
-        presenter.detachView()
         super.onDestroy()
     }
 }
