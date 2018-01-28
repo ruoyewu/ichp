@@ -10,46 +10,49 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
-import com.wuruoye.ichp.ui.model.bean.Note;
+import com.wuruoye.ichp.ui.model.bean.Course;
 
 /**
  * Created by wuruoye on 2018/1/27.
  * this file is to
  */
 
-public class RecommendRVAdapter extends BaseRVAdapter<Note> {
-
+public class CourseRVAdapter extends BaseRVAdapter<Course> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_note_recommend, parent, false);
+                .inflate(R.layout.item_course, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final Note note = getData(position);
+        final Course course = getData(position);
         ViewHolder viewHolder = (ViewHolder) holder;
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClick(note);
+                onItemClick(course);
             }
         });
         Glide.with(viewHolder.iv)
-                .load(note.getImage())
+                .load(course.getImage())
                 .into(viewHolder.iv);
-        viewHolder.tv.setText(note.getTitle());
+        viewHolder.tvTitle.setText(course.getTitle());
+        viewHolder.tvAuthor.setText(course.getAuthor());
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView iv;
-        TextView tv;
+        private ImageView iv;
+        private TextView tvTitle;
+        private TextView tvAuthor;
 
         ViewHolder(View itemView) {
             super(itemView);
-            iv = itemView.findViewById(R.id.iv_note_rec_back);
-            tv = itemView.findViewById(R.id.tv_note_rec_title);
+
+            iv = itemView.findViewById(R.id.iv_course_back);
+            tvTitle = itemView.findViewById(R.id.tv_course_title);
+            tvAuthor = itemView.findViewById(R.id.tv_course_author);
         }
     }
 }

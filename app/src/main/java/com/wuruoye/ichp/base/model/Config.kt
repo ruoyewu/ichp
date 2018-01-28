@@ -31,4 +31,9 @@ object Config {
     val CAMERA_PERMISSION = arrayOf(
             Manifest.permission.CAMERA
     )
+
+    val LOCATION_PERMISSION = arrayOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    )
 }

@@ -5,12 +5,12 @@ package com.wuruoye.ichp.ui.model.bean;
  * this file is to
  */
 
-public class Note {
+public class Course {
     private String title;
     private String author;
     private String image;
 
-    public Note(String title, String author, String image) {
+    public Course(String title, String author, String image) {
         this.title = title;
         this.author = author;
         this.image = image;

@@ -26,9 +26,11 @@ abstract class AbsPresenter<out V : IView> : IPresenter {
         }
     }
 
-    fun isAttached(): Boolean = mViewRef != null
+    protected fun isAttached(): Boolean = mViewRef != null
 
-    fun getView(): V? {
+    protected fun isAvailable(): Boolean = getView() != null
+
+    protected fun getView(): V? {
         return if (mViewRef != null){
             mViewRef!!.get()
         }else{

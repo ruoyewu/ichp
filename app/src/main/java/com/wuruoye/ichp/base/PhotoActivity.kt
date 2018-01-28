@@ -14,7 +14,6 @@ import com.wuruoye.ichp.base.util.FilePathUtil
 import com.wuruoye.ichp.base.util.loge
 import java.io.File
 
-
 /**
  * Created by wuruoye on 2017/9/26.
  * this file is to do
@@ -33,7 +32,7 @@ abstract class PhotoActivity : BaseActivity(), PhotoView{
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode ==  CHOOSE_PHOTO && resultCode == Activity.RESULT_OK){
+        if (requestCode == CHOOSE && resultCode == Activity.RESULT_OK){
             //相册选取返回
             if (isCrop) {
                 val filePath = FilePathUtil.getPathFromUri(applicationContext, data!!.data)!!
@@ -43,7 +42,7 @@ abstract class PhotoActivity : BaseActivity(), PhotoView{
                 val filePath = FilePathUtil.getPathFromUri(applicationContext, data!!.data)!!
                 onPhotoBack(filePath)
             }
-        }else if (requestCode == TAKE_PHOTO && resultCode == Activity.RESULT_OK){
+        }else if (requestCode == TAKE && resultCode == Activity.RESULT_OK){
             //拍照返回
             if (isCrop){
                 val uri = FileProvider.getUriForFile(applicationContext, Config.PROVIDER_AUTHORITY, File(filePath))
@@ -51,7 +50,7 @@ abstract class PhotoActivity : BaseActivity(), PhotoView{
             }else{
                 onPhotoBack(filePath)
             }
-        }else if (requestCode == CROP_PHOTO && resultCode == Activity.RESULT_OK){
+        }else if (requestCode == CROP && resultCode == Activity.RESULT_OK){
             //剪裁返回
             onPhotoBack(filePath)
         }
@@ -75,7 +74,7 @@ abstract class PhotoActivity : BaseActivity(), PhotoView{
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             intent.addCategory(Intent.CATEGORY_OPENABLE)
-            startActivityForResult(intent, CHOOSE_PHOTO)
+            startActivityForResult(intent, CHOOSE)
         }
     }
 
@@ -89,7 +88,7 @@ abstract class PhotoActivity : BaseActivity(), PhotoView{
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             intent.addCategory(Intent.CATEGORY_OPENABLE)
-            startActivityForResult(intent, CHOOSE_PHOTO)
+            startActivityForResult(intent, CHOOSE)
         }
     }
 
@@ -118,7 +117,7 @@ abstract class PhotoActivity : BaseActivity(), PhotoView{
                         FileProvider.getUriForFile(applicationContext, Config.PROVIDER_AUTHORITY, file)
                     }
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-            startActivityForResult(intent, TAKE_PHOTO)
+            startActivityForResult(intent, TAKE)
         }
     }
 
@@ -141,7 +140,7 @@ abstract class PhotoActivity : BaseActivity(), PhotoView{
                         FileProvider.getUriForFile(applicationContext, Config.PROVIDER_AUTHORITY, file)
                     }
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-            startActivityForResult(intent, TAKE_PHOTO)
+            startActivityForResult(intent, TAKE)
         }
     }
 
@@ -188,13 +187,13 @@ abstract class PhotoActivity : BaseActivity(), PhotoView{
                 grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 grantUriPermission(packageName, outUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            startActivityForResult(intent, CROP_PHOTO)
+            startActivityForResult(intent, CROP)
         }
     }
 
     companion object {
-        val CHOOSE_PHOTO = 1
-        val TAKE_PHOTO = 2
-        val CROP_PHOTO = 3
+        const val CHOOSE = 1
+        const val TAKE = 2
+        const val CROP = 3
     }
 }

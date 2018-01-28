@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -81,7 +82,7 @@ public class HomeFragment extends BaseFragment {
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "fab click", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), AddNoteActivity.class));
             }
         });
     }

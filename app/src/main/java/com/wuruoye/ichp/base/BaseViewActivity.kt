@@ -9,15 +9,15 @@ import com.wuruoye.ichp.base.presenter.IView
  * this file is to
  */
 abstract class BaseViewActivity : BaseActivity(), IView{
-    abstract val mPresenter: IPresenter
+    var mPresenter: IPresenter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        mPresenter.attachView(this)
-        super.onCreate(savedInstanceState)
+    fun setPresenter(presenter: IPresenter) {
+        mPresenter = presenter
+        mPresenter!!.attachView(this)
     }
 
     override fun onDestroy() {
-        mPresenter.detachView()
+        mPresenter?.detachView()
         super.onDestroy()
     }
 }

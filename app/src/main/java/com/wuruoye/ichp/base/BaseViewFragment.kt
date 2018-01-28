@@ -9,16 +9,15 @@ import com.wuruoye.ichp.base.presenter.IView
  * this file is to
  */
 abstract class BaseViewFragment : BaseFragment(), IView {
-    abstract val mPresenter: IPresenter
+    protected var mPresenter: IPresenter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        mPresenter.attachView(this)
-
-        super.onCreate(savedInstanceState)
+    fun setPresenter(presenter: IPresenter) {
+        mPresenter = presenter;
+        mPresenter!!.attachView(this)
     }
 
     override fun onDestroy() {
-        mPresenter.detachView()
+        mPresenter?.detachView()
 
         super.onDestroy()
     }

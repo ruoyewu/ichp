@@ -4,25 +4,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.model.bean.Note;
 
 /**
- * Created by wuruoye on 2018/1/27.
+ * Created by wuruoye on 2018/1/28.
  * this file is to
  */
 
-public class RecommendRVAdapter extends BaseRVAdapter<Note> {
-
+public class AttentionRVAdapter extends BaseRVAdapter<Note> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_note_recommend, parent, false);
+                .inflate(R.layout.item_note_attention, parent, false);
         return new ViewHolder(view);
     }
 
@@ -36,20 +33,18 @@ public class RecommendRVAdapter extends BaseRVAdapter<Note> {
                 onItemClick(note);
             }
         });
-        Glide.with(viewHolder.iv)
-                .load(note.getImage())
-                .into(viewHolder.iv);
-        viewHolder.tv.setText(note.getTitle());
+        viewHolder.tvTitle.setText(note.getTitle());
+        viewHolder.tvAuthor.setText(note.getAuthor());
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView iv;
-        TextView tv;
+        TextView tvTitle;
+        TextView tvAuthor;
 
         ViewHolder(View itemView) {
             super(itemView);
-            iv = itemView.findViewById(R.id.iv_note_rec_back);
-            tv = itemView.findViewById(R.id.tv_note_rec_title);
+            tvTitle = itemView.findViewById(R.id.tv_note_att_title);
+            tvAuthor = itemView.findViewById(R.id.id_tv_note_att_author);
         }
     }
 }

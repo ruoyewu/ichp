@@ -4,52 +4,38 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
-import com.wuruoye.ichp.ui.model.bean.Note;
+import com.wuruoye.ichp.ui.model.bean.Entry;
 
 /**
- * Created by wuruoye on 2018/1/27.
+ * Created by wuruoye on 2018/1/28.
  * this file is to
  */
 
-public class RecommendRVAdapter extends BaseRVAdapter<Note> {
-
+public class EntryAddRVAdapter extends BaseRVAdapter<Entry> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_note_recommend, parent, false);
+                .inflate(R.layout.item_entry_add, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final Note note = getData(position);
+        Entry entry = getData(position);
         ViewHolder viewHolder = (ViewHolder) holder;
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClick(note);
-            }
-        });
-        Glide.with(viewHolder.iv)
-                .load(note.getImage())
-                .into(viewHolder.iv);
-        viewHolder.tv.setText(note.getTitle());
+        viewHolder.tv.setText(entry.getTitle());
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView iv;
         TextView tv;
 
         ViewHolder(View itemView) {
             super(itemView);
-            iv = itemView.findViewById(R.id.iv_note_rec_back);
-            tv = itemView.findViewById(R.id.tv_note_rec_title);
+            tv = itemView.findViewById(R.id.tv_item_entry_add);
         }
     }
 }
