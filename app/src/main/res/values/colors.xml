@@ -11,4 +11,5 @@
     <color name="black">#000000</color>
 
     <color name="transparent_black">#60000000</color>
+    <color name="transparent_gray">#60BEBEBE</color>
 </resources>

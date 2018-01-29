@@ -1,6 +1,5 @@
 package com.wuruoye.ichp.ui.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.wuruoye.ichp.base.model.Config;
@@ -42,6 +41,16 @@ public class DevAddNotePresenter extends AddNoteContract.Presenter {
 
     @Override
     public String generateImageName() {
-        return Config.INSTANCE.getSYSTEM_IMAGE_PATH() + System.currentTimeMillis() + ".jpg";
+        return Config.INSTANCE.getIMAGE_PATH() + System.currentTimeMillis() + ".jpg";
+    }
+
+    @Override
+    public String generateVideoName() {
+        return Config.INSTANCE.getVIDEO_PATH() + System.currentTimeMillis() + ".mp4";
+    }
+
+    @Override
+    public String generateVoiceName() {
+        return Config.INSTANCE.getRECORD_PATH() + System.currentTimeMillis() + ".m4a";
     }
 }

@@ -42,6 +42,16 @@ public abstract class BaseRVAdapter<T> extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public void addData(T data) {
+        mDataList.add(data);
+        notifyDataSetChanged();
+    }
+
+    public void removeData(T data) {
+        mDataList.remove(data);
+        notifyDataSetChanged();
+    }
+
     public T getData(int position) {
         return mDataList.get(position);
     }

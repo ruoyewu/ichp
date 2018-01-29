@@ -1,7 +1,6 @@
 package com.wuruoye.ichp.base.util
 
 import android.graphics.Bitmap
-import com.wuruoye.ichp.base.model.Config
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -21,20 +20,22 @@ object FileUtil {
         return file.isFile
     }
 
-    fun createDirectory(directory: String): Boolean {
-        val file = File(directory)
-        if (! file.isDirectory) {
-            return file.mkdirs()
+    fun checkAvailable(filePath: String) {
+        val file = File(filePath)
+        if (filePath.endsWith("/")) {
+            if (!file.exists()) {
+                file.mkdirs()
+            }
+        }else {
+            if (!file.parentFile.exists()) {
+                file.parentFile.mkdirs()
+            }
         }
-        return true
     }
 
     fun createFile(filePath: String): File {
-        val file = File(filePath)
-        if (! file.isFile) {
-            file.createNewFile()
-        }
-        return file
+        checkAvailable(filePath)
+        return File(filePath)
     }
 
     fun removeFile(filePath: String): Boolean {
@@ -67,7 +68,7 @@ object FileUtil {
             if (len != -1){
                 fos.write(buf, 0, len)
             }else{
-                break;
+                break
             }
         }
         fos.flush()

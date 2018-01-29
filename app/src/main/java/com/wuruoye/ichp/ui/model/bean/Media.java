@@ -12,7 +12,7 @@ public class Media {
     public enum Type {
         IMAGE,
         VIDEO,
-        VOICE
+        RECORD
     }
 
     public Media(Type type, String content) {

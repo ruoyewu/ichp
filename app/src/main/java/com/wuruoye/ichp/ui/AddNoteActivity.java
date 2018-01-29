@@ -16,9 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.PhotoActivity;
+import com.wuruoye.ichp.base.MediaActivity;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.base.model.Config;
+import com.wuruoye.ichp.base.util.FileUtil;
 import com.wuruoye.ichp.base.util.PermissionUtil;
 import com.wuruoye.ichp.ui.adapter.EntryAddRVAdapter;
 import com.wuruoye.ichp.ui.adapter.MediaRVAdapter;
@@ -38,9 +39,10 @@ import java.util.List;
  * this file is to
  */
 
-public class AddNoteActivity extends PhotoActivity
+public class AddNoteActivity extends MediaActivity
         implements View.OnClickListener, AddNoteContract.View {
-    public static final String[] MEDIA_ITEMS = {"照片选取", "照片拍摄", "视频选取", "视频拍摄", "录音"};
+    public static final String[] MEDIA_ITEMS =
+            {"照片选取", "照片拍摄", "视频选取", "视频拍摄", "音频选取", "音频录制"};
     public static final int LOCATION_CODE = 1;
 
     private EditText etTitle;
@@ -55,6 +57,7 @@ public class AddNoteActivity extends PhotoActivity
     private AlertDialog adMedia;
 
     private AddNoteContract.Presenter mPresenter;
+    private int mCurrentMediaType;
 
     @Override
     public int getContentView() {
@@ -150,7 +153,11 @@ public class AddNoteActivity extends PhotoActivity
     }
 
     private void onItemLongClick(Media media) {
-        Toast.makeText(this, media.getContent(), Toast.LENGTH_SHORT).show();
+        if (media.getType() == Media.Type.RECORD || media.getType() == Media.Type.VIDEO) {
+            FileUtil.INSTANCE.removeFile(media.getContent());
+        }
+        MediaRVAdapter adapter = (MediaRVAdapter) rvMedia.getAdapter();
+        adapter.removeData(media);
     }
 
     private void onBackClick() {
@@ -187,12 +194,25 @@ public class AddNoteActivity extends PhotoActivity
     }
 
     private void getMedia(int type) {
+        mCurrentMediaType = type;
         switch (type) {
             case 0:
                 choosePhoto();
                 break;
             case 1:
                 takePhoto(mPresenter.generateImageName());
+                break;
+            case 2:
+                chooseVideo();
+                break;
+            case 3:
+                takeVideo();
+                break;
+            case 4:
+                chooseRecord();
+                break;
+            case 5:
+                takeRecord(mPresenter.generateVoiceName());
                 break;
         }
     }
@@ -210,9 +230,16 @@ public class AddNoteActivity extends PhotoActivity
     }
 
     @Override
-    public void onPhotoBack(@NotNull String photoPath) {
-        Media media = new Media(Media.Type.IMAGE, photoPath);
-        addMedia(media);
+    public void onMediaBack(@NotNull String filePath) {
+        Media.Type type;
+        if (mCurrentMediaType == 0 || mCurrentMediaType == 1) {
+            type = Media.Type.IMAGE;
+        }else if (mCurrentMediaType == 2 || mCurrentMediaType == 3) {
+            type = Media.Type.VIDEO;
+        }else {
+            type = Media.Type.RECORD;
+        }
+        addMedia(new Media(type, filePath));
     }
 
     @Override

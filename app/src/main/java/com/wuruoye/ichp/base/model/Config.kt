@@ -17,9 +17,12 @@ object Config {
     const val READ_TIME_OUT = 30L
 
     // 文件路径设置
-    private val APP_PATH = Environment.getExternalStorageDirectory().absolutePath + PACKAGE_NAME
+    private val APP_PATH = Environment
+            .getExternalStorageDirectory().absolutePath + "/" + PACKAGE_NAME + "/"
     val FILE_PATH = APP_PATH + "file/"
-    val SYSTEM_IMAGE_PATH = Environment.getExternalStorageDirectory().absolutePath + "/DCIM/Camera/"
+    val IMAGE_PATH = APP_PATH + "image/"
+    val VIDEO_PATH = APP_PATH + "video/"
+    val RECORD_PATH = APP_PATH + "record/"
     const val PROVIDER_AUTHORITY = PACKAGE_NAME + ".fileprovider"
 
     // 动态申请权限
@@ -35,5 +38,9 @@ object Config {
     val LOCATION_PERMISSION = arrayOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
+    )
+
+    val AUDIO_PERMISSION = arrayOf(
+            Manifest.permission.RECORD_AUDIO
     )
 }

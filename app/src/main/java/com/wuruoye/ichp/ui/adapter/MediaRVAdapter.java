@@ -40,9 +40,16 @@ public class MediaRVAdapter extends BaseRVAdapter<Media> {
                     onItemClick(media);
                 }
             });
-            if (media.getType() == Media.Type.VOICE) {
+            viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    onItemLongClick(media);
+                    return true;
+                }
+            });
+            if (media.getType() == Media.Type.RECORD) {
                 viewHolder.ivTag.setVisibility(View.GONE);
-                viewHolder.ivBack.setImageResource(R.drawable.ic_voice);
+                viewHolder.ivBack.setImageResource(R.drawable.ic_mic);
             }else {
                 Glide.with(viewHolder.ivBack)
                         .load(media.getContent())
