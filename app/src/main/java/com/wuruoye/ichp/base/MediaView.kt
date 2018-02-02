@@ -17,5 +17,5 @@ interface MediaView {
     fun chooseVideo()
     fun takeVideo()
     fun chooseRecord()
-    fun takeRecord(filePath: String)
+    fun takeRecord(filePath: String, timeLimit: Int)
 }

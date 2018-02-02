@@ -7,6 +7,20 @@ package com.wuruoye.ichp.ui.model.bean;
 
 public class Entry {
     private String title;
+    private String image;
+
+    public Entry(String title, String image) {
+        this.title = title;
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getTitle() {
         return title;

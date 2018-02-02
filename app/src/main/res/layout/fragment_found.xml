@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:background="@color/mainColor"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <include
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            layout="@layout/layout_search"/>
+    </FrameLayout>
+
+    <com.youth.banner.Banner
+        android:id="@+id/banner_found"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp" />
+
+    <include
+        android:id="@+id/ll_found_1"
+        layout="@layout/item_found"/>
+
+    <include
+        android:id="@+id/ll_found_2"
+        layout="@layout/item_found"/>
+</LinearLayout>

@@ -33,7 +33,7 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
 
     @Override
     public int getContentView() {
-        return R.layout.layout_refresh_recycler_view;
+        return R.layout.layout_refresh_recycler;
     }
 
     @Override

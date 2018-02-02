@@ -9,6 +9,10 @@
         android:id="@+id/tl"
         app:tabMode="fixed"
         app:tabGravity="fill"
+        app:tabTextColor="@color/french_gray"
+        app:tabSelectedTextColor="@color/white"
+        app:tabBackground="@color/mainColor"
+        app:tabIndicatorColor="@color/french_gray"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

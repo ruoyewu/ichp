@@ -13,6 +13,7 @@ import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.CourseRVAdapter;
 import com.wuruoye.ichp.ui.contract.CourseContract;
 import com.wuruoye.ichp.ui.model.bean.Course;
+import com.wuruoye.ichp.ui.presenter.DevCoursePresenter;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,13 +34,16 @@ public class CourseListFragment extends BaseFragment implements CourseContract.V
 
     @Override
     public int getContentView() {
-        return R.layout.layout_refresh_recycler_view;
+        return R.layout.layout_refresh_recycler;
     }
 
     @Override
     public void initData(@Nullable Bundle bundle) {
         assert bundle != null;
         type = bundle.getInt("type");
+
+        mPresenter = new DevCoursePresenter();
+        mPresenter.attachView(this);
     }
 
     @Override
@@ -49,6 +53,8 @@ public class CourseListFragment extends BaseFragment implements CourseContract.V
 
         initRefreshLayout();
         initRecyclerView();
+
+        mPresenter.requestCourseList(false, type);
     }
 
     private void initRefreshLayout() {
@@ -69,6 +75,7 @@ public class CourseListFragment extends BaseFragment implements CourseContract.V
                 CourseListFragment.this.onItemClick(model);
             }
         });
+        rvCourse.setAdapter(adapter);
     }
 
     private void onItemClick(Course course) {
@@ -77,16 +84,24 @@ public class CourseListFragment extends BaseFragment implements CourseContract.V
 
     @Override
     public void onResultWorn(@NotNull String message) {
+        srlCourse.setRefreshing(false);
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onCourseListResult(List<Course> courseList, boolean isAdd) {
+        srlCourse.setRefreshing(false);
         CourseRVAdapter adapter = (CourseRVAdapter) rvCourse.getAdapter();
         if (isAdd) {
             adapter.addData(courseList);
         }else {
             adapter.setData(courseList);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        mPresenter.detachView();
+        super.onDestroy();
     }
 }

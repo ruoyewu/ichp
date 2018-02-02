@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.AddNoteActivity" />
+        <activity android:name=".ui.SearchActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

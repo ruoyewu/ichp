@@ -7,6 +7,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
+import android.media.MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -20,10 +21,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.wuruoye.ichp.R
 import com.wuruoye.ichp.base.model.Config
-import com.wuruoye.ichp.base.util.FilePathUtil
-import com.wuruoye.ichp.base.util.FileUtil
-import com.wuruoye.ichp.base.util.PermissionUtil
-import com.wuruoye.ichp.base.util.loge
+import com.wuruoye.ichp.base.util.*
 import java.io.File
 
 /**
@@ -69,18 +67,10 @@ abstract class MediaActivity : BaseActivity(), MediaView {
         ibRecord.setOnTouchListener({ _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    mMediaRecorder!!.setOutputFile(filePath)
-                    mMediaRecorder!!.prepare()
-                    mMediaRecorder?.start()
-                    startRecordAnimator()
+                    startRecord()
                 }
                 MotionEvent.ACTION_UP -> {
-                    mMediaRecorder?.stop()
-                    mMediaRecorder?.release()
-                    mMediaRecorder = null
-                    dlgRecord.dismiss()
-                    stopRecordAnimator()
-                    onMediaBack(filePath)
+                    stopRecord()
                 }
             }
             true
@@ -113,15 +103,31 @@ abstract class MediaActivity : BaseActivity(), MediaView {
         }
     }
 
-    private fun startRecordAnimator() {
-        mRecordAnimator1.start()
-        Handler().postDelayed({
-            mRecordAnimator2.start()
-        }, TIME_RECORD_ANIMATOR / 2)
-        mRecordTitle.text = "正在录制中..."
+    private fun startRecord() {
+        if (mMediaRecorder != null) {
+            mMediaRecorder!!.setOutputFile(filePath)
+            mMediaRecorder!!.prepare()
+            mMediaRecorder?.start()
+
+            mRecordAnimator1.start()
+            Handler().postDelayed({
+                mRecordAnimator2.start()
+            }, TIME_RECORD_ANIMATOR / 2)
+            mRecordTitle.text = "正在录制中..."
+        }else {
+            toast("音频录制初始化失败...")
+        }
     }
 
-    private fun stopRecordAnimator() {
+    private fun stopRecord() {
+        if (mMediaRecorder != null) {
+            mMediaRecorder!!.stop()
+            mMediaRecorder!!.release()
+            mMediaRecorder = null
+            dlgRecord.dismiss()
+            onMediaBack(filePath)
+        }
+
         mRecordAnimator1.cancel()
         mRecordAnimator2.cancel()
         mRecordBack1.scaleX = 1F
@@ -333,7 +339,7 @@ abstract class MediaActivity : BaseActivity(), MediaView {
         }
     }
 
-    override fun takeRecord(filePath: String) {
+    override fun takeRecord(filePath: String, timeLimit: Int) {
         if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION) &&
                 PermissionUtil(this).requestPermission(Config.AUDIO_PERMISSION)) {
             FileUtil.checkAvailable(filePath)
@@ -343,7 +349,12 @@ abstract class MediaActivity : BaseActivity(), MediaView {
                 mMediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
                 mMediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
                 mMediaRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-                mMediaRecorder!!.setMaxDuration(60000)
+                mMediaRecorder!!.setMaxDuration(timeLimit)
+                mMediaRecorder!!.setOnInfoListener { mr, what, extra ->
+                    if (what == MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
+                        stopRecord()
+                    }
+                }
             }
             dlgRecord.show()
         }

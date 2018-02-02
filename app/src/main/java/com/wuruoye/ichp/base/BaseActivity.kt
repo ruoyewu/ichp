@@ -2,9 +2,6 @@ package com.wuruoye.ichp.base
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.wuruoye.ichp.base.presenter.IPresenter
-import com.wuruoye.ichp.base.presenter.IView
-import com.wuruoye.ichp.base.util.loge
 
 /**
  * Created by wuruoye on 2017/9/15.
@@ -22,14 +19,6 @@ abstract class BaseActivity : AppCompatActivity(){
 
         initData(intent.extras)
         initView()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    protected fun setToolbarTitle(title: String) {
-
     }
 }
 

@@ -5,8 +5,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.wuruoye.ichp.base.presenter.IPresenter
-import com.wuruoye.ichp.base.presenter.IView
 
 /**
  * Created by wuruoye on 2017/9/15.
@@ -28,9 +26,5 @@ abstract class BaseFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }

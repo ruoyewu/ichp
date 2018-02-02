@@ -6,36 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tl_main"
-        app:contentInsetStart="0dp"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_margin="5dp"
-            android:background="@drawable/white_round_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.SearchView
-                android:id="@+id/sv_main"
-                app:queryHint="@string/app_name"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent" />
-
-            <ImageButton
-                android:id="@+id/ib_main_mic"
-                android:background="@null"
-                android:src="@drawable/ic_mic"
-                android:layout_gravity="center"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
-
     <FrameLayout
         android:id="@+id/fl_main_content"
         android:layout_width="match_parent"
@@ -44,6 +14,9 @@
 
     <com.ashokvarma.bottomnavigation.BottomNavigationBar
         android:id="@+id/bnb_main"
+        app:bnbBackgroundColor="@color/white"
+        app:bnbActiveColor="@color/mainColor"
+        app:bnbInactiveColor="@color/french_gray"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

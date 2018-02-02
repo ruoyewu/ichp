@@ -44,6 +44,7 @@ public class AddNoteActivity extends MediaActivity
     public static final String[] MEDIA_ITEMS =
             {"照片选取", "照片拍摄", "视频选取", "视频拍摄", "音频选取", "音频录制"};
     public static final int LOCATION_CODE = 1;
+    public static final int TIME_RECORD_LIMIT = 100000;
 
     private EditText etTitle;
     private EditText etContent;
@@ -212,7 +213,7 @@ public class AddNoteActivity extends MediaActivity
                 chooseRecord();
                 break;
             case 5:
-                takeRecord(mPresenter.generateVoiceName());
+                takeRecord(mPresenter.generateVoiceName(), TIME_RECORD_LIMIT);
                 break;
         }
     }
@@ -225,6 +226,9 @@ public class AddNoteActivity extends MediaActivity
                 break;
             case R.id.ll_add_note_publish:
                 onPublishClick();
+                break;
+            case R.id.ib_add_note_entry:
+                onAddEntryClick();
                 break;
         }
     }

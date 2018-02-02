@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.wuruoye.ichp.base.model.Config;
 import com.wuruoye.ichp.base.model.MainHandler;
+import com.wuruoye.ichp.base.util.DateUtil;
 import com.wuruoye.ichp.base.util.LocationUtil;
 import com.wuruoye.ichp.ui.contract.AddNoteContract;
 
@@ -41,16 +42,19 @@ public class DevAddNotePresenter extends AddNoteContract.Presenter {
 
     @Override
     public String generateImageName() {
-        return Config.INSTANCE.getIMAGE_PATH() + System.currentTimeMillis() + ".jpg";
+        return Config.INSTANCE.getIMAGE_PATH() +
+                DateUtil.INSTANCE.getDateString(System.currentTimeMillis()) + ".jpg";
     }
 
     @Override
     public String generateVideoName() {
-        return Config.INSTANCE.getVIDEO_PATH() + System.currentTimeMillis() + ".mp4";
+        return Config.INSTANCE.getVIDEO_PATH() +
+                DateUtil.INSTANCE.getDateString(System.currentTimeMillis()) + ".mp4";
     }
 
     @Override
     public String generateVoiceName() {
-        return Config.INSTANCE.getRECORD_PATH() + System.currentTimeMillis() + ".m4a";
+        return Config.INSTANCE.getRECORD_PATH() +
+                DateUtil.INSTANCE.getDateString(System.currentTimeMillis()) + ".m4a";
     }
 }

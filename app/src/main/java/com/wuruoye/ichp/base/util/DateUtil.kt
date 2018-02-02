@@ -17,6 +17,7 @@ object DateUtil {
         val day = calender.get(Calendar.DAY_OF_MONTH)
         val hour = calender.get(Calendar.HOUR_OF_DAY)
         val minute = calender.get(Calendar.MINUTE)
+        val second = calender.get(Calendar.SECOND)
 
         val newMonth =
                 if (month < 10){
@@ -46,7 +47,14 @@ object DateUtil {
                     minute.toString()
                 }
 
-        return "$year.$newMonth.$newDay\t$newHour:$newMinute"
+        val newSecond =
+                if (second < 10) {
+                    "0$second"
+                }else {
+                    second.toString()
+                }
+
+        return "$year.$newMonth.$newDay-$newHour.$newMinute.$newSecond"
     }
 
     fun getTime(time: Long): String{
