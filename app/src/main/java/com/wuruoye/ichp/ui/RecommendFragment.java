@@ -29,6 +29,7 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
     private SwipeRefreshLayout srlRecommend;
     private RecyclerView rvRecommend;
 
+    private int mType;
     private RecommendContract.Presenter mPresenter;
 
     @Override
@@ -38,6 +39,9 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
 
     @Override
     public void initData(@Nullable Bundle bundle) {
+        assert bundle != null;
+        mType = bundle.getInt("type");
+
         mPresenter = new DevRecommendPresenter();
         mPresenter.attachView(this);
     }
@@ -76,7 +80,7 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
 
     private void requestNoteList(boolean isAdd) {
         srlRecommend.setRefreshing(true);
-        mPresenter.requestNoteList(isAdd);
+        mPresenter.requestNoteList(isAdd, mType);
     }
 
     private void onItemClick(Note note) {

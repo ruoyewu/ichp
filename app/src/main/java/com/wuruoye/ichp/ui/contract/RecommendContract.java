@@ -17,6 +17,6 @@ public interface RecommendContract {
     }
 
     abstract class Presenter extends AbsPresenter<View>{
-         public abstract void requestNoteList(boolean isAdd);
+         public abstract void requestNoteList(boolean isAdd, int type);
     }
 }

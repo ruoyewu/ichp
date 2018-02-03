@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseActivity;
@@ -28,6 +29,11 @@ public class SearchActivity extends BaseActivity {
     public static final String[] ITEM_TITLE = {
             "记录", "活动", "词条", "用户"
     };
+    public static final int TYPE_NOTE = 0;
+    public static final int TYPE_COURSE = 1;
+    public static final int TYPE_ENTRY = 2;
+    public static final int TYPE_USER = 3;
+    private static final String TAG = "SearchActivity";
 
     private SearchView svSearch;
     private TabLayout tlSearch;
@@ -52,14 +58,14 @@ public class SearchActivity extends BaseActivity {
     @Override
     public void initView() {
         svSearch = findViewById(R.id.sv_search);
-        tlSearch = findViewById(R.id.tl);
-        vpSearch = findViewById(R.id.vp);
+        tlSearch = findViewById(R.id.tl_layout);
+        vpSearch = findViewById(R.id.vp_layout);
 
         initLayout();
         initViewPager();
 
         if (mQueryString != null) {
-            queryString(mQueryString);
+            svSearch.setQuery(mQueryString, true);
         }
     }
 
@@ -107,10 +113,15 @@ public class SearchActivity extends BaseActivity {
             }
         });
 
-        mCurrentFragment = 1;
+        mCurrentFragment = 0;
     }
 
     private void queryString(String query) {
+        log(query + " " + mCurrentFragment);
         mSearchViewList.get(mCurrentFragment).search(query);
+    }
+
+    private void log(String message) {
+        Log.e(TAG, message);
     }
 }

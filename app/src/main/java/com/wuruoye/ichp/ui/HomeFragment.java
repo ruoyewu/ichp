@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseFragment;
@@ -28,8 +27,10 @@ import java.util.List;
 
 public class HomeFragment extends BaseFragment {
     public static final List<String> TITLE_LIST =
-            Arrays.asList("推荐", "关注", "词条");
-    public static final int ENTRY_POSITION = 2;
+            Arrays.asList("关注", "推荐", "地图");
+    public static final int TYPE_RECOMMEND = 1;
+    public static final int TYPE_ATTENTION = 0;
+    public static final int TYPE_MAP = 2;
 
     private TabLayout tlTab;
     private ViewPager vpPager;
@@ -47,8 +48,8 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void initView(@NotNull View view) {
-        tlTab = view.findViewById(R.id.tl);
-        vpPager = view.findViewById(R.id.vp);
+        tlTab = view.findViewById(R.id.tl_layout);
+        vpPager = view.findViewById(R.id.vp_layout);
         fabAdd = view.findViewById(R.id.fab_home_add);
 
         initFragment();
@@ -57,9 +58,17 @@ public class HomeFragment extends BaseFragment {
 
     private void initFragment() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new RecommendFragment());
-        fragments.add(new AttentionFragment());
-        fragments.add(new EntryFragment());
+        Bundle bAttention = new Bundle();
+        bAttention.putInt("type", TYPE_ATTENTION);
+        Fragment attention = new RecommendFragment();
+        attention.setArguments(bAttention);
+        Bundle bRecommend = new Bundle();
+        bRecommend.putInt("type", TYPE_RECOMMEND);
+        Fragment recommend = new RecommendFragment();
+        recommend.setArguments(bRecommend);
+        fragments.add(attention);
+        fragments.add(recommend);
+        fragments.add(new MapFragment());
 
         FragmentVPAdapter adapter = new FragmentVPAdapter(
                 getChildFragmentManager(), TITLE_LIST, fragments);
@@ -69,10 +78,10 @@ public class HomeFragment extends BaseFragment {
         vpPager.addOnPageChangeListener(new OnPageChangeListenerAdapter() {
             @Override
             public void onPageSelected(int position) {
-                if (position == ENTRY_POSITION) {
-                    fabAdd.hide();
+                if (position == TYPE_MAP) {
+                    showFab(false);
                 }else {
-                    fabAdd.show();
+                    showFab(true);
                 }
             }
         });
@@ -85,5 +94,13 @@ public class HomeFragment extends BaseFragment {
                 startActivity(new Intent(getContext(), AddNoteActivity.class));
             }
         });
+    }
+
+    private void showFab(boolean isShow) {
+        if (isShow) {
+            fabAdd.show();
+        }else {
+            fabAdd.hide();
+        }
     }
 }

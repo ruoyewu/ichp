@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_height="250dp">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            app:layout_scrollFlags="enterAlways|scroll|snap|exitUntilCollapsed"
+            app:titleEnabled="false"
+            app:contentScrim="@color/mainColor"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_entry_info_back"
+                android:foreground="@color/transparent_red"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:id="@+id/ll_entry_info_title"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="16dp"
+                android:layout_marginBottom="?attr/actionBarSize"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/civ_entry_info"
+                    android:src="@color/white"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_entry_info_title"
+                        android:text="name"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_entry_info_intro"
+                        android:text="intro"
+                        android:textSize="15sp"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <android.support.v7.widget.Toolbar
+                app:contentInsetStart="0dp"
+                android:gravity="bottom"
+                app:layout_collapseMode="pin"
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tl_entry_info"
+                    app:tabMode="fixed"
+                    app:tabGravity="fill"
+                    app:tabTextColor="@color/french_gray"
+                    app:tabSelectedTextColor="@color/white"
+                    app:tabIndicatorColor="@color/french_gray"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_entry_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.NestedScrollView>
+
+    <LinearLayout
+        app:layout_behavior="com.wuruoye.ichp.ui.adapter.CustomBottomBehavior"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:background="@color/mainColor"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

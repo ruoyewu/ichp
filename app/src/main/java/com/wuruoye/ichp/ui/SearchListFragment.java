@@ -11,12 +11,13 @@ import android.widget.Toast;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
-import com.wuruoye.ichp.ui.adapter.SearchRVAdapter;
+import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
 import com.wuruoye.ichp.ui.contract.SearchContract;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.model.bean.User;
+import com.wuruoye.ichp.ui.presenter.DevSearchPresenter;
 import com.wuruoye.ichp.ui.util.ISearchView;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +48,8 @@ public class SearchListFragment extends BaseFragment implements ISearchView, Sea
         assert bundle != null;
         mType = bundle.getInt("type");
 
-
+        mPresenter = new DevSearchPresenter();
+        mPresenter.attachView(this);
     }
 
     @Override
@@ -69,7 +71,7 @@ public class SearchListFragment extends BaseFragment implements ISearchView, Sea
     }
 
     private void initRecyclerView() {
-        SearchRVAdapter adapter = new SearchRVAdapter();
+        NormalRVAdapter adapter = new NormalRVAdapter();
         adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<Object>() {
             @Override
             public void onItemClick(Object model) {
@@ -103,26 +105,34 @@ public class SearchListFragment extends BaseFragment implements ISearchView, Sea
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getActivity(), "" + mType + " " + query, Toast.LENGTH_SHORT).show();
+                    requestQuery(mQueryString, false);
                 }
             }, 200);
         }else {
-            Toast.makeText(getActivity(), "" + mType + " " + query, Toast.LENGTH_SHORT).show();
+            requestQuery(mQueryString, false);
         }
     }
 
     @Override
     public void onResultWorn(@NotNull String message) {
+        srlSearch.setRefreshing(false);
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSearchResult(List<Object> resultList, boolean isAdd) {
-        SearchRVAdapter adapter = (SearchRVAdapter) rvSearch.getAdapter();
+        srlSearch.setRefreshing(false);
+        NormalRVAdapter adapter = (NormalRVAdapter) rvSearch.getAdapter();
         if (isAdd) {
             adapter.addData(resultList);
         }else {
             adapter.setData(resultList);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        mPresenter.detachView();
+        super.onDestroy();
     }
 }

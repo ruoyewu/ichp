@@ -33,8 +33,10 @@
             android:id="@+id/iv_record"
             android:src="@drawable/ic_mic"
             android:layout_gravity="center"
+            android:clickable="true"
             android:background="@drawable/record_background"
             android:layout_width="60dp"
-            android:layout_height="60dp" />
+            android:layout_height="60dp"
+            android:focusable="true" />
     </FrameLayout>
 </LinearLayout>

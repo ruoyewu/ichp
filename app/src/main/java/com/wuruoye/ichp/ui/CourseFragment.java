@@ -47,8 +47,8 @@ public class CourseFragment extends BaseFragment {
 
     @Override
     public void initView(@NotNull View view) {
-        tlCourse = view.findViewById(R.id.tl);
-        vpCourse = view.findViewById(R.id.vp);
+        tlCourse = view.findViewById(R.id.tl_layout);
+        vpCourse = view.findViewById(R.id.vp_layout);
         fabCourseAdd = view.findViewById(R.id.fab_course_add);
 
         initLayout();

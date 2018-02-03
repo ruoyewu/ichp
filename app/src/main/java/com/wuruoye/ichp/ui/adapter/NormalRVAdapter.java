@@ -22,7 +22,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * this file is to
  */
 
-public class SearchRVAdapter extends BaseRVAdapter<Object> {
+public class NormalRVAdapter extends BaseRVAdapter<Object> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

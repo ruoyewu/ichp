@@ -1,7 +1,6 @@
 package com.wuruoye.ichp.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.wuruoye.ichp.R;
@@ -15,11 +14,11 @@ import org.jetbrains.annotations.Nullable;
  * this file is to
  */
 
-public class EntryFragment extends BaseFragment {
+public class MapFragment extends BaseFragment {
 
     @Override
     public int getContentView() {
-        return R.layout.fragment_entry;
+        return R.layout.fragment_map;
     }
 
     @Override
