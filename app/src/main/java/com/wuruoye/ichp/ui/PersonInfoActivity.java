@@ -12,10 +12,10 @@ import org.jetbrains.annotations.Nullable;
  * this file is to
  */
 
-public class PersonActivity extends BaseActivity {
+public class PersonInfoActivity extends BaseActivity {
     @Override
     public int getContentView() {
-        return R.layout.activity_person;
+        return R.layout.activity_person_info;
     }
 
     @Override

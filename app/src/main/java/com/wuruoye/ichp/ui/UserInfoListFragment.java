@@ -5,16 +5,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
 import com.wuruoye.ichp.ui.contract.EntryInfoContract;
-import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
-import com.wuruoye.ichp.ui.model.bean.Note;
+import com.wuruoye.ichp.ui.model.bean.User;
 import com.wuruoye.ichp.ui.presenter.DevEntryInfoPresenter;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,14 +25,11 @@ import java.util.List;
  * this file is to
  */
 
-public class EntryInfoListFragment extends BaseFragment implements EntryInfoContract.View{
-    public static final int TYPE_NOTE = 0;
-    public static final int TYPE_COURSE = 1;
-
+public class UserInfoListFragment extends BaseFragment implements EntryInfoContract.View{
     private SwipeRefreshLayout srl;
     private RecyclerView rv;
 
-    private Entry mEntry;
+    private User mUser;
     private int mType;
     private EntryInfoContract.Presenter mPresenter;
 
@@ -46,7 +41,7 @@ public class EntryInfoListFragment extends BaseFragment implements EntryInfoCont
     @Override
     public void initData(@Nullable Bundle bundle) {
         assert bundle != null;
-        mEntry = bundle.getParcelable("entry");
+        mUser = bundle.getParcelable("user");
         mType = bundle.getInt("type");
 
         mPresenter = new DevEntryInfoPresenter();
@@ -58,17 +53,16 @@ public class EntryInfoListFragment extends BaseFragment implements EntryInfoCont
         srl = view.findViewById(R.id.srl_layout);
         rv = view.findViewById(R.id.rv_layout);
 
-        initRefresh();
+        initLayout();
         initRecyclerView();
-
-        requestDataList(false);
+        requestData(false);
     }
 
-    private void initRefresh() {
+    private void initLayout() {
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestDataList(false);
+                requestData(false);
             }
         });
     }
@@ -78,23 +72,19 @@ public class EntryInfoListFragment extends BaseFragment implements EntryInfoCont
         adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<Object>() {
             @Override
             public void onItemClick(Object model) {
-                EntryInfoListFragment.this.onItemClick(model);
+                UserInfoListFragment.this.onItemClick(model);
             }
         });
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
     }
 
-    private void requestDataList(boolean isAdd) {
-        mPresenter.requestData(mEntry, isAdd, mType);
+    private void requestData(boolean isAdd) {
+        mPresenter.requestData(new Entry("", ""), isAdd, mType);
     }
 
-    private void onItemClick(Object data) {
-        if (data instanceof Note) {
-            Toast.makeText(getContext(), ((Note) data).getTitle(), Toast.LENGTH_SHORT).show();
-        }else if (data instanceof Course) {
-            Toast.makeText(getContext(), ((Course) data).getTitle(), Toast.LENGTH_SHORT).show();
-        }
+    private void onItemClick(Object object) {
+
     }
 
     @Override

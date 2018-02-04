@@ -2,7 +2,7 @@ package com.wuruoye.ichp.ui.contract;
 
 import com.wuruoye.ichp.base.presenter.AbsPresenter;
 import com.wuruoye.ichp.base.presenter.IView;
-import com.wuruoye.ichp.ui.model.bean.Entry;
+import com.wuruoye.ichp.ui.model.bean.User;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import java.util.List;
  * this file is to
  */
 
-public interface EntryInfoContract {
+public interface UserInfoContract {
     interface View extends IView {
         void onDataResult(List<Object> dataList, boolean isAdd);
     }
 
     abstract class Presenter extends AbsPresenter<View> {
-        public abstract void requestData(Entry entry, boolean isAdd, int type);
+        public abstract void requestData(User user, int type, boolean isAdd);
     }
 }

@@ -13,7 +13,8 @@
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:src="@mipmap/ic_launcher_round"
+            android:id="@+id/civ_user"
+            android:src="@color/white"
             android:layout_width="80dp"
             android:layout_height="80dp" />
 
@@ -23,12 +24,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/tv_user_name"
                 android:text="用户名"
                 android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/tv_user_id"
                 android:text="ID"
                 android:textColor="@color/white"
                 android:layout_width="wrap_content"
@@ -46,12 +49,14 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/tv_user_focus"
                     android:text="关注"
                     android:textColor="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <TextView
+                    android:id="@+id/tv_user_focused"
                     android:text="被关注"
                     android:textColor="@color/white"
                     android:layout_marginLeft="16dp"

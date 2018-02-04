@@ -64,7 +64,7 @@ public class NormalRVAdapter extends BaseRVAdapter<Object> {
         }else if (data instanceof User) {
             viewHolder.iv.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((User) data).getName());
-            viewHolder.tvTitle.setText(((User) data).getIntro());
+            viewHolder.tvContent.setText(((User) data).getIntro());
             Glide.with(viewHolder.civ)
                     .load(((User) data).getImage())
                     .into(viewHolder.civ);

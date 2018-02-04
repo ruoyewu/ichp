@@ -19,7 +19,7 @@ import static com.wuruoye.ichp.ui.EntryInfoListFragment.TYPE_NOTE;
 
 public class DevEntryInfoPresenter extends EntryInfoContract.Presenter {
     @Override
-    public void requestDataList(Entry entry, boolean isAdd, int type) {
+    public void requestData(Entry entry, boolean isAdd, int type) {
         if (type == TYPE_NOTE) {
             List<Note> notes = Arrays.asList(
                     new Note("梅花篆字", "author", "https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=fad26bf91adfa9ece9235e4503b99c66/1b4c510fd9f9d72a685819f8df2a2834349bbb12.jpg"),
@@ -31,7 +31,7 @@ public class DevEntryInfoPresenter extends EntryInfoContract.Presenter {
                 noteList.addAll(notes);
             }
             if (isAvailable()) {
-                getView().onDataListResult(noteList, isAdd);
+                getView().onDataResult(noteList, isAdd);
             }
         }else if (type == TYPE_COURSE) {
             List<Course> courses = Arrays.asList(
@@ -44,7 +44,7 @@ public class DevEntryInfoPresenter extends EntryInfoContract.Presenter {
                 courseList.addAll(courses);
             }
             if (isAvailable()) {
-                getView().onDataListResult(courseList, isAdd);
+                getView().onDataResult(courseList, isAdd);
             }
         }
     }

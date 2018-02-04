@@ -26,10 +26,11 @@
         <activity android:name=".ui.AddNoteActivity" />
         <activity android:name=".ui.SearchActivity" />
         <activity android:name=".ui.CollectActivity" />
-        <activity android:name=".ui.PersonActivity" />
+        <activity android:name=".ui.PersonInfoActivity" />
         <activity android:name=".ui.AddEntryActivity" />
         <activity android:name=".ui.EntryInfoActivity" />
         <activity android:name=".ui.UserInfoActivity" />
+        <activity android:name=".ui.UserAttentionActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
