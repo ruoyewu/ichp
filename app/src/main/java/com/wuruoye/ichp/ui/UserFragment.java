@@ -121,6 +121,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
                 break;
             case 3:
                 // 我的消息
+                intent = new Intent(getContext(), MessageActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case 4:
                 // 我的非遗足迹

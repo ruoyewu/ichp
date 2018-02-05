@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.base.util
 
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -75,5 +76,11 @@ object DateUtil {
     fun getWeek(): Int{
         val calender = Calendar.getInstance()
         return calender.get(Calendar.DAY_OF_WEEK)
+    }
+
+    fun formatTime(time: Long, format: String): String {
+        val date = Date(time)
+        val dateFormat = SimpleDateFormat(format, Locale.CHINA)
+        return dateFormat.format(date)
     }
 }
