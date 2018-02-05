@@ -31,6 +31,7 @@
         <activity android:name=".ui.EntryInfoActivity" />
         <activity android:name=".ui.UserInfoActivity" />
         <activity android:name=".ui.UserAttentionActivity" />
+        <activity android:name=".ui.PersonNoteActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
@@ -29,7 +28,7 @@ import static com.wuruoye.ichp.ui.UserAttentionActivity.TYPE_FOCUSED;
 
 public class UserFragment extends BaseFragment implements View.OnClickListener{
     public static final String[] ITEM_TITLE = new String[] {
-            "我的信息", "我的非遗活动", "我的非遗记录", "我的收藏", "我的消息", "我的非遗足迹",
+            "我的信息", "我的非遗记录", "我的收藏", "我的消息", "我的非遗足迹",
             "非遗拾贝", "设置", "关于"
     };
     public static final int[] ITEM_ICON = new int[] {
@@ -75,6 +74,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
         tvName.setText(mUser.getName());
         tvFocused.setOnClickListener(this);
         tvFocus.setOnClickListener(this);
+        civ.setOnClickListener(this);
     }
 
     private void initItems() {
@@ -97,28 +97,70 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
     }
 
     private void onItemClick(int position) {
-        Toast.makeText(getContext(), ITEM_TITLE[position], Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("user", mUser);
+        Intent intent;
+        switch (position) {
+            case 0:
+                // 我的信息
+                intent = new Intent(getContext(), PersonInfoActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case 1:
+                // 我的非遗记录
+                intent = new Intent(getContext(), PersonNoteActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case 2:
+                // 我的收藏
+                intent = new Intent(getContext(), CollectActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case 3:
+                // 我的消息
+                break;
+            case 4:
+                // 我的非遗足迹
+                break;
+            case 5:
+                // 非遗拾贝
+                break;
+            case 6:
+                // 设置
+                break;
+            case 7:
+                // 关于
+                break;
+        }
     }
 
     @Override
     public void onClick(View v) {
         Bundle bundle = new Bundle();
+        bundle.putParcelable("user", mUser);
         Intent intent;
         switch (v.getId()) {
             case R.id.tv_user_focus:
                 bundle.putInt("type", TYPE_FOCUS);
-                bundle.putParcelable("user", mUser);
                 intent = new Intent(getContext(), UserAttentionActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             case R.id.tv_user_focused:
                 bundle.putInt("type", TYPE_FOCUSED);
-                bundle.putParcelable("user", mUser);
                 intent = new Intent(getContext(), UserAttentionActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
+            case R.id.civ_user:
+                intent = new Intent(getContext(), UserInfoActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+
         }
     }
 }

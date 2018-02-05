@@ -5,11 +5,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.AppBarLayout
+        android:minHeight="50dp"
         android:layout_width="match_parent"
         android:layout_height="250dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:minHeight="50dp"
+            app:layout_scrollFlags="enterAlways|scroll|snap|exitUntilCollapsed"
+            app:contentScrim="@color/mainColor"
+            android:minHeight="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -123,6 +126,7 @@
     <LinearLayout
         android:layout_gravity="bottom"
         app:layout_behavior="com.wuruoye.ichp.ui.adapter.CustomBottomBehavior"
+        android:background="@color/mainColor"
         android:layout_width="match_parent"
         android:layout_height="80dp">
 

@@ -7,5 +7,96 @@
     <include
         layout="@layout/layout_toolbar"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:padding="16dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="头像"
+                    android:textSize="20sp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/civ_person_info"
+                    android:src="@color/black"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_person_info_name"
+                    android:text="昵称"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_person_info_sex"
+                    android:text="性别"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_person_info_intro"
+                    android:text="简介"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_person_info_pwd"
+                    android:text="修改密码"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

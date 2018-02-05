@@ -47,7 +47,7 @@ public class UserInfoActivity extends BaseActivity {
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-        mUser = new User("name", "intro", "https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=f900350f2a34349b600b66d7a8837eab/7e3e6709c93d70cfe7ea7e18fadcd100baa12b97.jpg");
+        mUser = bundle.getParcelable("user");
     }
 
     @Override
@@ -83,7 +83,7 @@ public class UserInfoActivity extends BaseActivity {
         for (int i = 0; i < ITEM_TITLE.length; i++) {
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", mUser);
-            bundle.putInt("type", i * 2);
+            bundle.putInt("type", i);
             Fragment fragment = new UserInfoListFragment();
             fragment.setArguments(bundle);
             fragmentList.add(fragment);
