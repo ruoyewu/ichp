@@ -53,7 +53,7 @@ public class DevAddNotePresenter extends AddNoteContract.Presenter {
     }
 
     @Override
-    public String generateVoiceName() {
+    public String generateRecordName() {
         return Config.INSTANCE.getRECORD_PATH() +
                 DateUtil.INSTANCE.getDateString(System.currentTimeMillis()) + ".m4a";
     }

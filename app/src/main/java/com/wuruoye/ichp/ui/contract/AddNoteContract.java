@@ -19,6 +19,6 @@ public interface AddNoteContract {
         abstract public void requestLocation(Context context);
         abstract public String generateImageName();
         abstract public String generateVideoName();
-        abstract public String generateVoiceName();
+        abstract public String generateRecordName();
     }
 }

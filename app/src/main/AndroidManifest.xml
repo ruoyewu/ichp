@@ -23,7 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.AddNoteActivity" />
+        <activity android:name=".ui.AddNoteActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ui.SearchActivity" />
         <activity android:name=".ui.CollectActivity" />
         <activity android:name=".ui.PersonInfoActivity" />
@@ -33,6 +34,7 @@
         <activity android:name=".ui.UserAttentionActivity" />
         <activity android:name=".ui.PersonNoteActivity" />
         <activity android:name=".ui.MessageActivity" />
+        <activity android:name=".ui.EntryChooseActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

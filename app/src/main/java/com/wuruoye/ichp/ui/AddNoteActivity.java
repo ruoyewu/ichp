@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,10 +21,8 @@ import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.base.model.Config;
 import com.wuruoye.ichp.base.util.FileUtil;
 import com.wuruoye.ichp.base.util.PermissionUtil;
-import com.wuruoye.ichp.ui.adapter.EntryAddRVAdapter;
 import com.wuruoye.ichp.ui.adapter.MediaRVAdapter;
 import com.wuruoye.ichp.ui.contract.AddNoteContract;
-import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.presenter.DevAddNotePresenter;
 
@@ -33,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by wuruoye on 2018/1/28.
@@ -42,24 +38,37 @@ import java.util.List;
 
 public class AddNoteActivity extends MediaActivity
         implements View.OnClickListener, AddNoteContract.View {
-    public static final String[] MEDIA_ITEMS =
-            {"照片选取", "照片拍摄", "视频选取", "视频拍摄", "音频选取", "音频录制"};
+    public static final String[] PHOTO_ITEM = {"照片选取", "照片拍摄"};
+    public static final String[] VIDEO_ITEM = {"视频选取", "视频拍摄"};
+    public static final String[] RECORD_ITEM = {"音频选取", "音频拍摄"};
+    public static final String[] TITLE_IT_ITEM = {"照片", "视频", "音频", "词条", "返回", "发布"};
+    public static final int[] ICON_IT_ITEM = {1, 2, 3, 4, 5, 6};
     public static final int LOCATION_CODE = 1;
     public static final int TIME_RECORD_LIMIT = 100000;
+    public static final int CHOOSE_ENTRY = 201;
+
+    public static final int TYPE_NOTE = 1;
+    public static final int TYPE_COURSE = 2;
 
     private EditText etTitle;
     private EditText etContent;
+    private LinearLayout llEntryList;
     private TextView tvLocation;
+    private LinearLayout llLocation;
+    private LinearLayout llCourseInfo;
+    private EditText etDate;
+    private EditText etPlace;
+    private EditText etEntrance;
     private RecyclerView rvMedia;
-    private RecyclerView rvEntry;
-    private ImageButton ibAddEntry;
-    private LinearLayout llBack;
-    private LinearLayout llPublish;
+    private LinearLayout[] llList;
 
-    private AlertDialog adMedia;
+    private AlertDialog dlgPhoto;
+    private AlertDialog dlgVideo;
+    private AlertDialog dlgRecord;
 
     private AddNoteContract.Presenter mPresenter;
     private int mCurrentMediaType;
+    private int mType;
 
     @Override
     public int getContentView() {
@@ -68,51 +77,68 @@ public class AddNoteActivity extends MediaActivity
 
     @Override
     public void initData(@Nullable Bundle bundle) {
+        mType = bundle.getInt("type");
+
         mPresenter = new DevAddNotePresenter();
         mPresenter.attachView(this);
     }
 
     @Override
     public void initView() {
+        llList = new LinearLayout[6];
         etTitle = findViewById(R.id.et_add_note_title);
         etContent = findViewById(R.id.et_add_note_content);
+        llEntryList = findViewById(R.id.ll_add_note_entry_list);
         tvLocation = findViewById(R.id.tv_add_note_location);
+        llLocation = findViewById(R.id.ll_add_note_location);
+        llCourseInfo = findViewById(R.id.ll_add_note_course_info);
+        etDate = findViewById(R.id.et_add_note_date);
         rvMedia = findViewById(R.id.rv_add_note_media);
-        rvEntry = findViewById(R.id.rv_add_note_entry);
-        ibAddEntry = findViewById(R.id.ib_add_note_entry);
-        llBack = findViewById(R.id.ll_add_note_back);
-        llPublish = findViewById(R.id.ll_add_note_publish);
+        llList[0] = findViewById(R.id.ll_add_note_photo);
+        llList[1] = findViewById(R.id.ll_add_note_video);
+        llList[2] = findViewById(R.id.ll_add_note_record);
+        llList[3] = findViewById(R.id.ll_add_note_entry);
+        llList[4] = findViewById(R.id.ll_add_note_back);
+        llList[5] = findViewById(R.id.ll_add_note_publish);
 
+        initType();
         initLayout();
         initRecyclerView();
         initDialog();
         getLocation();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void initType() {
+        if (mType == TYPE_NOTE) {
+            etTitle.setHint("请输入记录标题");
+            etContent.setHint("请输入记录内容");
+            llCourseInfo.setVisibility(View.GONE);
+            llLocation.setVisibility(View.VISIBLE);
+        }else if (mType == TYPE_COURSE) {
+            etTitle.setHint("请输入活动标题");
+            etContent.setHint("请输入活动内容");
+            llCourseInfo.setVisibility(View.VISIBLE);
+            llLocation.setVisibility(View.GONE);
+        }
+    }
+
     private void initLayout() {
-        ImageView ivBack = llBack.findViewById(R.id.iv_icon_text);
-        TextView tvBack = llBack.findViewById(R.id.tv_icon_text);
-        ivBack.setImageResource(R.drawable.ic_goleft);
-        tvBack.setText("返回");
-
-        ImageView ivPublish = llPublish.findViewById(R.id.iv_icon_text);
-        TextView tvPublish = llPublish.findViewById(R.id.tv_icon_text);
-        ivPublish.setImageResource(R.drawable.ic_edit);
-        tvPublish.setText("发布");
-
-        llBack.setOnClickListener(this);
-        llPublish.setOnClickListener(this);
-        ibAddEntry.setOnClickListener(this);
+        for (int i = 0; i < TITLE_IT_ITEM.length; i++) {
+            ImageView iv = llList[i].findViewById(R.id.iv_icon_text);
+            TextView tv = llList[i].findViewById(R.id.tv_icon_text);
+//            iv.setImageResource(ICON_IT_ITEM[i]);
+            tv.setText(TITLE_IT_ITEM[i]);
+            llList[i].setOnClickListener(this);
+        }
     }
 
     private void initRecyclerView() {
         MediaRVAdapter adapter = new MediaRVAdapter();
-        adapter.setOnAddItemClick(new MediaRVAdapter.OnAddItemClickListener() {
-            @Override
-            public void onAddClick() {
-                onAddMedia();
-            }
-        });
         adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<Media>() {
             @Override
             public void onItemClick(Media model) {
@@ -128,38 +154,94 @@ public class AddNoteActivity extends MediaActivity
         rvMedia.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         rvMedia.setAdapter(adapter);
-
-        EntryAddRVAdapter entryAddRVAdapter = new EntryAddRVAdapter();
-        rvEntry.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false));
-        rvEntry.setAdapter(entryAddRVAdapter);
+        checkRecyclerView();
     }
 
     private void initDialog() {
-        adMedia = new AlertDialog.Builder(this)
-                .setItems(MEDIA_ITEMS, new DialogInterface.OnClickListener() {
+        dlgPhoto = new AlertDialog.Builder(this)
+                .setItems(PHOTO_ITEM, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getMedia(which);
+                        mCurrentMediaType = 0;
+                        switch (which) {
+                            case 0:
+                                choosePhoto();
+                                break;
+                            case 1:
+                                takePhoto(mPresenter.generateImageName());
+                                break;
+                        }
                     }
                 })
                 .create();
-    }
+        dlgVideo = new AlertDialog.Builder(this)
+                .setItems(VIDEO_ITEM, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mCurrentMediaType = 1;
+                        switch (which) {
+                            case 0:
+                                chooseVideo();
+                                break;
+                            case 1:
+                                takeVideo();
+                                break;
+                        }
+                    }
+                })
+                .create();
+        dlgRecord = new AlertDialog.Builder(this)
+                .setItems(RECORD_ITEM, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mCurrentMediaType = 2;
+                        switch (which) {
+                            case 0:
+                                chooseRecord();
+                                break;
+                            case 1:
+                                takeRecord(mPresenter.generateRecordName(), TIME_RECORD_LIMIT);
+                                break;
+                        }
+                    }
+                })
+                .create();
 
-    private void onAddMedia() {
-        adMedia.show();
     }
 
     private void onItemClick(Media media) {
         Toast.makeText(this, media.getContent(), Toast.LENGTH_SHORT).show();
     }
 
-    private void onItemLongClick(Media media) {
-        if (media.getType() == Media.Type.RECORD || media.getType() == Media.Type.VIDEO) {
-            FileUtil.INSTANCE.removeFile(media.getContent());
-        }
+    private void onItemLongClick(final Media media) {
+        new AlertDialog.Builder(this)
+                .setTitle("是否删除？")
+                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (media.getType() == Media.Type.RECORD || media.getType() == Media.Type.VIDEO) {
+                            FileUtil.INSTANCE.removeFile(media.getContent());
+                        }
+                        MediaRVAdapter adapter = (MediaRVAdapter) rvMedia.getAdapter();
+                        adapter.removeData(media);
+                        checkRecyclerView();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
+
+    private void checkRecyclerView() {
         MediaRVAdapter adapter = (MediaRVAdapter) rvMedia.getAdapter();
-        adapter.removeData(media);
+        if (adapter.getItemCount() == 0) {
+            rvMedia.setVisibility(View.GONE);
+        }else {
+            rvMedia.setVisibility(View.VISIBLE);
+        }
     }
 
     private void onBackClick() {
@@ -173,19 +255,11 @@ public class AddNoteActivity extends MediaActivity
         Toast.makeText(this, title + "\n" + content, Toast.LENGTH_SHORT).show();
     }
 
-    private void onAddEntryClick() {
-        startActivity(new Intent(this, EntryInfoActivity.class));
-    }
-
     private void addMedia(Media media) {
         MediaRVAdapter adapter = (MediaRVAdapter) rvMedia.getAdapter();
         adapter.addData(Collections.singletonList(media));
         rvMedia.smoothScrollToPosition(adapter.getItemCount());
-    }
-
-    private void setEntry(List<Entry> entryList) {
-        EntryAddRVAdapter adapter = (EntryAddRVAdapter) rvEntry.getAdapter();
-        adapter.setData(entryList);
+        checkRecyclerView();
     }
 
     private void getLocation() {
@@ -195,41 +269,27 @@ public class AddNoteActivity extends MediaActivity
         }
     }
 
-    private void getMedia(int type) {
-        mCurrentMediaType = type;
-        switch (type) {
-            case 0:
-                choosePhoto();
-                break;
-            case 1:
-                takePhoto(mPresenter.generateImageName());
-                break;
-            case 2:
-                chooseVideo();
-                break;
-            case 3:
-                takeVideo();
-                break;
-            case 4:
-                chooseRecord();
-                break;
-            case 5:
-                takeRecord(mPresenter.generateVoiceName(), TIME_RECORD_LIMIT);
-                break;
-        }
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.ll_add_note_photo:
+                dlgPhoto.show();
+                break;
+            case R.id.ll_add_note_video:
+                dlgVideo.show();
+                break;
+            case R.id.ll_add_note_record:
+                dlgRecord.show();
+                break;
+            case R.id.ll_add_note_entry:
+                Intent intent = new Intent(this, EntryChooseActivity.class);
+                startActivityForResult(intent, CHOOSE_ENTRY);
+                break;
             case R.id.ll_add_note_back:
                 onBackClick();
                 break;
             case R.id.ll_add_note_publish:
                 onPublishClick();
-                break;
-            case R.id.ib_add_note_entry:
-                onAddEntryClick();
                 break;
         }
     }
@@ -237,9 +297,9 @@ public class AddNoteActivity extends MediaActivity
     @Override
     public void onMediaBack(@NotNull String filePath) {
         Media.Type type;
-        if (mCurrentMediaType == 0 || mCurrentMediaType == 1) {
+        if (mCurrentMediaType == 0) {
             type = Media.Type.IMAGE;
-        }else if (mCurrentMediaType == 2 || mCurrentMediaType == 3) {
+        }else if (mCurrentMediaType == 1) {
             type = Media.Type.VIDEO;
         }else {
             type = Media.Type.RECORD;

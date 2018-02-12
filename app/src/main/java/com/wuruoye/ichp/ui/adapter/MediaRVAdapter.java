@@ -72,17 +72,8 @@ public class MediaRVAdapter extends BaseRVAdapter<Media> {
     }
 
     @Override
-    public int getItemCount() {
-        return super.getItemCount() + 1;
-    }
-
-    @Override
     public int getItemViewType(int position) {
-        if (position < super.getItemCount()) {
-            return NORMAL;
-        }else {
-            return ADD;
-        }
+        return NORMAL;
     }
 
     public void setOnAddItemClick(OnAddItemClickListener listener) {

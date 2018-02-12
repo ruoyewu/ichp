@@ -1,12 +1,12 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseFragment;
@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.wuruoye.ichp.ui.AddNoteActivity.TYPE_COURSE;
 
 /**
  * Created by wuruoye on 2018/1/27.
@@ -89,7 +91,11 @@ public class CourseFragment extends BaseFragment {
     }
 
     private void onFabClick() {
-        Toast.makeText(getContext(), "fab click", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), AddNoteActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", TYPE_COURSE);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void showFab(int position) {
