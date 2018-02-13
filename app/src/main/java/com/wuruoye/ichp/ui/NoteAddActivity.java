@@ -86,20 +86,20 @@ public class NoteAddActivity extends MediaActivity
     @Override
     public void initView() {
         llList = new LinearLayout[6];
-        etTitle = findViewById(R.id.et_add_note_title);
-        etContent = findViewById(R.id.et_add_note_content);
-        llEntryList = findViewById(R.id.ll_add_note_entry_list);
-        tvLocation = findViewById(R.id.tv_add_note_location);
-        llLocation = findViewById(R.id.ll_add_note_location);
-        llCourseInfo = findViewById(R.id.ll_add_note_course_info);
-        etDate = findViewById(R.id.et_add_note_date);
-        rvMedia = findViewById(R.id.rv_add_note_media);
-        llList[0] = findViewById(R.id.ll_add_note_photo);
-        llList[1] = findViewById(R.id.ll_add_note_video);
-        llList[2] = findViewById(R.id.ll_add_note_record);
-        llList[3] = findViewById(R.id.ll_add_note_entry);
-        llList[4] = findViewById(R.id.ll_add_note_back);
-        llList[5] = findViewById(R.id.ll_add_note_publish);
+        etTitle = findViewById(R.id.et_note_add_title);
+        etContent = findViewById(R.id.et_note_add_content);
+        llEntryList = findViewById(R.id.ll_note_add_entry_list);
+        tvLocation = findViewById(R.id.tv_note_add_location);
+        llLocation = findViewById(R.id.ll_note_add_location);
+        llCourseInfo = findViewById(R.id.ll_note_add_course_info);
+        etDate = findViewById(R.id.et_note_add_date);
+        rvMedia = findViewById(R.id.rv_note_add_media);
+        llList[0] = findViewById(R.id.ll_note_add_photo);
+        llList[1] = findViewById(R.id.ll_note_add_video);
+        llList[2] = findViewById(R.id.ll_note_add_record);
+        llList[3] = findViewById(R.id.ll_note_add_entry);
+        llList[4] = findViewById(R.id.ll_note_add_back);
+        llList[5] = findViewById(R.id.ll_note_add_publish);
 
         initType();
         initLayout();
@@ -272,23 +272,23 @@ public class NoteAddActivity extends MediaActivity
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ll_add_note_photo:
+            case R.id.ll_note_add_photo:
                 dlgPhoto.show();
                 break;
-            case R.id.ll_add_note_video:
+            case R.id.ll_note_add_video:
                 dlgVideo.show();
                 break;
-            case R.id.ll_add_note_record:
+            case R.id.ll_note_add_record:
                 dlgRecord.show();
                 break;
-            case R.id.ll_add_note_entry:
+            case R.id.ll_note_add_entry:
                 Intent intent = new Intent(this, EntryChooseActivity.class);
                 startActivityForResult(intent, CHOOSE_ENTRY);
                 break;
-            case R.id.ll_add_note_back:
+            case R.id.ll_note_add_back:
                 onBackClick();
                 break;
-            case R.id.ll_add_note_publish:
+            case R.id.ll_note_add_publish:
                 onPublishClick();
                 break;
         }

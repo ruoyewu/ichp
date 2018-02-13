@@ -8,8 +8,6 @@ import android.os.Environment
  * this file is to do
  */
 object Config {
-    // 系统确定变量
-    private const val REMOTE_HOST = "https://ddp.wuruoye.com/"
     private const val PACKAGE_NAME = "com.wuruoye.ichp"
 
     // 网络设置

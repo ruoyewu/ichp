@@ -32,6 +32,11 @@ public abstract class BaseRVAdapter<T> extends RecyclerView.Adapter {
         return mDataList.size();
     }
 
+    public void addDataFirst(List<T> dataList) {
+        mDataList.addAll(0, dataList);
+        notifyDataSetChanged();
+    }
+
     public void addData(List<T> dataList) {
         mDataList.addAll(dataList);
         notifyDataSetChanged();
@@ -39,6 +44,11 @@ public abstract class BaseRVAdapter<T> extends RecyclerView.Adapter {
 
     public void setData(List<T> dataList) {
         mDataList = dataList;
+        notifyDataSetChanged();
+    }
+
+    public void addDataFirst(T data) {
+        mDataList.add(0, data);
         notifyDataSetChanged();
     }
 

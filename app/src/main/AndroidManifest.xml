@@ -36,6 +36,8 @@
         <activity android:name=".ui.MessageActivity" />
         <activity android:name=".ui.EntryChooseActivity" />
         <activity android:name=".ui.NoteShowActivity" />
+        <activity android:name=".ui.PasswordActivity" />
+        <activity android:name=".ui.MessagePersonActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

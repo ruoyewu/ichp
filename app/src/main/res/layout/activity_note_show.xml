@@ -25,6 +25,7 @@
                 android:layout_height="wrap_content">
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/civ_note_show"
                     android:src="@color/black"
                     android:layout_marginStart="16dp"
                     android:layout_width="50dp"
@@ -37,12 +38,14 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:id="@+id/tv_note_show_user"
                         android:text="title"
                         android:textSize="16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tv_note_show_time"
                         android:text="time"
                         android:textSize="13sp"
                         android:layout_width="wrap_content"
@@ -51,36 +54,49 @@
             </LinearLayout>
 
             <android.support.v4.view.ViewPager
+                android:id="@+id/vp_note_show"
                 android:background="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_note_show_entry"
                 android:layout_width="match_parent"
                 android:layout_height="50dp" />
 
             <TextView
+                android:id="@+id/tv_note_show_content"
                 android:text="content"
                 android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/tv_note_show_location"
                 android:text="location"
                 android:padding="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_note_show_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <LinearLayout
+        android:id="@+id/ll_note_show_bottom"
+        android:orientation="horizontal"
         android:background="@color/mainColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <include
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            layout="@layout/item_icon_text"/>
 
         <include
             android:layout_width="0dp"

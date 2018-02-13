@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -94,7 +95,7 @@ public class MessageListFragment extends BaseFragment implements MessageContract
         DividerItemDecoration decoration = new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL);
         decoration.setDrawable(ActivityCompat.getDrawable(getContext(),
-                R.drawable.decoration));
+                R.drawable.decoration_vertical));
         rv.addItemDecoration(decoration);
     }
 
@@ -110,7 +111,11 @@ public class MessageListFragment extends BaseFragment implements MessageContract
         }else if (object instanceof Comment) {
             toast = ((Comment) object).getFrom();
         }else if (object instanceof Message) {
-            toast = ((Message) object).getFrom().getName();
+            Intent intent = new Intent(getContext(), MessagePersonActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", mUser);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
         if (toast != null) {
             Toast.makeText(getContext(), toast, Toast.LENGTH_SHORT).show();

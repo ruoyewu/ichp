@@ -113,7 +113,7 @@ public class EntryChooseActivity extends BaseActivity implements View.OnClickLis
                 LinearLayoutManager.HORIZONTAL, false));
         DividerItemDecoration decoration = new DividerItemDecoration(this,
                 DividerItemDecoration.HORIZONTAL);
-        decoration.setDrawable(ActivityCompat.getDrawable(this, R.drawable.decoration));
+        decoration.setDrawable(ActivityCompat.getDrawable(this, R.drawable.decoration_vertical));
         rvChoose.addItemDecoration(decoration);
         rvChoose.setAdapter(adapter);
     }
@@ -129,7 +129,7 @@ public class EntryChooseActivity extends BaseActivity implements View.OnClickLis
         rvSearch.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration decoration = new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL);
-        decoration.setDrawable(ActivityCompat.getDrawable(this, R.drawable.decoration));
+        decoration.setDrawable(ActivityCompat.getDrawable(this, R.drawable.decoration_vertical));
         rvSearch.addItemDecoration(decoration);
         rvSearch.setAdapter(adapter);
     }

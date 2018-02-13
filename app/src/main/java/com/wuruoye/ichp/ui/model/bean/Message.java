@@ -7,11 +7,19 @@ package com.wuruoye.ichp.ui.model.bean;
 
 public class Message {
     private User from;
+    private User to;
     private String content;
     private long time;
 
     public Message(User from, String content, long time) {
         this.from = from;
+        this.content = content;
+        this.time = time;
+    }
+
+    public Message(User from, User to, String content, long time) {
+        this.from = from;
+        this.to = to;
         this.content = content;
         this.time = time;
     }
@@ -38,5 +46,13 @@ public class Message {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public User getTo() {
+        return to;
+    }
+
+    public void setTo(User to) {
+        this.to = to;
     }
 }
