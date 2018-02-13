@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.wuruoye.ichp.ui.AddNoteActivity.TYPE_COURSE;
+import static com.wuruoye.ichp.ui.NoteAddActivity.TYPE_COURSE;
 
 /**
  * Created by wuruoye on 2018/1/27.
@@ -91,7 +91,7 @@ public class CourseFragment extends BaseFragment {
     }
 
     private void onFabClick() {
-        Intent intent = new Intent(getContext(), AddNoteActivity.class);
+        Intent intent = new Intent(getContext(), NoteAddActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("type", TYPE_COURSE);
         intent.putExtras(bundle);

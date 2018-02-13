@@ -36,7 +36,7 @@ import java.util.Collections;
  * this file is to
  */
 
-public class AddNoteActivity extends MediaActivity
+public class NoteAddActivity extends MediaActivity
         implements View.OnClickListener, AddNoteContract.View {
     public static final String[] PHOTO_ITEM = {"照片选取", "照片拍摄"};
     public static final String[] VIDEO_ITEM = {"视频选取", "视频拍摄"};
@@ -72,7 +72,7 @@ public class AddNoteActivity extends MediaActivity
 
     @Override
     public int getContentView() {
-        return R.layout.activity_add_note;
+        return R.layout.activity_note_add;
     }
 
     @Override
@@ -142,13 +142,13 @@ public class AddNoteActivity extends MediaActivity
         adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<Media>() {
             @Override
             public void onItemClick(Media model) {
-                AddNoteActivity.this.onItemClick(model);
+                NoteAddActivity.this.onItemClick(model);
             }
         });
         adapter.setOnItemLongClickListener(new BaseRVAdapter.OnItemLongClickListener<Media>() {
             @Override
             public void onItemLongClick(Media model) {
-                AddNoteActivity.this.onItemLongClick(model);
+                NoteAddActivity.this.onItemLongClick(model);
             }
         });
         rvMedia.setLayoutManager(new LinearLayoutManager(this,

@@ -160,7 +160,7 @@ public class PersonNoteActivity extends BaseActivity
 
     @Override
     public void add() {
-        Intent intent = new Intent(this, AddNoteActivity.class);
+        Intent intent = new Intent(this, NoteAddActivity.class);
         startActivity(intent);
     }
 

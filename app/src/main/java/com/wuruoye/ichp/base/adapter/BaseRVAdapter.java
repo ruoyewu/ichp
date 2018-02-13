@@ -56,6 +56,10 @@ public abstract class BaseRVAdapter<T> extends RecyclerView.Adapter {
         return mDataList.get(position);
     }
 
+    public List<T> getData() {
+        return mDataList;
+    }
+
     protected void onItemClick(T data) {
         if (mListener != null) {
             mListener.onItemClick(data);

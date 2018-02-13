@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.wuruoye.ichp.ui.AddNoteActivity.TYPE_NOTE;
+import static com.wuruoye.ichp.ui.NoteAddActivity.TYPE_NOTE;
 
 /**
  * Created by wuruoye on 2018/1/27.
@@ -93,7 +93,7 @@ public class HomeFragment extends BaseFragment {
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), AddNoteActivity.class);
+                Intent intent = new Intent(getContext(), NoteAddActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("type", TYPE_NOTE);
                 intent.putExtras(bundle);
