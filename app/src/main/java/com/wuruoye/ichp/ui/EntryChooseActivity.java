@@ -12,7 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +34,7 @@ import java.util.List;
 
 public class EntryChooseActivity extends BaseActivity implements View.OnClickListener {
     private Toolbar toolbar;
-    private ImageButton ibBack;
+    private ImageView ivBack;
     private TextView tvTitle;
     private TextView tvManager;
     private RecyclerView rvChoose;
@@ -57,7 +57,7 @@ public class EntryChooseActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void initView() {
         toolbar = findViewById(R.id.toolbar);
-        ibBack = findViewById(R.id.ib_tb_back);
+        ivBack = findViewById(R.id.ib_tb_back);
         tvTitle = findViewById(R.id.tv_tb_title);
         tvManager = findViewById(R.id.tv_tb_manager);
         rvChoose = findViewById(R.id.rv_entry_choose);
@@ -71,7 +71,7 @@ public class EntryChooseActivity extends BaseActivity implements View.OnClickLis
 
     private void initLayout() {
         setSupportActionBar(toolbar);
-        ibBack.setOnClickListener(this);
+        ivBack.setOnClickListener(this);
         tvTitle.setText("修改词条标签");
         tvManager.setVisibility(View.GONE);
         sv.setIconified(false);

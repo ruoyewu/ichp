@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,6 +52,7 @@ public class NoteAddActivity extends MediaActivity
     public static final int TYPE_COURSE = 2;
 
     private EditText etTitle;
+    private NestedScrollView nsv;
     private EditText etContent;
     private LinearLayout llEntryList;
     private TextView tvLocation;
@@ -87,6 +89,7 @@ public class NoteAddActivity extends MediaActivity
     public void initView() {
         llList = new LinearLayout[6];
         etTitle = findViewById(R.id.et_note_add_title);
+        nsv = findViewById(R.id.nsv_note_add);
         etContent = findViewById(R.id.et_note_add_content);
         llEntryList = findViewById(R.id.ll_note_add_entry_list);
         tvLocation = findViewById(R.id.tv_note_add_location);
@@ -106,6 +109,7 @@ public class NoteAddActivity extends MediaActivity
         initRecyclerView();
         initDialog();
         getLocation();
+        remeasureET();
     }
 
     @Override
@@ -207,6 +211,15 @@ public class NoteAddActivity extends MediaActivity
                 })
                 .create();
 
+    }
+
+    private void remeasureET() {
+        nsv.post(new Runnable() {
+            @Override
+            public void run() {
+                etContent.setMinHeight(nsv.getHeight());
+            }
+        });
     }
 
     private void onItemClick(Media media) {

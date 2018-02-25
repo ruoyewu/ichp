@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -84,7 +85,9 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
     }
 
     private void onItemClick(Note note) {
-        Toast.makeText(getContext(), note.getTitle(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), NoteShowActivity.class);
+        startActivity(intent);
+//        Toast.makeText(getContext(), note.getTitle(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
