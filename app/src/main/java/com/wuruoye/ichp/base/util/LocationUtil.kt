@@ -25,7 +25,7 @@ object LocationUtil {
         }
         val location = locationManager.getLastKnownLocation(locationProvider)
         if (location != null) {
-            return arrayOf(location.longitude, location.latitude)
+            return arrayOf(location.latitude, location.longitude)
         }else {
             throw Exception("no available location")
         }

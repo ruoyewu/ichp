@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wuruoye.ichp.R;
@@ -29,7 +29,7 @@ public class MessageActivity extends BaseActivity {
     public static final String[] ITEM_TITLES = { "点赞", "评论", "私信" };
 
     private Toolbar toolbar;
-    private ImageButton ibBack;
+    private ImageView ibBack;
     private TextView tvTitle;
     private TextView tvManager;
     private TabLayout tl;

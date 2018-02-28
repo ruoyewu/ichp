@@ -3,7 +3,7 @@ package com.wuruoye.ichp.ui;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wuruoye.ichp.R;
@@ -21,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PersonInfoActivity extends BaseActivity {
     private Toolbar toolbar;
-    private ImageButton ibBack;
+    private ImageView ivBack;
     private TextView tvTitle;
     private TextView tvManager;
     private CircleImageView civAvatar;
@@ -45,7 +45,7 @@ public class PersonInfoActivity extends BaseActivity {
     @Override
     public void initView() {
         toolbar = findViewById(R.id.toolbar);
-        ibBack = findViewById(R.id.ib_tb_back);
+        ivBack = findViewById(R.id.ib_tb_back);
         tvTitle = findViewById(R.id.tv_tb_title);
         tvManager = findViewById(R.id.tv_tb_manager);
         tvName = findViewById(R.id.tv_person_info_name);
@@ -58,7 +58,7 @@ public class PersonInfoActivity extends BaseActivity {
 
     private void initLayout() {
         setSupportActionBar(toolbar);
-        ibBack.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();

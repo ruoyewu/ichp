@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
 import com.wuruoye.ichp.base.adapter.OnPageChangeListenerAdapter;
+import com.wuruoye.ichp.base.widget.TouchViewPager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +35,7 @@ public class HomeFragment extends BaseFragment {
     public static final int TYPE_MAP = 2;
 
     private TabLayout tlTab;
-    private ViewPager vpPager;
+    private TouchViewPager vpPager;
     private FloatingActionButton fabAdd;
 
     @Override
@@ -50,8 +50,8 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void initView(@NotNull View view) {
-        tlTab = view.findViewById(R.id.tl_layout);
-        vpPager = view.findViewById(R.id.vp_layout);
+        tlTab = view.findViewById(R.id.tl_home);
+        vpPager = view.findViewById(R.id.vp_home);
         fabAdd = view.findViewById(R.id.fab_home_add);
 
         initFragment();
@@ -103,6 +103,7 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void showFab(boolean isShow) {
+        vpPager.setPagingEnable(isShow);
         if (isShow) {
             fabAdd.show();
         }else {

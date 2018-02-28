@@ -8,7 +8,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wuruoye.ichp.R;
@@ -33,7 +33,7 @@ public class CollectActivity extends BaseActivity implements PopupMenu.OnMenuIte
     public static final String[] ITEM_TITLE = { "记录", "活动", "词条" };
 
     private Toolbar toolbar;
-    private ImageButton ibBack;
+    private ImageView ibBack;
     private TextView tvTitle;
     private TextView tvManager;
     private TabLayout tl;

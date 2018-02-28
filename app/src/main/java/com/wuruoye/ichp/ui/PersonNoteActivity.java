@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +36,7 @@ import java.util.List;
 public class PersonNoteActivity extends BaseActivity
         implements PopupMenu.OnMenuItemClickListener, PersonNoteContract.View, IManagerView {
     private Toolbar toolbar;
-    private ImageButton ibBack;
+    private ImageView ibBack;
     private TextView tvTitle;
     private TextView tvManager;
     private SwipeRefreshLayout srl;

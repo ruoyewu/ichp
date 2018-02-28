@@ -7,7 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wuruoye.ichp.R;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class MessagePersonActivity extends BaseActivity implements View.OnClickListener {
     private Toolbar toolbar;
-    private ImageButton ibBack;
+    private ImageView ibBack;
     private TextView tvTitle;
     private TextView tvManager;
     private RecyclerView rv;

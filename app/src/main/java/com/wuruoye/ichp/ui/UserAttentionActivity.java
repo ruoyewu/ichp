@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +33,7 @@ public class UserAttentionActivity extends BaseActivity implements UserAttention
     public static final int TYPE_FOCUSED = 2;
 
     private Toolbar toolbar;
-    private ImageButton ibBack;
+    private ImageView ivBack;
     private TextView tvTitle;
     private TextView tvManager;
     private SwipeRefreshLayout srl;
@@ -60,7 +60,7 @@ public class UserAttentionActivity extends BaseActivity implements UserAttention
     @Override
     public void initView() {
         toolbar = findViewById(R.id.toolbar);
-        ibBack = findViewById(R.id.ib_tb_back);
+        ivBack = findViewById(R.id.ib_tb_back);
         tvTitle = findViewById(R.id.tv_tb_title);
         tvManager = findViewById(R.id.tv_tb_manager);
         srl = findViewById(R.id.srl_layout);
@@ -79,7 +79,7 @@ public class UserAttentionActivity extends BaseActivity implements UserAttention
         }else {
             tvTitle.setText("关注我的");
         }
-        ibBack.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
