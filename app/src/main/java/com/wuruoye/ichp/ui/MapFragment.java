@@ -3,33 +3,37 @@ package com.wuruoye.ichp.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.Toast;
 
 import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
-import com.amap.api.maps2d.model.PolylineOptions;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseFragment;
-import com.wuruoye.ichp.base.model.MainHandler;
+import com.wuruoye.ichp.base.model.Listener;
 import com.wuruoye.ichp.base.util.LocationUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wuruoye on 2018/1/27.
  * this file is to
  */
 
-public class MapFragment extends BaseFragment {
+public class MapFragment extends BaseFragment implements AMap.OnMarkerClickListener {
     private MapView mv;
 
     private AMap mAMap;
     private Bundle mSaveInstanceState;
+
+    private List<LatLng> mLLList;
 
     @Override
     public int getContentView() {
@@ -38,7 +42,7 @@ public class MapFragment extends BaseFragment {
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-
+        mLLList = new ArrayList<>();
     }
 
     @Override
@@ -53,24 +57,19 @@ public class MapFragment extends BaseFragment {
         mAMap = mv.getMap();
         UiSettings settings = mAMap.getUiSettings();
         settings.setZoomControlsEnabled(true);
-        final LatLng llBJ = new LatLng(39.906901,116.39797);
-        Marker marker = mAMap.addMarker(new MarkerOptions().position(llBJ));
-        new Thread(new Runnable() {
+        settings.setScrollGesturesEnabled(true);
+        LocationUtil.INSTANCE.getLocation(getContext(), new Listener<Double[]>() {
             @Override
-            public void run() {
-                final Double[] location = LocationUtil.INSTANCE.getLocation(getContext());
-                MainHandler.getInstance().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        LatLng llLocation = new LatLng(location[0], location[1]);
-                        mAMap.addMarker(new MarkerOptions().position(llLocation));
-                        mAMap.addPolyline(new PolylineOptions().add(llBJ, llLocation).width(10).zIndex(0.5F));
-//                        mAMap.moveCamera(CameraUpdateFactory.zoomTo(5F));
-                        mAMap.moveCamera(CameraUpdateFactory.newLatLng(llLocation));
-                    }
-                });
+            public void onSuccess(Double[] model) {
+                LatLng latLng = new LatLng(model[0], model[1]);
+                mAMap.addMarker(new MarkerOptions().position(latLng).title("1"));
             }
-        }).start();
+
+            @Override
+            public void onFail(@NotNull String message) {
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -101,5 +100,11 @@ public class MapFragment extends BaseFragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mv.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Toast.makeText(getContext(), marker.getId(), Toast.LENGTH_SHORT).show();
+        return true;
     }
 }

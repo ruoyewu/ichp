@@ -6,6 +6,7 @@ buildscript {
         google()
         jcenter()
         maven { url "http://lib.gcssloop.com/repository/gcssloop-central/" }
+        maven { url "https://jitpack.io" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
@@ -21,6 +22,7 @@ allprojects {
         google()
         jcenter()
         maven { url "http://lib.gcssloop.com/repository/gcssloop-central/" }
+        maven { url "https://jitpack.io" }
     }
 }
 

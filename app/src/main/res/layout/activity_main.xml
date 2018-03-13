@@ -14,8 +14,9 @@
 
     <com.ashokvarma.bottomnavigation.BottomNavigationBar
         android:id="@+id/bnb_main"
-        app:bnbBackgroundColor="@color/white"
-        app:bnbActiveColor="@color/mainColor"
+        app:bnbMode="mode_fixed"
+        app:bnbActiveColor="@color/white"
+        app:bnbBackgroundColor="@color/mainColor"
         app:bnbInactiveColor="@color/french_gray"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

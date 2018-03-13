@@ -33,7 +33,7 @@
             android:id="@+id/tv_message_person_send"
             android:text="发送"
             android:padding="10dp"
-            android:background="@drawable/gray_round_background"
+            android:background="@drawable/bg_gray_round"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

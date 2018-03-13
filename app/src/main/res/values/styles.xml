@@ -11,4 +11,11 @@
     <style name="fabTheme" parent="AppTheme">
         <item name="colorAccent">@color/merlot</item>
     </style>
+
+    <style name="FullScreenTheme" parent="AppTheme">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 </resources>

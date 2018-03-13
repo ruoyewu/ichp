@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -41,6 +42,11 @@
         <activity android:name=".ui.NoteShowActivity" />
         <activity android:name=".ui.PasswordActivity" />
         <activity android:name=".ui.MessagePersonActivity" />
+        <activity android:name=".ui.ImgActivity"
+            android:theme="@style/FullScreenTheme"/>
+        <activity android:name=".ui.VideoActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/FullScreenTheme"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

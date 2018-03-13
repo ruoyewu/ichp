@@ -223,7 +223,26 @@ public class NoteAddActivity extends MediaActivity
     }
 
     private void onItemClick(Media media) {
-        Toast.makeText(this, media.getContent(), Toast.LENGTH_SHORT).show();
+        Intent intent;
+        Bundle bundle;
+        switch (media.getType()) {
+            case IMAGE:
+                intent = new Intent(this, ImgActivity.class);
+                bundle = new Bundle();
+                bundle.putString("img", media.getContent());
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case VIDEO:
+                intent = new Intent(this, VideoActivity.class);
+                bundle = new Bundle();
+                bundle.putString("video", media.getContent());
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case RECORD:
+                break;
+        }
     }
 
     private void onItemLongClick(final Media media) {

@@ -57,7 +57,7 @@ abstract class MediaActivity : BaseActivity(), MediaView {
     @SuppressLint("InflateParams", "ClickableViewAccessibility")
     private fun initRecordDialog() {
         val recordView = LayoutInflater.from(this)
-                .inflate(R.layout.dialog_record, null)
+                .inflate(R.layout.dlg_record, null)
         mRecordTitle = recordView.findViewById(R.id.tv_record)
         mRecordBack1 = recordView.findViewById<View>(R.id.v_record_back_1)
         mRecordBack2 = recordView.findViewById<View>(R.id.v_record_back_2)
