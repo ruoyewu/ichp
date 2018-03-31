@@ -65,4 +65,6 @@ dependencies {
 
     // video player
     implementation 'com.shuyu:GSYVideoPlayer:4.1.0'
+
+    implementation 'com.github.ruoyewu:wbase:0.0.5'
 }

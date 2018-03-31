@@ -1,16 +1,23 @@
 package com.wuruoye.ichp;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.wuruoye.ichp.base.BaseActivity;
-import com.wuruoye.ichp.ui.CourseFragment;
+import com.wuruoye.ichp.ui.CourseFragment2;
 import com.wuruoye.ichp.ui.FoundFragment;
 import com.wuruoye.ichp.ui.HomeFragment;
 import com.wuruoye.ichp.ui.UserFragment;
+import com.wuruoye.ichp.ui.UserLoginActivity;
+import com.wuruoye.ichp.ui.contract.MainContract;
+import com.wuruoye.ichp.ui.presenter.MainPresenter;
+import com.wuruoye.library.ui.WBaseActivity;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +30,9 @@ import java.util.List;
  * this file is to
  */
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends WBaseActivity<MainPresenter> implements MainContract.View{
+    public static final int MAIN_LOGIN = 101;
+
     public static final List<String> TITLE_LIST =
             Arrays.asList("非遗播客", "非遗课堂", "发现", "我的");
     public static final List<Integer> ICON_LIST =
@@ -41,7 +50,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-
+        setPresenter(new MainPresenter());
+        checkLogin();
     }
 
     @Override
@@ -79,7 +89,7 @@ public class MainActivity extends BaseActivity {
     private void initFragment() {
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new HomeFragment());
-        mFragmentList.add(new CourseFragment());
+        mFragmentList.add(new CourseFragment2());
         mFragmentList.add(new FoundFragment());
         mFragmentList.add(new UserFragment());
 
@@ -103,5 +113,50 @@ public class MainActivity extends BaseActivity {
             }
         }
         transaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void checkLogin() {
+        if (mPresenter.isUserLogin()) {
+            mPresenter.requestLogin(mPresenter.getUserName(), mPresenter.getUserPwd());
+        }else {
+            new AlertDialog.Builder(this)
+                    .setTitle("未登录\n是否进入登录？")
+                    .setPositiveButton("登录", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent(MainActivity.this,
+                                    UserLoginActivity.class);
+                            startActivityForResult(intent, MAIN_LOGIN);
+                        }
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Toast.makeText(MainActivity.this, "未登录用户不能访问某些功能",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .show();
+        }
+    }
+
+    @Override
+    public void onLoginResult(boolean result, String token) {
+        if (!result) {
+            Toast.makeText(this, "error in login", Toast.LENGTH_SHORT).show();
+        }else {
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MAIN_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

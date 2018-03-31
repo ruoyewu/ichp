@@ -1,11 +1,13 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseActivity;
+import com.wuruoye.library.util.LogUtil;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +20,7 @@ public class VideoActivity extends BaseActivity {
     private StandardGSYVideoPlayer sp;
 
     private String mVideoUrl;
-    private boolean mIsRotation;
+
     @Override
     public int getContentView() {
         return R.layout.activity_video;
@@ -42,31 +44,12 @@ public class VideoActivity extends BaseActivity {
         sp.startWindowFullscreen(this, false, false);
 
         sp.getFullscreenButton().setVisibility(View.GONE);
-        sp.getBackButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("position", sp.getPlayPosition());
-        outState.putBoolean("play", sp.isInPlayingState());
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        boolean play = savedInstanceState.getBoolean("play");
-        int position = savedInstanceState.getInt("position");
-        sp.setPlayPosition(position);
-        if (play) {
-            sp.startPlayLogic();
-        }
-        super.onRestoreInstanceState(savedInstanceState);
+    public void onConfigurationChanged(Configuration newConfig) {
+        LogUtil.loge(this, "onConfigurationChanged");
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override

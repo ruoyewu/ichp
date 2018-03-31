@@ -10,11 +10,8 @@ import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
-import com.amap.api.maps2d.model.MarkerOptions;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseFragment;
-import com.wuruoye.ichp.base.model.Listener;
-import com.wuruoye.ichp.base.util.LocationUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,18 +55,6 @@ public class MapFragment extends BaseFragment implements AMap.OnMarkerClickListe
         UiSettings settings = mAMap.getUiSettings();
         settings.setZoomControlsEnabled(true);
         settings.setScrollGesturesEnabled(true);
-        LocationUtil.INSTANCE.getLocation(getContext(), new Listener<Double[]>() {
-            @Override
-            public void onSuccess(Double[] model) {
-                LatLng latLng = new LatLng(model[0], model[1]);
-                mAMap.addMarker(new MarkerOptions().position(latLng).title("1"));
-            }
-
-            @Override
-            public void onFail(@NotNull String message) {
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override

@@ -62,7 +62,7 @@ public class NoteShowActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void initView() {
         toolbar = findViewById(R.id.toolbar);
-        ivBack = findViewById(R.id.ib_tb_back);
+        ivBack = findViewById(R.id.iv_tb_back);
         tvTitle = findViewById(R.id.tv_tb_title);
         tvManager = findViewById(R.id.tv_tb_manager);
         civ = findViewById(R.id.civ_note_show);
@@ -154,7 +154,7 @@ public class NoteShowActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ib_tb_back:
+            case R.id.iv_tb_back:
                 onBackPressed();
                 break;
         }

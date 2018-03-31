@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/ib_tb_back"
+            android:id="@+id/iv_tb_back"
             android:background="@null"
             android:src="@drawable/ic_goleft"
             android:layout_centerVertical="true"

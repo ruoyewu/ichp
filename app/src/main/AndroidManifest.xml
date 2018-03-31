@@ -45,8 +45,9 @@
         <activity android:name=".ui.ImgActivity"
             android:theme="@style/FullScreenTheme"/>
         <activity android:name=".ui.VideoActivity"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize|layoutDirection"
             android:theme="@style/FullScreenTheme"/>
+        <activity android:name=".ui.UserLoginActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

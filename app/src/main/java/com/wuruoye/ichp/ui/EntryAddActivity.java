@@ -8,12 +8,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.MediaActivity;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -90,14 +90,6 @@ public class EntryAddActivity extends MediaActivity implements View.OnClickListe
     }
 
     @Override
-    public void onMediaBack(@NotNull String filePath) {
-        mPhotoPath = filePath;
-        Glide.with(this)
-                .load(filePath)
-                .into(civ);
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.civ_add_entry:
@@ -116,5 +108,18 @@ public class EntryAddActivity extends MediaActivity implements View.OnClickListe
         String title = etTitle.getText().toString();
         String content = etContent.getText().toString();
         String photo = mPhotoPath;
+    }
+
+    @Override
+    public void onPhotoBack(String s) {
+        mPhotoPath = s;
+        Glide.with(this)
+                .load(s)
+                .into(civ);
+    }
+
+    @Override
+    public void onPhotoError(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }

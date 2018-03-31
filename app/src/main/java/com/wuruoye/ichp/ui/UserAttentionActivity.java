@@ -60,7 +60,7 @@ public class UserAttentionActivity extends BaseActivity implements UserAttention
     @Override
     public void initView() {
         toolbar = findViewById(R.id.toolbar);
-        ivBack = findViewById(R.id.ib_tb_back);
+        ivBack = findViewById(R.id.iv_tb_back);
         tvTitle = findViewById(R.id.tv_tb_title);
         tvManager = findViewById(R.id.tv_tb_manager);
         srl = findViewById(R.id.srl_layout);

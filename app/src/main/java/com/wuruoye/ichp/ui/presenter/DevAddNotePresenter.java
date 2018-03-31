@@ -23,34 +23,29 @@ import java.util.List;
 public class DevAddNotePresenter extends AddNoteContract.Presenter {
     @Override
     public void requestLocation(final Context context) {
-        LocationUtil.INSTANCE.getLocation(context, new Listener<Double[]>() {
-            @Override
-            public void onSuccess(Double[] model) {
-                try {
-                    Geocoder geocoder = new Geocoder(context);
-                    List<Address> addresses = geocoder.getFromLocation(model[0], model[1], 1);
-                    StringBuilder sb = new StringBuilder();
-                    if (addresses.size() > 0) {
+            LocationUtil.INSTANCE.getLocation(context, new Listener<Double[]>() {
+                @Override
+                public void onSuccess(Double[] model) {
+                    try {
+                        Geocoder geocoder = new Geocoder(context);
+                        List<Address> addresses = geocoder.getFromLocation(model[0], model[1], 1);
+                        StringBuilder sb = new StringBuilder();
+                        String[] location = new String[addresses.get(0).getMaxAddressLineIndex()];
                         for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex(); i++) {
-                            sb.append(addresses.get(0).getAddressLine(i));
+                            location[i] = addresses.get(0).getAddressLine(i);
                         }
-                        sb.append(addresses.get(0).getFeatureName());
+                        if (isAvailable()) {
+                            getView().onLocationResult(model, location);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    if (isAvailable()) {
-                        getView().onLocationResult(sb.toString());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            }
-
-            @Override
-            public void onFail(@NotNull String message) {
-                if (isAvailable()) {
-                    getView().onResultWorn("获取位置信息失败");
+                @Override
+                public void onFail(@NotNull String message) {
+                    getView().onLocationError(message);
                 }
-            }
-        });
+            });
     }
 
     @Override

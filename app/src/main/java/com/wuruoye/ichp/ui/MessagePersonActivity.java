@@ -50,7 +50,7 @@ public class MessagePersonActivity extends BaseActivity implements View.OnClickL
     @Override
     public void initView() {
         toolbar = findViewById(R.id.toolbar);
-        ibBack = findViewById(R.id.ib_tb_back);
+        ibBack = findViewById(R.id.iv_tb_back);
         tvTitle = findViewById(R.id.tv_tb_title);
         tvManager = findViewById(R.id.tv_tb_manager);
         rv = findViewById(R.id.rv_message_person);
@@ -88,7 +88,7 @@ public class MessagePersonActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ib_tb_back:
+            case R.id.iv_tb_back:
                 onBackPressed();
                 break;
             case R.id.tv_message_person_send:

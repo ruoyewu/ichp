@@ -5,15 +5,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.MediaRecorder
 import android.media.MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
-import android.support.v4.content.FileProvider
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -22,23 +18,15 @@ import android.widget.TextView
 import com.wuruoye.ichp.R
 import com.wuruoye.ichp.base.model.Config
 import com.wuruoye.ichp.base.util.*
-import java.io.File
+import com.wuruoye.library.contract.WIPresenter
+import com.wuruoye.library.ui.WPhotoActivity
 
 /**
  * Created by wuruoye on 2017/9/26.
  * this file is to do
  */
-abstract class MediaActivity : BaseActivity(), MediaView {
-    //是否需要剪裁
-    private var isCrop = false
-    //图片的输出文件名
+abstract class MediaActivity<T : WIPresenter> : WPhotoActivity<T>() {
     private lateinit var filePath: String
-    //剪裁图片长宽比
-    private var aspectX = 0
-    private var aspectY = 0
-    //剪裁图片输出大小
-    private var outputX = 0
-    private var outputY = 0
 
     private lateinit var dlgRecord: AlertDialog
     private var mMediaRecorder: MediaRecorder? = null
@@ -125,7 +113,7 @@ abstract class MediaActivity : BaseActivity(), MediaView {
             mMediaRecorder!!.release()
             mMediaRecorder = null
             dlgRecord.dismiss()
-            onMediaBack(filePath)
+            onPhotoBack(filePath)
         }
 
         mRecordAnimator1.cancel()
@@ -138,180 +126,23 @@ abstract class MediaActivity : BaseActivity(), MediaView {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == PHOTO_CHOOSE && resultCode == Activity.RESULT_OK){
-            //相册选取返回
-            if (isCrop) {
-                val filePath = FilePathUtil.getPathFromUri(applicationContext, data!!.data)!!
-                val uri = FileProvider.getUriForFile(applicationContext, Config.PROVIDER_AUTHORITY, File(filePath))
-                cropPhoto(uri)
-            }else{
-                val filePath = FilePathUtil.getPathFromUri(applicationContext, data!!.data)!!
-                onMediaBack(filePath)
-            }
-        }else if (requestCode == PHOTO_TAKE && resultCode == Activity.RESULT_OK){
-            //拍照返回
-            if (isCrop){
-                val uri = FileProvider.getUriForFile(applicationContext, Config.PROVIDER_AUTHORITY, File(filePath))
-                cropPhoto(uri)
-            }else{
-                onMediaBack(filePath)
-            }
-        }else if (requestCode == PHOTO_CROP && resultCode == Activity.RESULT_OK){
-            //剪裁返回
-            onMediaBack(filePath)
-        }else if (requestCode == VIDEO_CHOOSE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == VIDEO_CHOOSE && resultCode == Activity.RESULT_OK) {
             val filePath = FilePathUtil.getPathFromUri(applicationContext, data!!.data)!!
-            onMediaBack(filePath)
+            onPhotoBack(filePath)
         }else if (requestCode == VIDEO_TAKE && resultCode == Activity.RESULT_OK) {
             val filePath = FilePathUtil.getPathFromUri(applicationContext, data!!.data)!!
-            onMediaBack(filePath)
+            onPhotoBack(filePath)
         }else if (requestCode == RECORD_TAKE && resultCode == Activity.RESULT_OK) {
             val filePath = FilePathUtil.getPathFromUri(applicationContext, data!!.data)!!
-            onMediaBack(filePath)
+            onPhotoBack(filePath)
         }else if (requestCode == RECORD_CHOOSE && resultCode == Activity.RESULT_OK) {
             val filePath = FilePathUtil.getPathFromUri(applicationContext, data!!.data)!!
-            onMediaBack(filePath)
+            onPhotoBack(filePath)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    /**
-     * 相册选取，需要剪裁
-     * @param filePath 剪裁之后的输出文件
-     * @param aX,aY aX/aY 为宽高比
-     * @param oX,oY 分别为输入文件的宽高
-     */
-    override fun choosePhoto(filePath: String, aX: Int, aY: Int, oX: Int, oY: Int){
-        if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION)){
-            aspectX = aX
-            aspectY = aY
-            outputX = oX
-            outputY = oY
-            this.filePath = filePath
-            isCrop = true
-
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            startActivityForResult(intent, PHOTO_CHOOSE)
-        }
-    }
-
-    /**
-     * 相册选取，不需剪裁
-     */
-    override fun choosePhoto() {
-        if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION)){
-            isCrop = false
-
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            startActivityForResult(intent, PHOTO_CHOOSE)
-        }
-    }
-
-    /**
-     * 拍照，需要剪裁
-     * @param filePath 输出文件名
-     * @param aX,aY 剪裁比例
-     * @param oX,oY 输入文件大小
-     */
-    override fun takePhoto(filePath: String, aX: Int, aY: Int, oX: Int, oY: Int){
-        if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION) &&
-                PermissionUtil(this).requestPermission(Config.CAMERA_PERMISSION)){
-            isCrop = true
-            this.filePath = filePath
-            aspectX = aX
-            aspectY = aY
-            outputX = oX
-            outputY = oY
-
-            val file = FileUtil.createFile(filePath)
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            val uri =
-                    if (Build.VERSION.SDK_INT < 21){
-                        Uri.fromFile(file)
-                    }else{
-                        FileProvider.getUriForFile(applicationContext, Config.PROVIDER_AUTHORITY, file)
-                    }
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-            startActivityForResult(intent, PHOTO_TAKE)
-        }
-    }
-
-    /**
-     * 拍照，不需剪裁
-     * @param filePath 输出文件路径
-     */
-    override fun takePhoto(filePath: String){
-        if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION) &&
-                PermissionUtil(this).requestPermission(Config.CAMERA_PERMISSION)){
-            isCrop = false
-            this.filePath = filePath
-
-            val file = FileUtil.createFile(filePath)
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            val uri =
-                    if (Build.VERSION.SDK_INT < 21){
-                        Uri.fromFile(file)
-                    }else{
-                        FileProvider.getUriForFile(applicationContext,
-                                Config.PROVIDER_AUTHORITY, file)
-                    }
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-            startActivityForResult(intent, PHOTO_TAKE)
-        }
-    }
-
-    /**
-     * 剪裁图片
-     * @param filePath 需要剪裁的图片
-     * @param fileName 剪裁之后的输出文件
-     * @param aX,aY,oX,oY 同上
-     */
-    override fun cropPhoto(filePath: String, fileName: String, aX: Int, aY: Int, oX: Int, oY: Int){
-        this.filePath = fileName
-        aspectX = aX
-        aspectY = aY
-        outputX = oX
-        outputY = oY
-        val uri = FileProvider.getUriForFile(applicationContext, Config.PROVIDER_AUTHORITY, File(filePath))
-        cropPhoto(uri)
-    }
-
-    override fun cropPhoto(uri: Uri){
-        if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION)){
-            val file = FileUtil.createFile(filePath)
-            val outUri = FileProvider.getUriForFile(applicationContext, Config.PROVIDER_AUTHORITY, file)
-            val intent = Intent("com.android.camera.action.PHOTO_CROP")
-            intent.setDataAndType(uri, "image/*")
-            intent.putExtra("crop", true)
-            intent.putExtra("aspectX", aspectX)
-            intent.putExtra("aspectY", aspectY)
-            intent.putExtra("outputX", outputX)
-            intent.putExtra("outputY", outputY)
-            intent.putExtra("return-data", false)
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outUri)
-            //申请文件读写权限
-//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-//            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-
-            /**
-             * 获得所有能执行此intent的应用，并为它们申请权限
-             */
-            val resInfoList = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
-            for (resolveInfo in resInfoList) {
-                loge(resolveInfo.activityInfo.packageName)
-                val packageName = resolveInfo.activityInfo.packageName
-                grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                grantUriPermission(packageName, outUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            startActivityForResult(intent, PHOTO_CROP)
-        }
-    }
-
-    override fun chooseVideo() {
+    fun chooseVideo() {
         if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION)) {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "video/*"
@@ -320,7 +151,7 @@ abstract class MediaActivity : BaseActivity(), MediaView {
         }
     }
 
-    override fun takeVideo() {
+    fun takeVideo() {
         if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION) &&
                 PermissionUtil(this).requestPermission(Config.CAMERA_PERMISSION)) {
             val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
@@ -330,7 +161,7 @@ abstract class MediaActivity : BaseActivity(), MediaView {
         }
     }
 
-    override fun chooseRecord() {
+    fun chooseRecord() {
         if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION)) {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "audio/*"
@@ -339,7 +170,7 @@ abstract class MediaActivity : BaseActivity(), MediaView {
         }
     }
 
-    override fun takeRecord(filePath: String, timeLimit: Int) {
+    fun takeRecord(filePath: String, timeLimit: Int) {
         if (PermissionUtil(this).requestPermission(Config.FILE_PERMISSION) &&
                 PermissionUtil(this).requestPermission(Config.AUDIO_PERMISSION)) {
             FileUtil.checkAvailable(filePath)

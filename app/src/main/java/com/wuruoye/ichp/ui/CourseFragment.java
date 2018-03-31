@@ -11,7 +11,6 @@ import android.view.View;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
-import com.wuruoye.ichp.base.adapter.OnPageChangeListenerAdapter;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,7 +63,6 @@ public class CourseFragment extends BaseFragment {
                 onFabClick();
             }
         });
-        fabCourseAdd.setVisibility(View.INVISIBLE);
     }
 
     private void initViewPager() {
@@ -82,12 +80,12 @@ public class CourseFragment extends BaseFragment {
         vpCourse.setAdapter(adapter);
         tlCourse.setupWithViewPager(vpCourse);
 
-        vpCourse.addOnPageChangeListener(new OnPageChangeListenerAdapter() {
-            @Override
-            public void onPageSelected(int position) {
-                showFab(position);
-            }
-        });
+//        vpCourse.addOnPageChangeListener(new OnPageChangeListenerAdapter() {
+//            @Override
+//            public void onPageSelected(int position) {
+//                showFab(position);
+//            }
+//        });
     }
 
     private void onFabClick() {

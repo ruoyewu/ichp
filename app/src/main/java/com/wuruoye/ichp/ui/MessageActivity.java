@@ -50,7 +50,7 @@ public class MessageActivity extends BaseActivity {
     @Override
     public void initView() {
         toolbar = findViewById(R.id.toolbar);
-        ibBack = findViewById(R.id.ib_tb_back);
+        ibBack = findViewById(R.id.iv_tb_back);
         tvTitle = findViewById(R.id.tv_tb_title);
         tvManager = findViewById(R.id.tv_tb_manager);
         tl = findViewById(R.id.tl_layout);

@@ -27,7 +27,6 @@ import com.wuruoye.ichp.ui.contract.AddNoteContract;
 import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.presenter.DevAddNotePresenter;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -37,7 +36,7 @@ import java.util.Collections;
  * this file is to
  */
 
-public class NoteAddActivity extends MediaActivity
+public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
         implements View.OnClickListener, AddNoteContract.View {
     public static final String[] PHOTO_ITEM = {"照片选取", "照片拍摄"};
     public static final String[] VIDEO_ITEM = {"视频选取", "视频拍摄"};
@@ -68,9 +67,11 @@ public class NoteAddActivity extends MediaActivity
     private AlertDialog dlgVideo;
     private AlertDialog dlgRecord;
 
-    private AddNoteContract.Presenter mPresenter;
     private int mCurrentMediaType;
     private int mType;
+
+    private Double[] mAddress;
+    private String[] mLocation;
 
     @Override
     public int getContentView() {
@@ -81,8 +82,7 @@ public class NoteAddActivity extends MediaActivity
     public void initData(@Nullable Bundle bundle) {
         mType = bundle.getInt("type");
 
-        mPresenter = new DevAddNotePresenter();
-        mPresenter.attachView(this);
+        setPresenter(new DevAddNotePresenter());
     }
 
     @Override
@@ -295,9 +295,11 @@ public class NoteAddActivity extends MediaActivity
     }
 
     private void getLocation() {
-        if (new PermissionUtil(this)
-                .requestPermission(Config.INSTANCE.getLOCATION_PERMISSION(), LOCATION_CODE)) {
-            mPresenter.requestLocation(getApplicationContext());
+        if (mType == TYPE_NOTE) {
+            if (new PermissionUtil(this)
+                    .requestPermission(Config.INSTANCE.getLOCATION_PERMISSION(), LOCATION_CODE)) {
+                mPresenter.requestLocation(getApplicationContext());
+            }
         }
     }
 
@@ -327,26 +329,29 @@ public class NoteAddActivity extends MediaActivity
     }
 
     @Override
-    public void onMediaBack(@NotNull String filePath) {
-        Media.Type type;
-        if (mCurrentMediaType == 0) {
-            type = Media.Type.IMAGE;
-        }else if (mCurrentMediaType == 1) {
-            type = Media.Type.VIDEO;
+    public void onLocationResult(Double[] addr, String[] location) {
+        mAddress = addr;
+        mLocation = location;
+        if (mLocation.length > 0) {
+            tvLocation.setText(mLocation[0]);
         }else {
-            type = Media.Type.RECORD;
+            tvLocation.setText("暂无位置信息");
         }
-        addMedia(new Media(type, filePath));
     }
 
     @Override
-    public void onResultWorn(@NotNull String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    public void onLocationError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onLocationResult(String location) {
-        tvLocation.setText(location);
+    public void onFileUploadResult(boolean result, String url) {
+
+    }
+
+    @Override
+    public void onNoteAddResult(boolean result, String id) {
+
     }
 
     @Override
@@ -368,5 +373,23 @@ public class NoteAddActivity extends MediaActivity
     protected void onDestroy() {
         mPresenter.detachView();
         super.onDestroy();
+    }
+
+    @Override
+    public void onPhotoBack(String s) {
+        Media.Type type;
+        if (mCurrentMediaType == 0) {
+            type = Media.Type.IMAGE;
+        }else if (mCurrentMediaType == 1) {
+            type = Media.Type.VIDEO;
+        }else {
+            type = Media.Type.RECORD;
+        }
+        addMedia(new Media(type, s));
+    }
+
+    @Override
+    public void onPhotoError(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }
