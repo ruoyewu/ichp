@@ -9,19 +9,11 @@ import android.os.Parcelable;
  */
 
 public class Entry implements Parcelable {
-    private int entry_id;
     private String name;
-    private String image;
+    private String url;
     private String content;
     private int editor;
-
-    public int getEntry_id() {
-        return entry_id;
-    }
-
-    public void setEntry_id(int entry_id) {
-        this.entry_id = entry_id;
-    }
+    private int entry_id;
 
     public String getName() {
         return name;
@@ -31,12 +23,12 @@ public class Entry implements Parcelable {
         this.name = name;
     }
 
-    public String getImage() {
-        return image;
+    public String getUrl() {
+        return url;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getContent() {
@@ -55,6 +47,14 @@ public class Entry implements Parcelable {
         this.editor = editor;
     }
 
+    public int getEntry_id() {
+        return entry_id;
+    }
+
+    public void setEntry_id(int entry_id) {
+        this.entry_id = entry_id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -62,22 +62,22 @@ public class Entry implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.entry_id);
         dest.writeString(this.name);
-        dest.writeString(this.image);
+        dest.writeString(this.url);
         dest.writeString(this.content);
         dest.writeInt(this.editor);
+        dest.writeInt(this.entry_id);
     }
 
     public Entry() {
     }
 
     protected Entry(Parcel in) {
-        this.entry_id = in.readInt();
         this.name = in.readString();
-        this.image = in.readString();
+        this.url = in.readString();
         this.content = in.readString();
         this.editor = in.readInt();
+        this.entry_id = in.readInt();
     }
 
     public static final Parcelable.Creator<Entry> CREATOR = new Parcelable.Creator<Entry>() {

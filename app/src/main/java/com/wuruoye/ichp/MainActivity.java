@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.wuruoye.ichp.ui.CourseFragment2;
+import com.wuruoye.ichp.ui.CourseFragment;
 import com.wuruoye.ichp.ui.FoundFragment;
 import com.wuruoye.ichp.ui.HomeFragment;
 import com.wuruoye.ichp.ui.UserFragment;
@@ -89,7 +89,7 @@ public class MainActivity extends WBaseActivity<MainPresenter> implements MainCo
     private void initFragment() {
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new HomeFragment());
-        mFragmentList.add(new CourseFragment2());
+        mFragmentList.add(new CourseFragment());
         mFragmentList.add(new FoundFragment());
         mFragmentList.add(new UserFragment());
 

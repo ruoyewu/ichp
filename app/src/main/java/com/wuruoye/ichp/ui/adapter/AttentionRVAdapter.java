@@ -34,7 +34,6 @@ public class AttentionRVAdapter extends BaseRVAdapter<Note> {
             }
         });
         viewHolder.tvTitle.setText(note.getTitle());
-        viewHolder.tvAuthor.setText(note.getAuthor());
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

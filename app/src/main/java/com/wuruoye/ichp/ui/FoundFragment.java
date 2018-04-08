@@ -134,9 +134,6 @@ public class FoundFragment extends BaseFragment implements FoundContract.View {
     public void onRecommendEntryResult(List<Entry> entryList) {
         for (int i = 0; i < ITEM_SIZE; i++) {
             tvItems[i].setText(entryList.get(i).getName());
-            Glide.with(getContext())
-                    .load(entryList.get(i).getImage())
-                    .into(ivItems[i]);
         }
     }
 
@@ -145,7 +142,7 @@ public class FoundFragment extends BaseFragment implements FoundContract.View {
         List<String> urlList = new ArrayList<>();
         for (Note n :
                 noteList) {
-            urlList.add(n.getImage());
+
         }
         banFound.setImageLoader(new ImageLoader() {
             @Override

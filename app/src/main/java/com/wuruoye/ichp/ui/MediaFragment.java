@@ -83,6 +83,10 @@ public class MediaFragment extends WBaseFragment implements View.OnClickListener
                         startActivity(intent);
                         break;
                     case RECORD:
+                        intent = new Intent(getContext(), RecordActivity.class);
+                        bundle.putString("record", mMedia.getContent());
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                         break;
                 }
                 break;

@@ -3,104 +3,104 @@ package com.wuruoye.ichp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.BaseFragment;
-import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
+import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
+import com.wuruoye.ichp.ui.adapter.CourseRVAdapter;
+import com.wuruoye.ichp.ui.contract.CourseContract2;
+import com.wuruoye.ichp.ui.model.bean.Course;
+import com.wuruoye.ichp.ui.presenter.CoursePresenter;
+import com.wuruoye.library.ui.WBaseFragment;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.wuruoye.ichp.ui.NoteAddActivity.TYPE_COURSE;
-
 /**
- * Created by wuruoye on 2018/1/27.
- * this file is to
+ * @Created : wuruoye
+ * @Date : 2018/3/31.
+ * @Description : 新的「活动界面」
  */
 
-public class CourseFragment extends BaseFragment {
-    public static final String[] ITEM_TITLE = {
-            "网络活动", "官方活动"
-    };
-    public static final int GOVERNMENT = 1;
-
-    private TabLayout tlCourse;
-    private ViewPager vpCourse;
-    private FloatingActionButton fabCourseAdd;
+public class CourseFragment extends WBaseFragment<CoursePresenter> implements
+        SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, CourseContract2.View,
+        BaseRVAdapter.OnItemClickListener<Course> {
+    private SwipeRefreshLayout srl;
+    private RecyclerView rv;
+    private FloatingActionButton fab;
 
     @Override
-    public int getContentView() {
-        return R.layout.fragment_course;
+    protected int getContentView() {
+        return R.layout.fragment_course_2;
     }
 
     @Override
-    public void initData(@Nullable Bundle bundle) {
-
+    protected void initData(Bundle bundle) {
+        setPresenter(new CoursePresenter());
     }
 
     @Override
-    public void initView(@NotNull View view) {
-        tlCourse = view.findViewById(R.id.tl_layout);
-        vpCourse = view.findViewById(R.id.vp_layout);
-        fabCourseAdd = view.findViewById(R.id.fab_course_add);
+    protected void initView(View view) {
+        srl = view.findViewById(R.id.srl_layout);
+        rv = view.findViewById(R.id.rv_layout);
+        fab = view.findViewById(R.id.fab_course);
 
         initLayout();
-        initViewPager();
+        initRV();
+
+        mPresenter.requestCourse(false);
     }
 
     private void initLayout() {
-        fabCourseAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onFabClick();
-            }
-        });
+        srl.setOnRefreshListener(this);
+        fab.setOnClickListener(this);
     }
 
-    private void initViewPager() {
-        List<Fragment> fragmentList = new ArrayList<>();
-        for (int i = 0; i < ITEM_TITLE.length; i ++) {
-            Bundle bundle = new Bundle();
-            bundle.putInt("type", i);
-            Fragment fragment = new CourseListFragment();
-            fragment.setArguments(bundle);
-            fragmentList.add(fragment);
+    private void initRV() {
+        CourseRVAdapter adapter = new CourseRVAdapter();
+        adapter.setOnItemClickListener(this);
+        rv.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        rv.setAdapter(adapter);
+    }
+
+    @Override
+    public void onRefresh() {
+        srl.setRefreshing(false);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab_course:
+                Intent intent = new Intent(getContext(), NoteAddActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", NoteAddActivity.TYPE_COURSE);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
         }
-
-        FragmentVPAdapter adapter = new FragmentVPAdapter(getChildFragmentManager(),
-                Arrays.asList(ITEM_TITLE), fragmentList);
-        vpCourse.setAdapter(adapter);
-        tlCourse.setupWithViewPager(vpCourse);
-
-//        vpCourse.addOnPageChangeListener(new OnPageChangeListenerAdapter() {
-//            @Override
-//            public void onPageSelected(int position) {
-//                showFab(position);
-//            }
-//        });
     }
 
-    private void onFabClick() {
-        Intent intent = new Intent(getContext(), NoteAddActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("type", TYPE_COURSE);
-        intent.putExtras(bundle);
-        startActivity(intent);
+    @Override
+    public void onResultError(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
-    private void showFab(int position) {
-        if (position == GOVERNMENT) {
-            fabCourseAdd.show();
+    @Override
+    public void onResultCourse(List<Course> courseList, boolean isAdd) {
+        CourseRVAdapter adapter = (CourseRVAdapter) rv.getAdapter();
+        if (isAdd) {
+            adapter.addData(courseList);
         }else {
-            fabCourseAdd.hide();
+            adapter.setData(courseList);
         }
+    }
+
+    @Override
+    public void onItemClick(Course model) {
+        Toast.makeText(getContext(), model.getTitle(), Toast.LENGTH_SHORT).show();
     }
 }

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
-import com.wuruoye.ichp.ui.model.Note;
+import com.wuruoye.ichp.ui.model.bean.Note;
 
 /**
  * Created by wuruoye on 2018/1/27.

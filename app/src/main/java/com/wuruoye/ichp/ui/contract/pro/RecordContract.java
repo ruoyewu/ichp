@@ -1,6 +1,6 @@
 package com.wuruoye.ichp.ui.contract.pro;
 
-import com.wuruoye.ichp.ui.model.Note;
+import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.library.contract.WIView;
 import com.wuruoye.library.contract.WPresenter;
 

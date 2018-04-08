@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @Created : wuruoye
  * @Date : 2018/4/2.
- * @Description :
+ * @Description : 「词条选择界面」
  */
 
 public interface EntryChooseContract {

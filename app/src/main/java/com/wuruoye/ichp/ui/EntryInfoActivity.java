@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseActivity;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
@@ -64,12 +63,6 @@ public class EntryInfoActivity extends BaseActivity {
     private void initLayout() {
         tvTitle.setText(mEntry.getName());
         tvIntro.setText(mEntry.getName());
-        Glide.with(this)
-                .load(mEntry.getImage())
-                .into(civ);
-        Glide.with(this)
-                .load(mEntry.getImage())
-                .into(ivBack);
     }
 
     private void initViewPager() {

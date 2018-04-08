@@ -44,10 +44,7 @@ public class NormalRVAdapter extends BaseRVAdapter<Object> {
         if (data instanceof Note) {
             viewHolder.civ.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((Note) data).getTitle());
-            viewHolder.tvContent.setText(((Note) data).getAuthor());
-            Glide.with(viewHolder.iv)
-                    .load(((Note) data).getImage())
-                    .into(viewHolder.iv);
+
         }else if (data instanceof Course) {
             viewHolder.civ.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((Course) data).getTitle());
@@ -58,9 +55,7 @@ public class NormalRVAdapter extends BaseRVAdapter<Object> {
         }else if (data instanceof Entry) {
             viewHolder.civ.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((Entry) data).getName());
-            Glide.with(viewHolder.iv)
-                    .load(((Entry) data).getImage())
-                    .into(viewHolder.iv);
+
         }else if (data instanceof User) {
             viewHolder.iv.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((User) data).getName());

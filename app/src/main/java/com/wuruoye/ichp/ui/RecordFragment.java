@@ -12,7 +12,7 @@ import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.RecordRVAdapter;
 import com.wuruoye.ichp.ui.contract.pro.RecordContract;
-import com.wuruoye.ichp.ui.model.Note;
+import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.presenter.pro.RecordPresenter;
 import com.wuruoye.library.ui.WBaseFragment;
 
@@ -86,6 +86,9 @@ public class RecordFragment extends WBaseFragment<RecordContract.Presenter>
 
     private void onItemClick(Note note) {
         Intent intent = new Intent(getContext(), NoteShowActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("note", note);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

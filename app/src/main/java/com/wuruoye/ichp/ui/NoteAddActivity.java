@@ -29,9 +29,9 @@ import com.wuruoye.ichp.base.util.PermissionUtil;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.MediaRVAdapter;
 import com.wuruoye.ichp.ui.contract.AddNoteContract;
-import com.wuruoye.ichp.ui.model.Note;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
+import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.presenter.DevAddNotePresenter;
 
 import org.jetbrains.annotations.Nullable;
