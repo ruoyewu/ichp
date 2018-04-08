@@ -31,7 +31,7 @@ public class EntryChooseRVAdapter extends BaseRVAdapter<Entry> {
         ViewHolder viewHolder = (ViewHolder) holder;
         if (getItemViewType(position) == TYPE_NORMAL) {
             final Entry entry = getData(position - 1);
-            viewHolder.tv.setText(entry.getTitle());
+            viewHolder.tv.setText(entry.getName());
             viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -42,6 +42,11 @@ public class EntryChooseRVAdapter extends BaseRVAdapter<Entry> {
         }else {
             viewHolder.tv.setText("已选词条");
         }
+    }
+
+    @Override
+    public int getItemCount() {
+        return super.getItemCount() + 1;
     }
 
     @Override

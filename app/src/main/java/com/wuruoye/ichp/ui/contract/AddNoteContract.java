@@ -2,6 +2,7 @@ package com.wuruoye.ichp.ui.contract;
 
 import android.content.Context;
 
+import com.wuruoye.ichp.ui.model.Note;
 import com.wuruoye.library.contract.WIView;
 import com.wuruoye.library.contract.WPresenter;
 
@@ -20,6 +21,8 @@ public interface AddNoteContract {
 
     abstract class Presenter extends WPresenter<View> {
         abstract public void requestLocation(Context context);
+        abstract public void requestUploadFile(String fileName, String type);
+        abstract public void requestUpNote(Note note);
         abstract public String generateImageName();
         abstract public String generateVideoName();
         abstract public String generateRecordName();

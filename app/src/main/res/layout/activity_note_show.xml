@@ -40,7 +40,7 @@
 
                     <TextView
                         android:id="@+id/tv_note_show_user"
-                        android:text="title"
+                        android:text="name"
                         android:textSize="16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />

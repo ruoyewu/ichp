@@ -7,7 +7,7 @@ import android.view.View;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseActivity;
-import com.wuruoye.library.util.LogUtil;
+import com.wuruoye.library.util.log.WLog;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +48,7 @@ public class VideoActivity extends BaseActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        LogUtil.loge(this, "onConfigurationChanged");
+        WLog.loge(this, "onConfigurationChanged");
         super.onConfigurationChanged(newConfig);
     }
 

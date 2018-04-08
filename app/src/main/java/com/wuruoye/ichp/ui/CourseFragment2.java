@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
@@ -50,19 +50,19 @@ public class CourseFragment2 extends WBaseFragment<CoursePresenter> implements
 
         initLayout();
         initRV();
+
+        mPresenter.requestCourse(false);
     }
 
     private void initLayout() {
         srl.setOnRefreshListener(this);
         fab.setOnClickListener(this);
-
-        mPresenter.requestCourse(false);
     }
 
     private void initRV() {
         CourseRVAdapter adapter = new CourseRVAdapter();
         adapter.setOnItemClickListener(this);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        rv.setLayoutManager(new GridLayoutManager(getContext(), 2));
         rv.setAdapter(adapter);
     }
 

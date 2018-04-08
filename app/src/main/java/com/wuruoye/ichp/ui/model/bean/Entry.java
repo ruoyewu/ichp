@@ -9,12 +9,26 @@ import android.os.Parcelable;
  */
 
 public class Entry implements Parcelable {
-    private String title;
+    private int entry_id;
+    private String name;
     private String image;
+    private String content;
+    private int editor;
 
-    public Entry(String title, String image) {
-        this.title = title;
-        this.image = image;
+    public int getEntry_id() {
+        return entry_id;
+    }
+
+    public void setEntry_id(int entry_id) {
+        this.entry_id = entry_id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getImage() {
@@ -25,12 +39,20 @@ public class Entry implements Parcelable {
         this.image = image;
     }
 
-    public String getTitle() {
-        return title;
+    public String getContent() {
+        return content;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public int getEditor() {
+        return editor;
+    }
+
+    public void setEditor(int editor) {
+        this.editor = editor;
     }
 
     @Override
@@ -40,13 +62,22 @@ public class Entry implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.title);
+        dest.writeInt(this.entry_id);
+        dest.writeString(this.name);
         dest.writeString(this.image);
+        dest.writeString(this.content);
+        dest.writeInt(this.editor);
+    }
+
+    public Entry() {
     }
 
     protected Entry(Parcel in) {
-        this.title = in.readString();
+        this.entry_id = in.readInt();
+        this.name = in.readString();
         this.image = in.readString();
+        this.content = in.readString();
+        this.editor = in.readInt();
     }
 
     public static final Parcelable.Creator<Entry> CREATOR = new Parcelable.Creator<Entry>() {

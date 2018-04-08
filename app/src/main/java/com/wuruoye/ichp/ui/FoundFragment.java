@@ -133,7 +133,7 @@ public class FoundFragment extends BaseFragment implements FoundContract.View {
     @Override
     public void onRecommendEntryResult(List<Entry> entryList) {
         for (int i = 0; i < ITEM_SIZE; i++) {
-            tvItems[i].setText(entryList.get(i).getTitle());
+            tvItems[i].setText(entryList.get(i).getName());
             Glide.with(getContext())
                     .load(entryList.get(i).getImage())
                     .into(ivItems[i]);

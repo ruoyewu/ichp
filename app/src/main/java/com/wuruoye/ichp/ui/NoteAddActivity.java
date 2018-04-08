@@ -4,11 +4,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,14 +26,21 @@ import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.base.model.Config;
 import com.wuruoye.ichp.base.util.FileUtil;
 import com.wuruoye.ichp.base.util.PermissionUtil;
+import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.MediaRVAdapter;
 import com.wuruoye.ichp.ui.contract.AddNoteContract;
+import com.wuruoye.ichp.ui.model.Note;
+import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.presenter.DevAddNotePresenter;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wuruoye on 2018/1/28.
@@ -53,25 +64,30 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
     private EditText etTitle;
     private NestedScrollView nsv;
     private EditText etContent;
-    private LinearLayout llEntryList;
     private TextView tvLocation;
     private LinearLayout llLocation;
     private LinearLayout llCourseInfo;
     private EditText etDate;
     private EditText etPlace;
     private EditText etEntrance;
+    private RecyclerView rvEntry;
     private RecyclerView rvMedia;
     private LinearLayout[] llList;
 
     private AlertDialog dlgPhoto;
     private AlertDialog dlgVideo;
     private AlertDialog dlgRecord;
+    private AlertDialog dlgUpload;
+    private AlertDialog dlgUploadError;
 
     private int mCurrentMediaType;
     private int mType;
 
     private Double[] mAddress;
     private String[] mLocation;
+    private HashMap<String, Integer> mUrlMap = new HashMap<>();
+    private List<Media> mMediaList;
+    private Media mCurrentUploadMedia;
 
     @Override
     public int getContentView() {
@@ -91,11 +107,11 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
         etTitle = findViewById(R.id.et_note_add_title);
         nsv = findViewById(R.id.nsv_note_add);
         etContent = findViewById(R.id.et_note_add_content);
-        llEntryList = findViewById(R.id.ll_note_add_entry_list);
         tvLocation = findViewById(R.id.tv_note_add_location);
         llLocation = findViewById(R.id.ll_note_add_location);
         llCourseInfo = findViewById(R.id.ll_note_add_course_info);
         etDate = findViewById(R.id.et_note_add_date);
+        rvEntry = findViewById(R.id.rv_note_add_entry);
         rvMedia = findViewById(R.id.rv_note_add_media);
         llList[0] = findViewById(R.id.ll_note_add_photo);
         llList[1] = findViewById(R.id.ll_note_add_video);
@@ -114,6 +130,11 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == CHOOSE_ENTRY && resultCode == RESULT_OK) {
+            List<Entry> entryList = data.getParcelableArrayListExtra("entry");
+            EntryChooseRVAdapter adapter = (EntryChooseRVAdapter) rvEntry.getAdapter();
+            adapter.setData(entryList);
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -137,6 +158,7 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
             TextView tv = llList[i].findViewById(R.id.tv_icon_text);
 //            iv.setImageResource(ICON_IT_ITEM[i]);
             tv.setText(TITLE_IT_ITEM[i]);
+            tv.setTextColor(ActivityCompat.getColor(this, R.color.black));
             llList[i].setOnClickListener(this);
         }
     }
@@ -159,6 +181,15 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
                 LinearLayoutManager.HORIZONTAL, false));
         rvMedia.setAdapter(adapter);
         checkRecyclerView();
+
+        EntryChooseRVAdapter entryChooseRVAdapter = new EntryChooseRVAdapter();
+        rvEntry.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false));
+        rvEntry.setAdapter(entryChooseRVAdapter);
+        DividerItemDecoration decoration = new DividerItemDecoration(this,
+                DividerItemDecoration.HORIZONTAL);
+        decoration.setDrawable(ActivityCompat.getDrawable(this, R.drawable.decoration_horizontal));
+        rvEntry.addItemDecoration(decoration);
     }
 
     private void initDialog() {
@@ -210,7 +241,25 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
                     }
                 })
                 .create();
-
+        dlgUpload = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("正在上传文件")
+                .create();
+        dlgUploadError = new AlertDialog.Builder(this)
+                .setTitle("上传文件出错，是否重新上传？")
+                .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        reUploadFile();
+                    }
+                })
+                .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mMediaList.clear();
+                    }
+                })
+                .create();
     }
 
     private void remeasureET() {
@@ -241,6 +290,11 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
                 startActivity(intent);
                 break;
             case RECORD:
+                intent = new Intent(this, RecordActivity.class);
+                bundle = new Bundle();
+                bundle.putString("record", media.getContent());
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
         }
     }
@@ -281,10 +335,113 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
     }
 
     private void onPublishClick() {
-        String title = etTitle.getText().toString();
-        String content = etContent.getText().toString();
+        if (mMediaList == null) {
+            mMediaList = new ArrayList<>();
+            MediaRVAdapter adapter = (MediaRVAdapter) rvMedia.getAdapter();
+            mMediaList.addAll(adapter.getData());
+        }
+        if (mMediaList.size() > 0) {
+            dlgUpload.setTitle("正在上传媒体文件...");
+            dlgUpload.show();
+            mCurrentUploadMedia = mMediaList.get(0);
+            mPresenter.requestUploadFile(mCurrentUploadMedia.getContent(),
+                    getType(mCurrentUploadMedia));
+        }else {
+            doPublishNote();
+        }
+    }
 
-        Toast.makeText(this, title + "\n" + content, Toast.LENGTH_SHORT).show();
+    private void reUploadFile() {
+        dlgUpload.setTitle("正在重传媒体文件...");
+        dlgUpload.show();
+        if (mMediaList.size() > 0) {
+            mCurrentUploadMedia = mMediaList.get(0);
+            mPresenter.requestUploadFile(mCurrentUploadMedia.getContent(),
+                    getType(mCurrentUploadMedia));
+        }else {
+            doPublishNote();
+        }
+    }
+
+    private void doPublishNote() {
+        String title = etTitle.getText().toString();
+        if (TextUtils.isEmpty(title)) {
+            Toast.makeText(this, "title is empty", Toast.LENGTH_SHORT).show();
+            dlgUpload.dismiss();
+            return;
+        }
+        String content = etContent.getText().toString();
+        if (TextUtils.isEmpty(content)) {
+            Toast.makeText(this, "content is empty", Toast.LENGTH_SHORT).show();
+            dlgUpload.dismiss();
+            return;
+        }
+        StringBuilder urlBuilder = new StringBuilder();
+        StringBuilder typeBuilder = new StringBuilder();
+        int size = mUrlMap.size();
+        int j = 0;
+        for (Map.Entry<String, Integer> entry : mUrlMap.entrySet()) {
+            if (j++ < size - 1) {
+                urlBuilder.append(entry.getKey()).append(",");
+                typeBuilder.append(entry.getValue()).append(",");
+            }else {
+                urlBuilder.append(entry.getKey());
+                typeBuilder.append(entry.getValue());
+            }
+        }
+        String addr = null;
+        if (mAddress != null) {
+            addr = mAddress[0] + "," + mAddress[1];
+        }
+        StringBuilder entryBuilder = new StringBuilder();
+        List<Entry> entryList = ((EntryChooseRVAdapter) rvEntry.getAdapter()).getData();
+        if (entryList.size() > 0) {
+            for (int i = 0; i < entryList.size() - 1; i++) {
+                entryBuilder.append(entryList.get(i).getEntry_id()).append(",");
+            }
+            entryBuilder.append(entryList.get(entryList.size() - 1).getEntry_id());
+        }else {
+            Toast.makeText(this, "entry is empty", Toast.LENGTH_SHORT).show();
+            dlgUpload.dismiss();
+            return;
+        }
+
+        Note note = new Note();
+        note.setTitle(title);
+        note.setDescribe(content);
+        note.setUrl(urlBuilder.toString());
+        note.setType(typeBuilder.toString());
+        note.setAddr(addr);
+        note.setLabels_id_str(entryBuilder.toString());
+        mPresenter.requestUpNote(note);
+        dlgUpload.setTitle("正在上传记录...");
+
+    }
+
+    private String getType(Media media) {
+        switch (media.getType()) {
+            case RECORD:
+                return "audio/*";
+            case VIDEO:
+                return "video/*";
+            case IMAGE:
+                return "image/*";
+                default:
+                    return "file/*";
+        }
+    }
+
+    private int getIntType(Media media) {
+        switch (media.getType()) {
+            case IMAGE:
+                return 1;
+            case VIDEO:
+                return 2;
+            case RECORD:
+                return 3;
+            default:
+                return 0;
+        }
     }
 
     private void addMedia(Media media) {
@@ -317,6 +474,10 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
                 break;
             case R.id.ll_note_add_entry:
                 Intent intent = new Intent(this, EntryChooseActivity.class);
+                Bundle bundle = new Bundle();
+                List<Entry> entryList = ((EntryChooseRVAdapter)rvEntry.getAdapter()).getData();
+                bundle.putParcelableArrayList("entry", (ArrayList<? extends Parcelable>) entryList);
+                intent.putExtras(bundle);
                 startActivityForResult(intent, CHOOSE_ENTRY);
                 break;
             case R.id.ll_note_add_back:
@@ -346,12 +507,32 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
 
     @Override
     public void onFileUploadResult(boolean result, String url) {
-
+        if (result) {
+            mMediaList.remove(mCurrentUploadMedia);
+            int type = getIntType(mCurrentUploadMedia);
+            mUrlMap.put(url, type);
+            if (mMediaList.size() > 0) {
+                mCurrentUploadMedia = mMediaList.get(0);
+                mPresenter.requestUploadFile(mCurrentUploadMedia.getContent(),
+                        getType(mCurrentUploadMedia));
+            }else {
+                doPublishNote();
+            }
+        }else {
+            dlgUpload.dismiss();
+            dlgUploadError.show();
+        }
     }
 
     @Override
-    public void onNoteAddResult(boolean result, String id) {
-
+    public void onNoteAddResult(boolean result, String info) {
+        dlgUpload.dismiss();
+        if (result) {
+            Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
+            finish();
+        }else {
+            Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

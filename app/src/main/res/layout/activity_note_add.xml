@@ -32,31 +32,10 @@
             android:layout_height="0dp" />
     </android.support.v4.widget.NestedScrollView>
 
-
-    <HorizontalScrollView
-        android:background="@color/athens_gray"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_note_add_entry"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <LinearLayout
-            android:id="@+id/ll_note_add_entry_list"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:padding="10dp"
-                android:gravity="center_vertical"
-                android:text="词条标签："
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-
-            <View
-                android:background="@color/french_gray"
-                android:layout_width="1px"
-                android:layout_height="match_parent"/>
-        </LinearLayout>
-    </HorizontalScrollView>
+        android:layout_height="50dp" />
 
     <LinearLayout
         android:id="@+id/ll_note_add_location"

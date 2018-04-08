@@ -92,7 +92,7 @@ public class SearchListFragment extends BaseFragment implements ISearchView, Sea
         }else if (data instanceof Course) {
             Toast.makeText(getContext(), ((Course) data).getTitle(), Toast.LENGTH_SHORT).show();
         }else if (data instanceof Entry) {
-            Toast.makeText(getContext(), ((Entry) data).getTitle(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), ((Entry) data).getName(), Toast.LENGTH_SHORT).show();
         }else if (data instanceof User) {
             Toast.makeText(getContext(), ((User) data).getName(), Toast.LENGTH_SHORT).show();
         }

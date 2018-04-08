@@ -9,12 +9,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
-import com.wuruoye.ichp.ui.adapter.RecommendRVAdapter;
-import com.wuruoye.ichp.ui.contract.RecommendContract;
-import com.wuruoye.ichp.ui.model.bean.Note;
-import com.wuruoye.ichp.ui.presenter.DevRecommendPresenter;
+import com.wuruoye.ichp.ui.adapter.RecordRVAdapter;
+import com.wuruoye.ichp.ui.contract.pro.RecordContract;
+import com.wuruoye.ichp.ui.model.Note;
+import com.wuruoye.ichp.ui.presenter.pro.RecordPresenter;
+import com.wuruoye.library.ui.WBaseFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,12 +26,12 @@ import java.util.List;
  * this file is to
  */
 
-public class RecommendFragment extends BaseFragment implements RecommendContract.View{
+public class RecordFragment extends WBaseFragment<RecordContract.Presenter>
+        implements RecordContract.View{
     private SwipeRefreshLayout srlRecommend;
     private RecyclerView rvRecommend;
 
     private int mType;
-    private RecommendContract.Presenter mPresenter;
 
     @Override
     public int getContentView() {
@@ -42,9 +42,7 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
     public void initData(@Nullable Bundle bundle) {
         assert bundle != null;
         mType = bundle.getInt("type");
-
-        mPresenter = new DevRecommendPresenter();
-        mPresenter.attachView(this);
+        setPresenter(new RecordPresenter());
     }
 
     @Override
@@ -54,6 +52,8 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
 
         initRefreshLayout();
         initRecyclerView();
+
+        requestNoteList(false);
     }
 
     private void initRefreshLayout() {
@@ -67,11 +67,11 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
 
     private void initRecyclerView() {
         rvRecommend.setLayoutManager(new LinearLayoutManager(getContext()));
-        RecommendRVAdapter adapter = new RecommendRVAdapter();
+        RecordRVAdapter adapter = new RecordRVAdapter();
         adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<Note>() {
             @Override
             public void onItemClick(Note model) {
-                RecommendFragment.this.onItemClick(model);
+                RecordFragment.this.onItemClick(model);
             }
         });
         rvRecommend.setAdapter(adapter);
@@ -81,25 +81,18 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
 
     private void requestNoteList(boolean isAdd) {
         srlRecommend.setRefreshing(true);
-        mPresenter.requestNoteList(isAdd, mType);
+        mPresenter.requestRecord(false, mType);
     }
 
     private void onItemClick(Note note) {
         Intent intent = new Intent(getContext(), NoteShowActivity.class);
         startActivity(intent);
-//        Toast.makeText(getContext(), note.getTitle(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onResultWorn(@NotNull String message) {
+    public void onResultRecord(List<Note> noteList, boolean isAdd) {
         srlRecommend.setRefreshing(false);
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onNoteListResult(List<Note> noteList, boolean isAdd) {
-        srlRecommend.setRefreshing(false);
-        RecommendRVAdapter adapter = (RecommendRVAdapter) rvRecommend.getAdapter();
+        RecordRVAdapter adapter = (RecordRVAdapter) rvRecommend.getAdapter();
         if (isAdd) {
             adapter.addData(noteList);
         }else {
@@ -108,8 +101,8 @@ public class RecommendFragment extends BaseFragment implements RecommendContract
     }
 
     @Override
-    public void onDestroy() {
-        mPresenter.detachView();
-        super.onDestroy();
+    public void onErrorRecord(String error) {
+        srlRecommend.setRefreshing(false);
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 }

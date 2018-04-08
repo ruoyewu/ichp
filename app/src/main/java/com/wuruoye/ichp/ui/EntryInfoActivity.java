@@ -45,7 +45,7 @@ public class EntryInfoActivity extends BaseActivity {
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-        mEntry = new Entry("梅花篆字", "https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=fad26bf91adfa9ece9235e4503b99c66/1b4c510fd9f9d72a685819f8df2a2834349bbb12.jpg");
+
     }
 
     @Override
@@ -62,8 +62,8 @@ public class EntryInfoActivity extends BaseActivity {
     }
 
     private void initLayout() {
-        tvTitle.setText(mEntry.getTitle());
-        tvIntro.setText(mEntry.getTitle());
+        tvTitle.setText(mEntry.getName());
+        tvIntro.setText(mEntry.getName());
         Glide.with(this)
                 .load(mEntry.getImage())
                 .into(civ);

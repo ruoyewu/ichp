@@ -15,14 +15,14 @@
 
         <TextView
             android:id="@+id/tv_item_entry_search_title"
-            android:text="title"
+            android:text="name"
             android:textSize="18sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tv_item_entry_search_content"
-            android:text="title"
+            android:text="name"
             android:textSize="14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

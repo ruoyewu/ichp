@@ -38,8 +38,8 @@ public class EntrySearchRVAdapter extends BaseRVAdapter<Entry> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Entry entry = getData(position);
         final ViewHolder viewHolder = (ViewHolder) holder;
-        viewHolder.tvTitle.setText(entry.getTitle());
-        viewHolder.tvContent.setText(entry.getTitle());
+        viewHolder.tvTitle.setText(entry.getName());
+        viewHolder.tvContent.setText(entry.getName());
         if (mChoseEntryList.contains(entry)) {
             viewHolder.tv.setVisibility(View.VISIBLE);
             viewHolder.iv.setVisibility(View.GONE);
@@ -57,6 +57,11 @@ public class EntrySearchRVAdapter extends BaseRVAdapter<Entry> {
                 }
             });
         }
+    }
+
+    public void setChooseEntry(List<Entry> entryList) {
+        mChoseEntryList = entryList;
+        notifyDataSetChanged();
     }
 
     public void setOnAddClickListener(OnAddClickListener listener) {

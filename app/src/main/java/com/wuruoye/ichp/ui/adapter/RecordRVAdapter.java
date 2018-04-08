@@ -10,14 +10,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
-import com.wuruoye.ichp.ui.model.bean.Note;
+import com.wuruoye.ichp.ui.model.Note;
 
 /**
  * Created by wuruoye on 2018/1/27.
  * this file is to
  */
 
-public class RecommendRVAdapter extends BaseRVAdapter<Note> {
+public class RecordRVAdapter extends BaseRVAdapter<Note> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -36,10 +36,13 @@ public class RecommendRVAdapter extends BaseRVAdapter<Note> {
                 onItemClick(note);
             }
         });
-        Glide.with(viewHolder.iv)
-                .load(note.getImage())
-                .into(viewHolder.iv);
         viewHolder.tv.setText(note.getTitle());
+        String[] url = note.getUrl().split(",");
+        if (url.length > 0) {
+            Glide.with(viewHolder.iv)
+                    .load(url[0])
+                    .into(viewHolder.iv);
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

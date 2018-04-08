@@ -48,6 +48,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize|layoutDirection"
             android:theme="@style/FullScreenTheme"/>
         <activity android:name=".ui.UserLoginActivity" />
+        <activity android:name=".ui.RecordActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

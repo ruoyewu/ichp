@@ -11,7 +11,6 @@ import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
 import com.wuruoye.ichp.ui.contract.EntryInfoContract;
-import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.User;
 import com.wuruoye.ichp.ui.presenter.DevEntryInfoPresenter;
 
@@ -80,7 +79,7 @@ public class UserInfoListFragment extends BaseFragment implements EntryInfoContr
     }
 
     private void requestData(boolean isAdd) {
-        mPresenter.requestData(new Entry("", ""), isAdd, mType);
+
     }
 
     private void onItemClick(Object object) {

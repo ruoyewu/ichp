@@ -19,7 +19,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * this file is to
  */
 
-public class PersonInfoActivity extends BaseActivity {
+public class PersonInfoActivity extends BaseActivity implements View.OnClickListener {
     private Toolbar toolbar;
     private ImageView ivBack;
     private TextView tvTitle;
@@ -58,13 +58,19 @@ public class PersonInfoActivity extends BaseActivity {
 
     private void initLayout() {
         setSupportActionBar(toolbar);
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        ivBack.setOnClickListener(this);
         tvTitle.setText("个人信息");
-        tvManager.setVisibility(View.GONE);
+        tvManager.setText("保存");
+        tvManager.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_tb_back:
+                break;
+            case R.id.tv_tb_manager:
+                break;
+        }
     }
 }

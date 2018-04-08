@@ -1,6 +1,7 @@
 package com.wuruoye.ichp.ui;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -17,14 +18,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.BaseActivity;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.EntrySearchRVAdapter;
+import com.wuruoye.ichp.ui.contract.pro.EntryChooseContract;
 import com.wuruoye.ichp.ui.model.bean.Entry;
+import com.wuruoye.ichp.ui.presenter.pro.EntryChoosePresenter;
+import com.wuruoye.library.ui.WBaseActivity;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +36,9 @@ import java.util.List;
  * this file is to
  */
 
-public class EntryChooseActivity extends BaseActivity implements View.OnClickListener {
+public class EntryChooseActivity extends WBaseActivity<EntryChooseContract.Presenter>
+        implements View.OnClickListener, EntryChooseContract.View {
+
     private Toolbar toolbar;
     private ImageView ivBack;
     private TextView tvTitle;
@@ -42,7 +48,7 @@ public class EntryChooseActivity extends BaseActivity implements View.OnClickLis
     private RecyclerView rvSearch;
     private Button btnCreate;
 
-    private List<Entry> mEntryList;
+    private ArrayList<Entry> mEntryList;
 
     @Override
     public int getContentView() {
@@ -52,6 +58,7 @@ public class EntryChooseActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void initData(@Nullable Bundle bundle) {
         mEntryList = bundle.getParcelableArrayList("entry");
+        setPresenter(new EntryChoosePresenter());
     }
 
     @Override
@@ -135,7 +142,7 @@ public class EntryChooseActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void onQuery(String query) {
-        Toast.makeText(this, "query " + query, Toast.LENGTH_SHORT).show();
+        mPresenter.requestEntry(query);
     }
 
     private void onChooseLongClick(final Entry entry) {
@@ -146,6 +153,7 @@ public class EntryChooseActivity extends BaseActivity implements View.OnClickLis
                     public void onClick(DialogInterface dialog, int which) {
                         EntryChooseRVAdapter adapter = (EntryChooseRVAdapter) rvChoose.getAdapter();
                         adapter.removeData(entry);
+                        onChangeEntry();
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -162,14 +170,41 @@ public class EntryChooseActivity extends BaseActivity implements View.OnClickLis
         adapter.addData(entry);
     }
 
+    private void onChangeEntry() {
+        EntryChooseRVAdapter adapter = (EntryChooseRVAdapter) rvChoose.getAdapter();
+        EntrySearchRVAdapter searchRVAdapter = (EntrySearchRVAdapter) rvSearch.getAdapter();
+        searchRVAdapter.setChooseEntry(adapter.getData());
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_entry_choose_create:
+                Intent intent = new Intent(this, EntryAddActivity.class);
+                startActivity(intent);
                 break;
             case R.id.iv_tb_back:
                 onBackPressed();
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("entry", mEntryList);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    @Override
+    public void onResultEntry(List<Entry> entryList) {
+        EntrySearchRVAdapter adapter = (EntrySearchRVAdapter) rvSearch.getAdapter();
+        adapter.setData(entryList);
+    }
+
+    @Override
+    public void onResultEntryError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 }

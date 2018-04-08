@@ -19,6 +19,7 @@ import com.wuruoye.ichp.base.BaseActivity;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NoteCommentRVAdapter;
+import com.wuruoye.ichp.ui.model.Note;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 
 import org.jetbrains.annotations.Nullable;
@@ -49,6 +50,8 @@ public class NoteShowActivity extends BaseActivity implements View.OnClickListen
     private RecyclerView rvComment;
     private LinearLayout llBottom;
 
+    private Note mNote;
+
     @Override
     public int getContentView() {
         return R.layout.activity_note_show;
@@ -56,7 +59,7 @@ public class NoteShowActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-
+        mNote = bundle.getParcelable("note");
     }
 
     @Override

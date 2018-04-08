@@ -62,11 +62,11 @@ public class HomeFragment extends BaseFragment {
         List<Fragment> fragments = new ArrayList<>();
         Bundle bAttention = new Bundle();
         bAttention.putInt("type", TYPE_ATTENTION);
-        Fragment attention = new RecommendFragment();
+        Fragment attention = new RecordFragment();
         attention.setArguments(bAttention);
         Bundle bRecommend = new Bundle();
         bRecommend.putInt("type", TYPE_RECOMMEND);
-        Fragment recommend = new RecommendFragment();
+        Fragment recommend = new RecordFragment();
         recommend.setArguments(bRecommend);
         fragments.add(attention);
         fragments.add(recommend);

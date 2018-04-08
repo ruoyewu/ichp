@@ -39,7 +39,7 @@ public class MediaRVAdapter extends BaseRVAdapter<Media> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder.getItemViewType() == NORMAL) {
+        if (holder.getItemViewType() == NORMAL || holder.getItemViewType() == AUDIO) {
             final Media media = getData(position);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -56,16 +56,16 @@ public class MediaRVAdapter extends BaseRVAdapter<Media> {
             });
             if (media.getType() == Media.Type.RECORD) {
                 final AudioViewHolder viewHolder = (AudioViewHolder) holder;
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (viewHolder.isPlaying()) {
-                            viewHolder.stop();
-                        }else {
-                            viewHolder.start();
-                        }
-                    }
-                });
+//                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if (viewHolder.isPlaying()) {
+//                            viewHolder.stop();
+//                        }else {
+//                            viewHolder.start();
+//                        }
+//                    }
+//                });
             }else {
                 ViewHolder viewHolder = (ViewHolder) holder;
                 Glide.with(viewHolder.ivBack)
@@ -85,22 +85,6 @@ public class MediaRVAdapter extends BaseRVAdapter<Media> {
             return AUDIO;
         }else {
             return NORMAL;
-        }
-    }
-
-    public void setOnAddItemClick(OnActionListener listener) {
-        this.mOnActionListener = listener;
-    }
-
-    private void onAudioStart(Media media) {
-        if (mOnActionListener != null) {
-            mOnActionListener.onAudioStart(media);
-        }
-    }
-
-    private void onAudioStop(Media media) {
-        if (mOnActionListener != null) {
-            mOnActionListener.onAudioStop(media);
         }
     }
 
@@ -129,8 +113,6 @@ public class MediaRVAdapter extends BaseRVAdapter<Media> {
             vBg1 = itemView.findViewById(R.id.v_item_audio_1);
             vBg2 = itemView.findViewById(R.id.v_item_audio_2);
             iv = itemView.findViewById(R.id.iv_item_audio);
-
-            initAnimator();
         }
 
         private void initAnimator() {
