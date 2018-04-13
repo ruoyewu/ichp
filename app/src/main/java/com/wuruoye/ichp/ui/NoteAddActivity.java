@@ -389,9 +389,16 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
                 typeBuilder.append(entry.getValue());
             }
         }
-        String addr = null;
+        String addr = "";
+        if (mLocation.length > 0) {
+            addr += mLocation[0] + ',';
+        }else {
+            addr += ",";
+        }
         if (mAddress != null) {
-            addr = mAddress[0] + "," + mAddress[1];
+            addr += mAddress[0] + "," + mAddress[1];
+        }else {
+            addr += ",";
         }
         StringBuilder entryBuilder = new StringBuilder();
         List<Entry> entryList = ((EntryChooseRVAdapter) rvEntry.getAdapter()).getData();

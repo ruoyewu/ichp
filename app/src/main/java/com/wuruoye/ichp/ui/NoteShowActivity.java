@@ -28,6 +28,7 @@ import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.model.bean.NoteComment;
 import com.wuruoye.ichp.ui.presenter.pro.NoteShowPresenter;
 import com.wuruoye.library.ui.WBaseActivity;
+import com.wuruoye.library.util.log.WLog;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -124,6 +125,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
     private void initVP() {
         try {
             List<Media> mediaList = mPresenter.parseMedia(mNote.getUrl(), mNote.getType());
+            WLog.loge(this, mediaList.toString());
             List<Fragment> fragmentList = new ArrayList<>();
             for (Media m : mediaList) {
                 Fragment fragment = new MediaFragment();
@@ -133,7 +135,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
                 fragmentList.add(fragment);
             }
 
-            vp.setAdapter(new FragmentVPAdapter(getSupportFragmentManager(), null,
+            vp.setAdapter(new FragmentVPAdapter(getSupportFragmentManager(), new ArrayList<String>(3),
                     fragmentList));
         } catch (IllegalArgumentException e) {
             onResultError(e.getMessage());

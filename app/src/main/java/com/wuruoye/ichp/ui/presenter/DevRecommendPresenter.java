@@ -9,11 +9,7 @@ import com.wuruoye.ichp.ui.model.UserCache;
  */
 
 public class DevRecommendPresenter extends RecommendContract.Presenter {
-    private UserCache mUserCache;
-
-    public DevRecommendPresenter() {
-        mUserCache = new UserCache();
-    }
+    private UserCache mUserCache = UserCache.getInstance();
 
     @Override
     public void requestNoteList(boolean isAdd, int type) {

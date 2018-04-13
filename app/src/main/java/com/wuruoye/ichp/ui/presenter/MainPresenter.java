@@ -19,11 +19,7 @@ import org.json.JSONObject;
  */
 
 public class MainPresenter extends MainContract.Presenter {
-    private UserCache mUserCache;
-
-    public MainPresenter() {
-        mUserCache = new UserCache();
-    }
+    private UserCache mUserCache = UserCache.getInstance();
 
     @Override
     public void requestLogin(final String id, final String pwd) {

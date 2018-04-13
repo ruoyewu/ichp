@@ -16,6 +16,7 @@ import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.library.util.net.WNet;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,11 +29,7 @@ import java.util.List;
  */
 
 public class DevAddNotePresenter extends AddNoteContract.Presenter {
-    private UserCache mUserCache;
-
-    public DevAddNotePresenter() {
-        mUserCache = new UserCache();
-    }
+    private UserCache mUserCache = UserCache.getInstance();
 
     @Override
     public void requestLocation(final Context context) {
@@ -107,10 +104,28 @@ public class DevAddNotePresenter extends AddNoteContract.Presenter {
         values.put("token", mUserCache.getToken());
         values.put("title", note.getTitle());
         values.put("discribe", note.getDescribe());
-        values.put("url", note.getUrl());
-        values.put("type", note.getType());
+//        values.put("url", note.getUrl());
+        values.put("type", "0");
         values.put("addr", note.getAddr());
         values.put("labels_id_str", note.getLabels_id_str());
+        String[] urls = note.getUrl().split(",");
+        String[] type = note.getType().split(",");
+        JSONArray array = null;
+        try {
+            array = new JSONArray();
+            for (int i = 0; i < urls.length; i++) {
+                JSONObject object = new JSONObject();
+                object.put("url", urls[i]);
+                object.put("type", type[i]);
+                array.put(object.toString());
+            }
+        } catch (JSONException e) {
+            if (isAvailable()) {
+                getView().onNoteAddResult(false, e.getMessage());
+            }
+            return;
+        }
+        values.put("url", array.toString());
         WNet.postInBackGround(Api.INSTANCE.getADD_REC(), values,
                 new com.wuruoye.library.model.Listener<String>() {
             @Override

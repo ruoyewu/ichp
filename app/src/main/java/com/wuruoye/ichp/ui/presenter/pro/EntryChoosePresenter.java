@@ -19,11 +19,7 @@ import java.util.List;
  */
 
 public class EntryChoosePresenter extends EntryChooseContract.Presenter {
-    private UserCache mUserCache;
-
-    public EntryChoosePresenter() {
-        mUserCache = new UserCache();
-    }
+    private UserCache mUserCache = UserCache.getInstance();
 
     @Override
     public void requestEntry(String search) {

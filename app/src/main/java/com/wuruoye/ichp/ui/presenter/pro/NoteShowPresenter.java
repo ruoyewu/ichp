@@ -25,11 +25,7 @@ import java.util.Locale;
  */
 
 public class NoteShowPresenter extends NoteShowContract.Presenter {
-    private UserCache mUserCache;
-
-    public NoteShowPresenter() {
-        mUserCache = new UserCache();
-    }
+    private UserCache mUserCache = UserCache.getInstance();
 
     @Override
     public void requestPraise(int id) {
@@ -122,6 +118,9 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
         int len;
         if ((len = urls.length) != types.length) {
             throw new IllegalArgumentException("url 与 type 不匹配");
+        }
+        if (urls[0].equals("")) {
+            return mediaList;
         }
         for (int i = 0; i < len; i++) {
             mediaList.add(new Media(getType(types[i]), urls[i]));

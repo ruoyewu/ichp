@@ -49,6 +49,8 @@
             android:theme="@style/FullScreenTheme"/>
         <activity android:name=".ui.UserLoginActivity" />
         <activity android:name=".ui.RecordActivity" />
+        <activity android:name=".ui.SettingActivity" />
+        <activity android:name=".ui.RegisterActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

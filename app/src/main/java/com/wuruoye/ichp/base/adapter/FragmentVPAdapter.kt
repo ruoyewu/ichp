@@ -12,7 +12,7 @@ import android.view.ViewGroup
 
 class FragmentVPAdapter(
         private val mFM: FragmentManager,
-        private val mTitleList: List<String>,
+        private val mTitleList: List<String>?,
         private val mFragmentList: List<Fragment>)
     : FragmentStatePagerAdapter(mFM) {
 
@@ -21,7 +21,7 @@ class FragmentVPAdapter(
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        return if (mTitleList.size == mFragmentList.size) {
+        return if (mTitleList != null && mTitleList.size == mFragmentList.size) {
             mTitleList[position]
         } else {
             super.getPageTitle(position)

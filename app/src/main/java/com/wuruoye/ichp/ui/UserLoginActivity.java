@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -34,7 +35,7 @@ public class UserLoginActivity extends WBaseActivity<UserLoginPresenter>
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_user_login;
+        return R.layout.activity_login;
     }
 
     @Override
@@ -99,6 +100,6 @@ public class UserLoginActivity extends WBaseActivity<UserLoginPresenter>
     }
 
     private void register() {
-
+        startActivity(new Intent(this, RegisterActivity.class));
     }
 }

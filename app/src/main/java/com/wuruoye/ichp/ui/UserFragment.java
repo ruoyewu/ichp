@@ -133,6 +133,8 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
                 break;
             case 6:
                 // 设置
+                intent = new Intent(getContext(), SettingActivity.class);
+                startActivity(intent);
                 break;
             case 7:
                 // 关于

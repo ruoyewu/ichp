@@ -10,6 +10,9 @@ import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.library.model.Listener;
 import com.wuruoye.library.util.net.WNet;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -22,11 +25,7 @@ import static com.wuruoye.ichp.ui.HomeFragment.TYPE_ATTENTION;
  */
 
 public class RecordPresenter extends RecordContract.Presenter {
-    private UserCache mUserCache;
-
-    public RecordPresenter() {
-        mUserCache = new UserCache();
-    }
+    private UserCache mUserCache = UserCache.getInstance();
 
     @Override
     public void requestRecord(final boolean isAdd, int type) {
@@ -39,6 +38,22 @@ public class RecordPresenter extends RecordContract.Presenter {
                     try {
                         List<Note> result = NetResultUtil.parseDataList(s, Note.class);
                         Collections.reverse(result);
+                        for (Note n : result) {
+                            JSONArray array = new JSONArray(n.getUrl());
+                            String url = "", type = "";
+                            if (array.length() > 0) {
+                                for (int i = 0; i < array.length(); i++) {
+                                    String oj = array.getString(i);
+                                    JSONObject obj = new JSONObject(oj);
+                                    url += obj.getString("url") + ',';
+                                    type += obj.getString("type") + ',';
+                                }
+                                url = url.substring(0, url.length() - 1);
+                                type = type.substring(0, type.length() - 1);
+                            }
+                            n.setUrl(url);
+                            n.setType(type);
+                        }
                         getView().onResultRecord(result, isAdd);
                     } catch (Exception e) {
                         if (isAvailable()) {

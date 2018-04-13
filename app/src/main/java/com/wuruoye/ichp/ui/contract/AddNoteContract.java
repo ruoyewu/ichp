@@ -6,6 +6,8 @@ import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.library.contract.WIView;
 import com.wuruoye.library.contract.WPresenter;
 
+import org.json.JSONException;
+
 /**
  * Created by wuruoye on 2018/1/28.
  * this file is to
@@ -22,7 +24,7 @@ public interface AddNoteContract {
     abstract class Presenter extends WPresenter<View> {
         abstract public void requestLocation(Context context);
         abstract public void requestUploadFile(String fileName, String type);
-        abstract public void requestUpNote(Note note);
+        abstract public void requestUpNote(Note note) throws JSONException;
         abstract public String generateImageName();
         abstract public String generateVideoName();
         abstract public String generateRecordName();

@@ -3,6 +3,7 @@ package com.wuruoye.ichp.ui;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,7 +13,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.MediaActivity;
+import com.wuruoye.ichp.ui.contract.pro.EntryAddContract;
+import com.wuruoye.ichp.ui.presenter.pro.EntryAddPresenter;
+import com.wuruoye.library.ui.WPhotoActivity;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +26,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * this file is to
  */
 
-public class EntryAddActivity extends MediaActivity implements View.OnClickListener {
+public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
+        implements View.OnClickListener, EntryAddContract.View {
     public static final String[] ITEM_PHOTO = {"图库", "拍摄"};
     public static final String[] ITEM_BOTTOM = {"返回", "发布"};
 
@@ -33,8 +37,10 @@ public class EntryAddActivity extends MediaActivity implements View.OnClickListe
     private LinearLayout[] llBottom;
 
     private AlertDialog dlgPhoto;
+    private AlertDialog dlgUpload;
 
     private String mPhotoPath;
+    private String mPhotoUrl;
 
     @Override
     public int getContentView() {
@@ -43,7 +49,7 @@ public class EntryAddActivity extends MediaActivity implements View.OnClickListe
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-
+        setPresenter(new EntryAddPresenter());
     }
 
     @Override
@@ -87,6 +93,10 @@ public class EntryAddActivity extends MediaActivity implements View.OnClickListe
                     }
                 })
                 .create();
+        dlgUpload = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setCancelable(false)
+                .create();
     }
 
     @Override
@@ -105,9 +115,21 @@ public class EntryAddActivity extends MediaActivity implements View.OnClickListe
     }
 
     private void publishEntry() {
+        if (TextUtils.isEmpty(mPhotoPath)) {
+            Toast.makeText(this, "请添加图片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        dlgUpload.setMessage("正在上传媒体文件...");
+        dlgUpload.show();
+        mPresenter.requestUpload(mPhotoPath);
+    }
+
+    private void doPublish() {
+        dlgPhoto.setMessage("正在上传信息...");
         String title = etTitle.getText().toString();
         String content = etContent.getText().toString();
-        String photo = mPhotoPath;
+
+        mPresenter.requestAddEntry(title, content, mPhotoUrl);
     }
 
     @Override
@@ -121,5 +143,32 @@ public class EntryAddActivity extends MediaActivity implements View.OnClickListe
     @Override
     public void onPhotoError(String s) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResultError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResultAdd(boolean result, String info) {
+        dlgUpload.dismiss();
+        if (result) {
+            Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
+            finish();
+        }else {
+            Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onResultUpload(boolean result, String info) {
+        if (result) {
+            mPhotoUrl = info;
+            doPublish();
+        }else {
+            dlgUpload.dismiss();
+            Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+        }
     }
 }

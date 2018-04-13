@@ -15,7 +15,20 @@ public class UserCache extends WBaseCache {
     public static final String USER_LOGIN = "user_login";
     public static final String USER_TOKEN = "user_token";
 
-    public UserCache() {
+    private static UserCache mUserCache;
+
+    public static UserCache getInstance() {
+        if (mUserCache == null) {
+            synchronized (UserCache.class) {
+                if (mUserCache == null) {
+                    mUserCache = new UserCache();
+                }
+            }
+        }
+        return mUserCache;
+    }
+
+    private UserCache() {
         super(SP_NAME);
     }
 
