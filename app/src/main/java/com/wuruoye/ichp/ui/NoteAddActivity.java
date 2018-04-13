@@ -29,6 +29,7 @@ import com.wuruoye.ichp.base.util.PermissionUtil;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.MediaRVAdapter;
 import com.wuruoye.ichp.ui.contract.AddNoteContract;
+import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.model.bean.Note;
@@ -47,7 +48,7 @@ import java.util.Map;
  * this file is to
  */
 
-public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
+public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
         implements View.OnClickListener, AddNoteContract.View {
     public static final String[] PHOTO_ITEM = {"照片选取", "照片拍摄"};
     public static final String[] VIDEO_ITEM = {"视频选取", "视频拍摄"};
@@ -347,7 +348,11 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
             mPresenter.requestUploadFile(mCurrentUploadMedia.getContent(),
                     getType(mCurrentUploadMedia));
         }else {
-            doPublishNote();
+            if (mType == TYPE_NOTE) {
+                doPublishNote();
+            }else {
+                doPublishCourse();
+            }
         }
     }
 
@@ -361,6 +366,21 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
         }else {
             doPublishNote();
         }
+    }
+
+    private void doPublishCourse() {
+        String title = etTitle.getText().toString();
+        String content = etContent.getText().toString();
+        String date = etDate.getText().toString();
+        String place = etPlace.getText().toString();
+        String entrance = etEntrance.getText().toString();
+
+        Course course = new Course();
+        course.setTitle(title);
+        course.setContent(content);
+        course.setHold_addr(place);
+        course.setAct_src(entrance);
+        mPresenter.requestUpCourse(course, date);
     }
 
     private void doPublishNote() {
@@ -415,14 +435,13 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
 
         Note note = new Note();
         note.setTitle(title);
-        note.setDescribe(content);
+        note.setDiscribe(content);
         note.setUrl(urlBuilder.toString());
         note.setType(typeBuilder.toString());
         note.setAddr(addr);
         note.setLabels_id_str(entryBuilder.toString());
         mPresenter.requestUpNote(note);
         dlgUpload.setTitle("正在上传记录...");
-
     }
 
     private String getType(Media media) {
@@ -497,6 +516,11 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
     }
 
     @Override
+    public void onResultError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onLocationResult(Double[] addr, String[] location) {
         mAddress = addr;
         mLocation = location;
@@ -540,6 +564,12 @@ public class NoteAddActivity extends MediaActivity<DevAddNotePresenter>
         }else {
             Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onResultCourse() {
+        Toast.makeText(this, "发布成功", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override

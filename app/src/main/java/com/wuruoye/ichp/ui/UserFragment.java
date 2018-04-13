@@ -7,17 +7,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.BaseFragment;
+import com.wuruoye.ichp.ui.contract.pro.UserContract;
 import com.wuruoye.ichp.ui.model.bean.User;
+import com.wuruoye.ichp.ui.presenter.pro.UserPresenter;
+import com.wuruoye.library.ui.WBaseFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.wuruoye.ichp.ui.UserAttentionActivity.TYPE_FOCUS;
 import static com.wuruoye.ichp.ui.UserAttentionActivity.TYPE_FOCUSED;
 
@@ -26,7 +30,8 @@ import static com.wuruoye.ichp.ui.UserAttentionActivity.TYPE_FOCUSED;
  * this file is to
  */
 
-public class UserFragment extends BaseFragment implements View.OnClickListener{
+public class UserFragment extends WBaseFragment<UserContract.Presenter>
+        implements View.OnClickListener, UserContract.View{
     public static final String[] ITEM_TITLE = new String[] {
             "我的信息", "我的非遗记录", "我的收藏", "我的消息", "我的非遗足迹",
             "非遗拾贝", "设置", "关于"
@@ -34,6 +39,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
     public static final int[] ITEM_ICON = new int[] {
 
     };
+    public final int USER_INFO = hashCode() % 10000;
 
     private CircleImageView civ;
     private TextView tvName;
@@ -51,7 +57,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-        mUser = new User("name", "intro", "https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=f900350f2a34349b600b66d7a8837eab/7e3e6709c93d70cfe7ea7e18fadcd100baa12b97.jpg");
+        setPresenter(new UserPresenter());
     }
 
     @Override
@@ -65,13 +71,19 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
 
         initLayout();
         initItems();
+
+        mPresenter.requestUserInfo();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == USER_INFO && resultCode == RESULT_OK) {
+            mUser = data.getParcelableExtra("user");
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void initLayout() {
-        Glide.with(this)
-                .load(mUser.getImage())
-                .into(civ);
-        tvName.setText(mUser.getName());
         tvFocused.setOnClickListener(this);
         tvFocus.setOnClickListener(this);
         civ.setOnClickListener(this);
@@ -98,14 +110,14 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
 
     private void onItemClick(int position) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("user", mUser);
         Intent intent;
         switch (position) {
             case 0:
                 // 我的信息
                 intent = new Intent(getContext(), PersonInfoActivity.class);
+                bundle.putParcelable("user", mUser);
                 intent.putExtras(bundle);
-                startActivity(intent);
+                startActivityForResult(intent, USER_INFO);
                 break;
             case 1:
                 // 我的非遗记录
@@ -145,7 +157,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("user", mUser);
         Intent intent;
         switch (v.getId()) {
             case R.id.tv_user_focus:
@@ -167,5 +178,20 @@ public class UserFragment extends BaseFragment implements View.OnClickListener{
                 break;
 
         }
+    }
+
+    @Override
+    public void onResultError(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResultUserInfo(User user) {
+        mUser = user;
+        tvName.setText(user.getAccount_name());
+        tvId.setText(String.valueOf(user.getUser_id()));
+        Glide.with(civ)
+                .load(user.getImage_src())
+                .into(civ);
     }
 }

@@ -31,7 +31,8 @@
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ui.SearchActivity" />
         <activity android:name=".ui.CollectActivity" />
-        <activity android:name=".ui.PersonInfoActivity" />
+        <activity android:name=".ui.PersonInfoActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".ui.EntryAddActivity" />
         <activity android:name=".ui.EntryInfoActivity" />
         <activity android:name=".ui.UserInfoActivity" />

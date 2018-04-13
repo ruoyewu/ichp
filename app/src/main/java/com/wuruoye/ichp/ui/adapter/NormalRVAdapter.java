@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.model.bean.Course;
@@ -46,12 +45,7 @@ public class NormalRVAdapter extends BaseRVAdapter<Object> {
             viewHolder.tvTitle.setText(((Note) data).getTitle());
 
         }else if (data instanceof Course) {
-            viewHolder.civ.setVisibility(View.GONE);
-            viewHolder.tvTitle.setText(((Course) data).getTitle());
-            viewHolder.tvContent.setText(((Course) data).getAuthor());
-            Glide.with(viewHolder.iv)
-                    .load(((Course) data).getImage())
-                    .into(viewHolder.iv);
+
         }else if (data instanceof Entry) {
             viewHolder.civ.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((Entry) data).getName());
@@ -59,10 +53,6 @@ public class NormalRVAdapter extends BaseRVAdapter<Object> {
         }else if (data instanceof User) {
             viewHolder.iv.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((User) data).getName());
-            viewHolder.tvContent.setText(((User) data).getIntro());
-            Glide.with(viewHolder.civ)
-                    .load(((User) data).getImage())
-                    .into(viewHolder.civ);
         }
     }
 

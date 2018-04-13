@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseActivity;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
@@ -66,14 +65,7 @@ public class UserInfoActivity extends BaseActivity {
     }
 
     private void initLayout() {
-        Glide.with(this)
-                .load(mUser.getImage())
-                .into(civ);
-        Glide.with(this)
-                .load(mUser.getImage())
-                .into(ivBack);
-        tvTitle.setText(mUser.getName());
-        tvIntro.setText(mUser.getIntro());
+
         tvFocus.setText("关注");
         tvFocused.setText("被关注");
     }

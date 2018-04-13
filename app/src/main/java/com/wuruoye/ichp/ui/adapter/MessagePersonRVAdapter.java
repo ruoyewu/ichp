@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.model.bean.Message;
@@ -47,16 +46,10 @@ public class MessagePersonRVAdapter extends BaseRVAdapter<Message> {
         Message message = getData(position);
         if (getItemViewType(position) == TYPE_LEFT) {
             LeftViewHolder left = (LeftViewHolder) holder;
-            Glide.with(left.civ)
-                    .load(message.getFrom().getImage())
-                    .into(left.civ);
-            left.tvName.setText(message.getFrom().getName());
-            left.tvContent.setText(message.getContent());
+
         }else if (getItemViewType(position) == TYPE_RIGHT) {
             RightViewHolder right = (RightViewHolder) holder;
-            Glide.with(right.civ)
-                    .load(message.getFrom().getImage())
-                    .into(right.civ);
+
             right.tvName.setText(message.getFrom().getName());
             right.tvContent.setText(message.getContent());
         }

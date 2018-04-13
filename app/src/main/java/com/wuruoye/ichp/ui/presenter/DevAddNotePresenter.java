@@ -12,6 +12,7 @@ import com.wuruoye.ichp.base.util.DateUtil;
 import com.wuruoye.ichp.base.util.LocationUtil;
 import com.wuruoye.ichp.ui.contract.AddNoteContract;
 import com.wuruoye.ichp.ui.model.UserCache;
+import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.library.util.net.WNet;
 
@@ -103,7 +104,7 @@ public class DevAddNotePresenter extends AddNoteContract.Presenter {
         ArrayMap<String, String> values = new ArrayMap<>();
         values.put("token", mUserCache.getToken());
         values.put("title", note.getTitle());
-        values.put("discribe", note.getDescribe());
+        values.put("discribe", note.getDiscribe());
 //        values.put("url", note.getUrl());
         values.put("type", "0");
         values.put("addr", note.getAddr());
@@ -152,6 +153,45 @@ public class DevAddNotePresenter extends AddNoteContract.Presenter {
             public void onFail(String s) {
                 if (isAvailable()) {
                     getView().onNoteAddResult(false, s);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void requestUpCourse(Course course, String date) {
+        ArrayMap<String, String> values = new ArrayMap<>();
+        values.put("token", mUserCache.getToken());
+        values.put("title", course.getTitle());
+        values.put("content", course.getContent());
+        values.put("hold_date", date);
+        values.put("hold_addr", course.getHold_addr());
+        values.put("act_src", course.getAct_src());
+        values.put("image_src", course.getImage_src());
+
+        WNet.postInBackGround(Api.INSTANCE.getISSUE_ACT(), values,
+                new com.wuruoye.library.model.Listener<String>() {
+            @Override
+            public void onSuccessful(String s) {
+                if (isAvailable()) {
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        if (object.getInt("code") == 0) {
+                            getView().onResultCourse();
+                        }else {
+                            getView().onResultError(object.getString("msg"));
+                        }
+                    } catch (JSONException e) {
+                        getView().onResultError(e.getMessage());
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFail(String s) {
+                if (isAvailable()) {
+                    getView().onResultError(s);
                 }
             }
         });

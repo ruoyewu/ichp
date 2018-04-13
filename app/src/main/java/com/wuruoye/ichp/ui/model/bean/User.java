@@ -9,14 +9,22 @@ import android.os.Parcelable;
  */
 
 public class User implements Parcelable {
+    private String image_src;
     private String name;
-    private String intro;
-    private String image;
+    private int acc_point;
+    private int role;
+    private String account_name;
+    private float reg_date;
+    private String telephone;
+    private String sign;
+    private int user_id;
 
-    public User(String name, String intro, String image) {
-        this.name = name;
-        this.intro = intro;
-        this.image = image;
+    public String getImage_src() {
+        return image_src;
+    }
+
+    public void setImage_src(String image_src) {
+        this.image_src = image_src;
     }
 
     public String getName() {
@@ -27,20 +35,60 @@ public class User implements Parcelable {
         this.name = name;
     }
 
-    public String getIntro() {
-        return intro;
+    public int getAcc_point() {
+        return acc_point;
     }
 
-    public void setIntro(String intro) {
-        this.intro = intro;
+    public void setAcc_point(int acc_point) {
+        this.acc_point = acc_point;
     }
 
-    public String getImage() {
-        return image;
+    public int getRole() {
+        return role;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setRole(int role) {
+        this.role = role;
+    }
+
+    public String getAccount_name() {
+        return account_name;
+    }
+
+    public void setAccount_name(String account_name) {
+        this.account_name = account_name;
+    }
+
+    public float getReg_date() {
+        return reg_date;
+    }
+
+    public void setReg_date(float reg_date) {
+        this.reg_date = reg_date;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     @Override
@@ -50,15 +98,30 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.image_src);
         dest.writeString(this.name);
-        dest.writeString(this.intro);
-        dest.writeString(this.image);
+        dest.writeInt(this.acc_point);
+        dest.writeInt(this.role);
+        dest.writeString(this.account_name);
+        dest.writeFloat(this.reg_date);
+        dest.writeString(this.telephone);
+        dest.writeString(this.sign);
+        dest.writeInt(this.user_id);
+    }
+
+    public User() {
     }
 
     protected User(Parcel in) {
+        this.image_src = in.readString();
         this.name = in.readString();
-        this.intro = in.readString();
-        this.image = in.readString();
+        this.acc_point = in.readInt();
+        this.role = in.readInt();
+        this.account_name = in.readString();
+        this.reg_date = in.readFloat();
+        this.telephone = in.readString();
+        this.sign = in.readString();
+        this.user_id = in.readInt();
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {

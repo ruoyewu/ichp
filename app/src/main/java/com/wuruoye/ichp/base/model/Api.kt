@@ -8,6 +8,8 @@ package com.wuruoye.ichp.base.model
 object Api {
     private const val REMOTE_HOST = "http://ichp.wuruoye.com/"
 
+    val USER_INFO = REMOTE_HOST + "getUserInfo"
+    val COLLECT_RECORD = REMOTE_HOST + "collRec"
     val LOGIN = REMOTE_HOST + "login"
     val UPLOAD = REMOTE_HOST + "upload"
     val REGISTER = REMOTE_HOST + "register"

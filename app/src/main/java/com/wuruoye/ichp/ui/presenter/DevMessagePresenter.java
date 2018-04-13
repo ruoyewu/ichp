@@ -2,7 +2,6 @@ package com.wuruoye.ichp.ui.presenter;
 
 import com.wuruoye.ichp.ui.contract.MessageContract;
 import com.wuruoye.ichp.ui.model.bean.Comment;
-import com.wuruoye.ichp.ui.model.bean.Message;
 import com.wuruoye.ichp.ui.model.bean.Praise;
 import com.wuruoye.ichp.ui.model.bean.User;
 
@@ -37,12 +36,7 @@ public class DevMessagePresenter extends MessageContract.Presenter {
                     new Comment("from3", 1517825953570L, Comment.Type.ENTRY, null)
             ));
         } else if (type == TYPE_MESSAGE) {
-            User u = new User("userName", "intro", "");
-            data.addAll(Arrays.asList(
-                    new Message(u, "content1", 1517825953570L),
-                    new Message(u, "content2", 1517825953570L),
-                    new Message(u, "content3", 1517825953570L)
-            ));
+
         }
 
         for (int i = 0; i < 5; i++) {

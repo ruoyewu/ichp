@@ -14,6 +14,7 @@ public class UserCache extends WBaseCache {
     public static final String USER_PWD = "user_pwd";
     public static final String USER_LOGIN = "user_login";
     public static final String USER_TOKEN = "user_token";
+    public static final String USER_ID = "user_id";
 
     private static UserCache mUserCache;
 
@@ -62,5 +63,13 @@ public class UserCache extends WBaseCache {
 
     public void setToken(String token) {
         putString(USER_TOKEN, token);
+    }
+
+    public int getUserId() {
+        return getInt(USER_ID, 0);
+    }
+
+    public void setUserId(int id) {
+        putInt(USER_ID, id);
     }
 }

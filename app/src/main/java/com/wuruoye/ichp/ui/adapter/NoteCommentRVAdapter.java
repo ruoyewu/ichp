@@ -19,21 +19,46 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class NoteCommentRVAdapter extends BaseRVAdapter<NoteComment> {
+    public static final int TYPE_DATA = 1;
+    public static final int TYPE_TAIL = 2;
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_comment, parent, false);
-        return new ViewHolder(view);
+        if (viewType == TYPE_DATA) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_comment, parent, false);
+            return new ViewHolder(view);
+        }else {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_tail, parent, false);
+            return new TailViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        NoteComment comment = getData(position);
-        ViewHolder viewHolder = (ViewHolder) holder;
-        viewHolder.tvName.setText(String.valueOf(comment.getCommer()));
-        viewHolder.tvTime.setText(DateUtil.formatTime((long)(comment.getComm_date() * 1000),
-                "yyyy / MM / dd HH : mm : ss"));
-        viewHolder.tvContent.setText(comment.getContent());
+        if (getItemViewType(position) == TYPE_DATA) {
+            NoteComment comment = getData(position);
+            ViewHolder viewHolder = (ViewHolder) holder;
+            viewHolder.tvName.setText(String.valueOf(comment.getCommer()));
+            viewHolder.tvTime.setText(DateUtil.formatTime((long)(comment.getComm_date() * 1000),
+                    "yyyy / MM / dd HH : mm : ss"));
+            viewHolder.tvContent.setText(comment.getContent());
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return super.getItemCount() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position < super.getItemCount()) {
+            return TYPE_DATA;
+        }else {
+            return TYPE_TAIL;
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -44,6 +69,10 @@ public class NoteCommentRVAdapter extends BaseRVAdapter<NoteComment> {
 
         public ViewHolder(View itemView) {
             super(itemView);
+            civ = itemView.findViewById(R.id.civ_item_comment);
+            tvName = itemView.findViewById(R.id.tv_item_comment_name);
+            tvTime = itemView.findViewById(R.id.tv_item_comment_time);
+            tvContent = itemView.findViewById(R.id.tv_item_comment_content);
         }
     }
 }

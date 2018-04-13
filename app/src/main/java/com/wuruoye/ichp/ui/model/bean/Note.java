@@ -16,7 +16,7 @@ public class Note implements Parcelable {
     private int appr_num;
     private float issue_date;
     private String url;
-    private String describe;
+    private String discribe;
     private String type;
     private int comm_num;
     private String title;
@@ -70,12 +70,12 @@ public class Note implements Parcelable {
         this.url = url;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDiscribe() {
+        return discribe;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setDiscribe(String discribe) {
+        this.discribe = discribe;
     }
 
     public String getType() {
@@ -123,7 +123,7 @@ public class Note implements Parcelable {
         dest.writeInt(this.appr_num);
         dest.writeFloat(this.issue_date);
         dest.writeString(this.url);
-        dest.writeString(this.describe);
+        dest.writeString(this.discribe);
         dest.writeString(this.type);
         dest.writeInt(this.comm_num);
         dest.writeString(this.title);
@@ -140,7 +140,7 @@ public class Note implements Parcelable {
         this.appr_num = in.readInt();
         this.issue_date = in.readFloat();
         this.url = in.readString();
-        this.describe = in.readString();
+        this.discribe = in.readString();
         this.type = in.readString();
         this.comm_num = in.readInt();
         this.title = in.readString();

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.model.bean.Course;
@@ -35,11 +34,6 @@ public class CourseRVAdapter extends BaseRVAdapter<Course> {
                 onItemClick(course);
             }
         });
-        Glide.with(viewHolder.iv)
-                .load(course.getImage())
-                .into(viewHolder.iv);
-        viewHolder.tvTitle.setText(course.getTitle());
-        viewHolder.tvAuthor.setText(course.getAuthor());
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

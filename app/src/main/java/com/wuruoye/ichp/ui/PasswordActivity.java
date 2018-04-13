@@ -2,13 +2,11 @@ package com.wuruoye.ichp.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseActivity;
 import com.wuruoye.ichp.ui.model.bean.User;
@@ -59,15 +57,7 @@ public class PasswordActivity extends BaseActivity {
     }
 
     private void initLayout() {
-        Glide.with(this)
-                .load(mUser.getImage())
-                .into(civ);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onChange();
-            }
-        });
+
     }
 
     private void onChange() {

@@ -43,7 +43,6 @@ public class MessagePersonActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-        mAnotherUser = new User("name", "intro", "");
         mUser = bundle.getParcelable("user");
     }
 

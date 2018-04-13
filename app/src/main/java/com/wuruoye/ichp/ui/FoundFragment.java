@@ -159,12 +159,7 @@ public class FoundFragment extends BaseFragment implements FoundContract.View {
 
     @Override
     public void onRecommendCourseResult(List<Course> courseList) {
-        for (int i = 0; i < ITEM_SIZE; i++) {
-            tvItems[i + 2].setText(courseList.get(i).getTitle());
-            Glide.with(getContext())
-                    .load(courseList.get(i).getImage())
-                    .into(ivItems[i + 2]);
-        }
+
     }
 
     @Override

@@ -61,6 +61,8 @@
                 android:layout_height="200dp" />
 
             <android.support.v7.widget.RecyclerView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:id="@+id/rv_note_show_entry"
                 android:layout_width="match_parent"
                 android:layout_height="50dp" />

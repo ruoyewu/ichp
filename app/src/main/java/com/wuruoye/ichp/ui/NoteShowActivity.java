@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -10,12 +11,15 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
@@ -26,6 +30,7 @@ import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.model.bean.NoteComment;
+import com.wuruoye.ichp.ui.model.bean.User;
 import com.wuruoye.ichp.ui.presenter.pro.NoteShowPresenter;
 import com.wuruoye.library.ui.WBaseActivity;
 import com.wuruoye.library.util.log.WLog;
@@ -62,6 +67,9 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
     private RecyclerView rvComment;
     private LinearLayout llBottom;
 
+    private AlertDialog dlgComment;
+    private EditText etComment;
+
     private Note mNote;
     private String[] mLocation;
 
@@ -92,9 +100,38 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         rvComment = findViewById(R.id.rv_note_show_comment);
         llBottom = findViewById(R.id.ll_note_show_bottom);
 
+        initDlg();
         initLayout();
         initVP();
         initRecyclerView();
+
+        mPresenter.requestEntryList(mNote.getLabels_id_str());
+        mPresenter.requestUserInfo(mNote.getRecorder());
+        mPresenter.requestCommentList(mNote.getRec_id());
+    }
+
+    @SuppressLint("InflateParams")
+    private void initDlg() {
+        View view = LayoutInflater.from(this)
+                .inflate(R.layout.dlg_comment, null);
+        etComment = view.findViewById(R.id.et_dlg_comment);
+        dlgComment = new AlertDialog.Builder(this)
+                .setTitle("输入评论内容")
+                .setView(view)
+                .setPositiveButton("提交", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String comment = etComment.getText().toString();
+                        mPresenter.requestComment(mNote.getRec_id(), comment);
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create();
     }
 
     private void initLayout() {
@@ -119,6 +156,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
 
         tvTitle.setText(mNote.getTitle());
         tvTime.setText(mPresenter.parseDate(mNote.getIssue_date()));
+        tvContent.setText(mNote.getDiscribe());
         tvLocation.setText((mLocation = mPresenter.parseLocation(mNote.getAddr()))[0]);
     }
 
@@ -135,8 +173,8 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
                 fragmentList.add(fragment);
             }
 
-            vp.setAdapter(new FragmentVPAdapter(getSupportFragmentManager(), new ArrayList<String>(3),
-                    fragmentList));
+            vp.setAdapter(new FragmentVPAdapter(getSupportFragmentManager(),
+                    new ArrayList<String>(3), fragmentList));
         } catch (IllegalArgumentException e) {
             onResultError(e.getMessage());
         }
@@ -162,6 +200,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         decoration.setDrawable(ActivityCompat.getDrawable(this,
                 R.drawable.decoration_horizontal));
         rvEntry.addItemDecoration(decoration);
+        rvEntry.setAdapter(adapter);
     }
 
     private void initCommentRV() {
@@ -205,16 +244,27 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
     private void onBottomClick(int position) {
         switch (position) {
             case 0:     // 点赞
+                mPresenter.requestPraise(mNote.getRec_id());
                 break;
             case 1:     // 评论
+                dlgComment.show();
                 break;
             case 2:     // 收藏
+                mPresenter.requestCollect(mNote.getRec_id());
                 break;
             case 3:     // 词条
                 break;
             case 4:     // 分享
                 break;
         }
+    }
+
+    @Override
+    public void onResultUserInfo(User user) {
+        Glide.with(civ)
+                .load(user.getImage_src())
+                .into(civ);
+        tvUser.setText(user.getAccount_name());
     }
 
     @Override
@@ -232,5 +282,14 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
     public void onResultNoteComment(List<NoteComment> commentList) {
         NoteCommentRVAdapter adapter = (NoteCommentRVAdapter) rvComment.getAdapter();
         adapter.setData(commentList);
+    }
+
+    @Override
+    public void onResultUpComment(boolean result, String info) {
+        Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+        if (result) {
+            etComment.getText().clear();
+            mPresenter.requestCommentList(mNote.getRec_id());
+        }
     }
 }
