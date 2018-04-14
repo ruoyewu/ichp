@@ -8,6 +8,11 @@ package com.wuruoye.ichp.base.model
 object Api {
     private const val REMOTE_HOST = "http://ichp.wuruoye.com/"
 
+    val BIG_MAP = REMOTE_HOST + "bigMap"
+    val SMALL_MAP = REMOTE_HOST + "smallMap"
+    val RECOMMEND_ALL = REMOTE_HOST + "recommendAll"
+    val RECOMMEND_REC = REMOTE_HOST + "recommendRec"
+    val RECOMMEND_ACT = REMOTE_HOST + "recommendAct"
     val USER_INFO = REMOTE_HOST + "getUserInfo"
     val COLLECT_RECORD = REMOTE_HOST + "collRec"
     val LOGIN = REMOTE_HOST + "login"
@@ -23,6 +28,7 @@ object Api {
     val MODIFY_REC = REMOTE_HOST + "modifyRec"
     val DELETE_REC = REMOTE_HOST + "delRec"
     val GET_ALL_REC = REMOTE_HOST + "getAllRec"
+    val GET_USER_REC = REMOTE_HOST + "getUserRec"
     val GET_REC = REMOTE_HOST + "getRec"
     val SEARCH_REC = REMOTE_HOST + "searchRec"
     val ISSUE_ACT = REMOTE_HOST + "issueAct"

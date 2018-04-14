@@ -70,7 +70,11 @@ public class HomeFragment extends BaseFragment {
         recommend.setArguments(bRecommend);
         fragments.add(attention);
         fragments.add(recommend);
-        fragments.add(new MapFragment());
+        Fragment mapFragment = new MapFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", 0);
+        mapFragment.setArguments(bundle);
+        fragments.add(mapFragment);
 
         FragmentVPAdapter adapter = new FragmentVPAdapter(
                 getChildFragmentManager(), TITLE_LIST, fragments);

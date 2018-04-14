@@ -93,7 +93,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/et_note_add_input"
+                android:id="@+id/et_note_add_entrance"
                 android:hint="报名入口"
                 android:background="@null"
                 android:layout_width="match_parent"

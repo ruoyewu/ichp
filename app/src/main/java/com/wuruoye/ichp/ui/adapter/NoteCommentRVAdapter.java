@@ -40,9 +40,9 @@ public class NoteCommentRVAdapter extends BaseRVAdapter<NoteComment> {
         if (getItemViewType(position) == TYPE_DATA) {
             NoteComment comment = getData(position);
             ViewHolder viewHolder = (ViewHolder) holder;
-            viewHolder.tvName.setText(String.valueOf(comment.getCommer()));
+            viewHolder.tvName.setText(comment.getAccount_name());
             viewHolder.tvTime.setText(DateUtil.formatTime((long)(comment.getComm_date() * 1000),
-                    "yyyy / MM / dd HH : mm : ss"));
+                    "yyyy/MM/dd HH:mm:ss"));
             viewHolder.tvContent.setText(comment.getContent());
         }
     }

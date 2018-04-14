@@ -16,6 +16,7 @@ public class NoteComment implements Parcelable {
     private int commer;
     private int rec_id;
     private int appr_num;
+    private String account_name;
 
     public int getComm_rec_id() {
         return comm_rec_id;
@@ -31,6 +32,14 @@ public class NoteComment implements Parcelable {
 
     public void setComm_date(float comm_date) {
         this.comm_date = comm_date;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public int getCommer() {
@@ -49,20 +58,20 @@ public class NoteComment implements Parcelable {
         this.rec_id = rec_id;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public int getAppr_num() {
         return appr_num;
     }
 
     public void setAppr_num(int appr_num) {
         this.appr_num = appr_num;
+    }
+
+    public String getAccount_name() {
+        return account_name;
+    }
+
+    public void setAccount_name(String account_name) {
+        this.account_name = account_name;
     }
 
     @Override
@@ -78,6 +87,7 @@ public class NoteComment implements Parcelable {
         dest.writeInt(this.commer);
         dest.writeInt(this.rec_id);
         dest.writeInt(this.appr_num);
+        dest.writeString(this.account_name);
     }
 
     public NoteComment() {
@@ -90,6 +100,7 @@ public class NoteComment implements Parcelable {
         this.commer = in.readInt();
         this.rec_id = in.readInt();
         this.appr_num = in.readInt();
+        this.account_name = in.readString();
     }
 
     public static final Parcelable.Creator<NoteComment> CREATOR = new Parcelable.Creator<NoteComment>() {

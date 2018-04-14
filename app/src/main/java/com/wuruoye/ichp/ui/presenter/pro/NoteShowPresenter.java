@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -149,6 +150,7 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
             public void onSuccessful(String s) {
                 try {
                     List<NoteComment> comments = NetResultUtil.parseDataList(s, NoteComment.class);
+                    Collections.reverse(comments);
                     if (isAvailable()) {
                         getView().onResultNoteComment(comments);
                     }

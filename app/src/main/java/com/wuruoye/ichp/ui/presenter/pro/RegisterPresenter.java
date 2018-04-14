@@ -18,11 +18,11 @@ import org.json.JSONObject;
 
 public class RegisterPresenter extends RegisterContract.Presenter {
     @Override
-    public void requestRegister(String name, String pwd) {
+    public void requestRegister(String name, String pwd, int role) {
         ArrayMap<String, String> values = new ArrayMap<>();
         values.put("username", name);
         values.put("psw", pwd);
-        values.put("role", "0");
+        values.put("role", String.valueOf(role));
 
         WNet.postInBackGround(Api.INSTANCE.getREGISTER(), values, new Listener<String>() {
             @Override

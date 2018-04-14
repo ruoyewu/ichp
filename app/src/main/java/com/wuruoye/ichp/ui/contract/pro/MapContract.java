@@ -1,20 +1,24 @@
 package com.wuruoye.ichp.ui.contract.pro;
 
+import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.library.contract.WIView;
 import com.wuruoye.library.contract.WPresenter;
 
+import java.util.List;
+
 /**
  * @Created : wuruoye
- * @Date : 2018/4/12 21:54.
+ * @Date : 2018/4/14 00:21.
  * @Description :
  */
 
-public interface RegisterContract {
+public interface MapContract {
     interface View extends WIView {
-        void onResultRegister(boolean result, String info);
+        void onResultError(String error);
+        void onResultNote(List<Note> noteList);
     }
 
     abstract class Presenter extends WPresenter<View> {
-        abstract public void requestRegister(String name, String pwd, int role);
+        abstract public void requestNote(int type);
     }
 }

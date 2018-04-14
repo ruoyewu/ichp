@@ -1,8 +1,11 @@
 package com.wuruoye.ichp.base.util;
 
 import com.google.gson.Gson;
+import com.wuruoye.ichp.ui.model.bean.Course;
+import com.wuruoye.ichp.ui.model.bean.Note;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -30,5 +33,45 @@ public class NetResultUtil {
         }else {
             throw new Exception(object.getString("msg"));
         }
+    }
+
+    public static List<Note> net2localNote(List<Note> noteList) throws JSONException {
+        for (Note n : noteList) {
+            JSONArray array = new JSONArray(n.getUrl());
+            String url = "", type = "";
+            if (array.length() > 0) {
+                for (int i = 0; i < array.length(); i++) {
+                    String oj = array.getString(i);
+                    JSONObject obj = new JSONObject(oj);
+                    url += obj.getString("url") + ',';
+                    type += obj.getString("type") + ',';
+                }
+                url = url.substring(0, url.length() - 1);
+                type = type.substring(0, type.length() - 1);
+            }
+            n.setUrl(url);
+            n.setType(type);
+        }
+        return noteList;
+    }
+
+    public static List<Course> net2localCourse(List<Course> courseList) throws JSONException {
+        for (Course course : courseList) {
+            JSONArray array = new JSONArray(course.getImage_src());
+            String url = "", type = "";
+            if (array.length() > 0) {
+                for (int i = 0; i < array.length(); i++) {
+                    String oj = array.getString(i);
+                    JSONObject obj = new JSONObject(oj);
+                    url += obj.getString("url") + ',';
+                    type += obj.getString("type") + ',';
+                }
+                url = url.substring(0, url.length() - 1);
+                type = type.substring(0, type.length() - 1);
+            }
+            course.setImage_src(url);
+            course.setType(type);
+        }
+        return courseList;
     }
 }

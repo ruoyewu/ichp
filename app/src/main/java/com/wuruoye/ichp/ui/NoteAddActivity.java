@@ -33,7 +33,7 @@ import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.model.bean.Note;
-import com.wuruoye.ichp.ui.presenter.DevAddNotePresenter;
+import com.wuruoye.ichp.ui.presenter.pro.NoteAddPresenter;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -99,7 +99,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     public void initData(@Nullable Bundle bundle) {
         mType = bundle.getInt("type");
 
-        setPresenter(new DevAddNotePresenter());
+        setPresenter(new NoteAddPresenter());
     }
 
     @Override
@@ -114,6 +114,8 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
         etDate = findViewById(R.id.et_note_add_date);
         rvEntry = findViewById(R.id.rv_note_add_entry);
         rvMedia = findViewById(R.id.rv_note_add_media);
+        etPlace = findViewById(R.id.et_note_add_place);
+        etEntrance = findViewById(R.id.et_note_add_entrance);
         llList[0] = findViewById(R.id.ll_note_add_photo);
         llList[1] = findViewById(R.id.ll_note_add_video);
         llList[2] = findViewById(R.id.ll_note_add_record);
@@ -244,10 +246,11 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
                 .create();
         dlgUpload = new AlertDialog.Builder(this)
                 .setCancelable(false)
-                .setTitle("正在上传文件")
+                .setTitle("提示")
                 .create();
         dlgUploadError = new AlertDialog.Builder(this)
-                .setTitle("上传文件出错，是否重新上传？")
+                .setTitle("提示")
+                .setMessage("上传文件出错，是否重新上传？")
                 .setPositiveButton("是", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -342,7 +345,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
             mMediaList.addAll(adapter.getData());
         }
         if (mMediaList.size() > 0) {
-            dlgUpload.setTitle("正在上传媒体文件...");
+            dlgUpload.setMessage("正在上传媒体文件...");
             dlgUpload.show();
             mCurrentUploadMedia = mMediaList.get(0);
             mPresenter.requestUploadFile(mCurrentUploadMedia.getContent(),
@@ -357,7 +360,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     }
 
     private void reUploadFile() {
-        dlgUpload.setTitle("正在重传媒体文件...");
+        dlgUpload.setMessage("正在重传媒体文件...");
         dlgUpload.show();
         if (mMediaList.size() > 0) {
             mCurrentUploadMedia = mMediaList.get(0);
@@ -370,16 +373,66 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
 
     private void doPublishCourse() {
         String title = etTitle.getText().toString();
+        if (TextUtils.isEmpty(title)) {
+            onResultError("title is empty");
+            return;
+        }
         String content = etContent.getText().toString();
+        if (TextUtils.isEmpty(content)) {
+            onResultError("content is empty");
+            return;
+        }
         String date = etDate.getText().toString();
+        if (TextUtils.isEmpty(date)) {
+            onResultError("date is empty");
+            return;
+        }
         String place = etPlace.getText().toString();
+        if (TextUtils.isEmpty(place)) {
+            onResultError("place is empty");
+            return;
+        }
         String entrance = etEntrance.getText().toString();
+        if (TextUtils.isEmpty(entrance)) {
+            onResultError("entrance is empty");
+            return;
+        }
+
+        StringBuilder entryBuilder = new StringBuilder();
+        List<Entry> entryList = ((EntryChooseRVAdapter) rvEntry.getAdapter()).getData();
+        if (entryList.size() > 0) {
+            for (int i = 0; i < entryList.size() - 1; i++) {
+                entryBuilder.append(entryList.get(i).getEntry_id()).append(",");
+            }
+            entryBuilder.append(entryList.get(entryList.size() - 1).getEntry_id());
+        }else {
+            onResultError("entry is empty");
+            return;
+        }
+
+        StringBuilder urlBuilder = new StringBuilder();
+        StringBuilder typeBuilder = new StringBuilder();
+        int size = mUrlMap.size();
+        int j = 0;
+        for (Map.Entry<String, Integer> entry : mUrlMap.entrySet()) {
+            if (j++ < size - 1) {
+                urlBuilder.append(entry.getKey()).append(",");
+                typeBuilder.append(entry.getValue()).append(",");
+            }else {
+                urlBuilder.append(entry.getKey());
+                typeBuilder.append(entry.getValue());
+            }
+        }
 
         Course course = new Course();
         course.setTitle(title);
         course.setContent(content);
         course.setHold_addr(place);
         course.setAct_src(entrance);
+        course.setLabels_id_str(entryBuilder.toString());
+        course.setImage_src(urlBuilder.toString());
+        course.setType(typeBuilder.toString());
+
         mPresenter.requestUpCourse(course, date);
     }
 
@@ -441,7 +494,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
         note.setAddr(addr);
         note.setLabels_id_str(entryBuilder.toString());
         mPresenter.requestUpNote(note);
-        dlgUpload.setTitle("正在上传记录...");
+        dlgUpload.setMessage("正在上传记录...");
     }
 
     private String getType(Media media) {
@@ -517,6 +570,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
 
     @Override
     public void onResultError(String error) {
+        dlgUpload.dismiss();
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
@@ -547,7 +601,11 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
                 mPresenter.requestUploadFile(mCurrentUploadMedia.getContent(),
                         getType(mCurrentUploadMedia));
             }else {
-                doPublishNote();
+                if (mType == TYPE_NOTE) {
+                    doPublishNote();
+                }else {
+                    doPublishCourse();
+                }
             }
         }else {
             dlgUpload.dismiss();

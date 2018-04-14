@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +23,7 @@ import com.wuruoye.library.ui.WBaseActivity;
  */
 
 public class RegisterActivity extends WBaseActivity<RegisterContract.Presenter>
-        implements View.OnClickListener,
-        RegisterContract.View {
+        implements View.OnClickListener, RegisterContract.View {
     private Toolbar toolbar;
     private ImageView ivBack;
     private TextView tvTitle;
@@ -31,6 +31,7 @@ public class RegisterActivity extends WBaseActivity<RegisterContract.Presenter>
     private EditText etName;
     private EditText etPwd;
     private EditText etPwdCon;
+    private Switch switchRole;
     private Button btn;
 
     @Override
@@ -52,6 +53,7 @@ public class RegisterActivity extends WBaseActivity<RegisterContract.Presenter>
         etName = findViewById(R.id.et_register_name);
         etPwd = findViewById(R.id.et_register_pwd);
         etPwdCon = findViewById(R.id.et_register_pwd_con);
+        switchRole = findViewById(R.id.switch_register);
         btn = findViewById(R.id.btn_register);
 
         initLayout();
@@ -68,7 +70,7 @@ public class RegisterActivity extends WBaseActivity<RegisterContract.Presenter>
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_course_back:
+            case R.id.iv_tb_back:
                 onBackPressed();
                 break;
             case R.id.btn_register:
@@ -93,7 +95,8 @@ public class RegisterActivity extends WBaseActivity<RegisterContract.Presenter>
             Toast.makeText(this, "两次输入密码不一样", Toast.LENGTH_SHORT).show();
             return;
         }
-        mPresenter.requestRegister(name, pwd);
+        int role = switchRole.isChecked() ? 1 : 0;
+        mPresenter.requestRegister(name, pwd, role);
     }
 
     @Override

@@ -6,17 +6,22 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
+import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
+import com.amap.api.maps2d.model.MarkerOptions;
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.BaseFragment;
+import com.wuruoye.ichp.ui.contract.pro.MapContract;
+import com.wuruoye.ichp.ui.model.bean.Note;
+import com.wuruoye.ichp.ui.presenter.pro.MapPresenter;
+import com.wuruoye.library.ui.WBaseFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,13 +29,15 @@ import java.util.List;
  * this file is to
  */
 
-public class MapFragment extends BaseFragment implements AMap.OnMarkerClickListener {
+public class MapFragment extends WBaseFragment<MapContract.Presenter>
+        implements AMap.OnMarkerClickListener, MapContract.View {
     private MapView mv;
 
     private AMap mAMap;
     private Bundle mSaveInstanceState;
 
-    private List<LatLng> mLLList;
+    private int mType;
+    private LatLng llCenter;
 
     @Override
     public int getContentView() {
@@ -39,7 +46,9 @@ public class MapFragment extends BaseFragment implements AMap.OnMarkerClickListe
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-        mLLList = new ArrayList<>();
+        mType = bundle.getInt("type");
+        llCenter = new LatLng(37, 104);
+        setPresenter(new MapPresenter());
     }
 
     @Override
@@ -48,10 +57,14 @@ public class MapFragment extends BaseFragment implements AMap.OnMarkerClickListe
         mv.onCreate(mSaveInstanceState);
 
         initMap();
+        mPresenter.requestNote(mType);
     }
 
     private void initMap() {
         mAMap = mv.getMap();
+        mAMap.setOnMarkerClickListener(this);
+        mAMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(llCenter,
+                4, 0, 0)));
         UiSettings settings = mAMap.getUiSettings();
         settings.setZoomControlsEnabled(true);
         settings.setScrollGesturesEnabled(true);
@@ -89,7 +102,22 @@ public class MapFragment extends BaseFragment implements AMap.OnMarkerClickListe
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(getContext(), marker.getId(), Toast.LENGTH_SHORT).show();
+        Note note = (Note) marker.getObject();
+        Toast.makeText(getContext(), note.getTitle(), Toast.LENGTH_SHORT).show();
         return true;
+    }
+
+    @Override
+    public void onResultError(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResultNote(List<Note> noteList) {
+        for (Note n : noteList) {
+            String[] addrs = n.getAddr().split(",");
+            LatLng ll = new LatLng(Double.parseDouble(addrs[1]), Double.parseDouble(addrs[2]));
+            mAMap.addMarker(new MarkerOptions().position(ll).title(n.getTitle())).setObject(n);
+        }
     }
 }

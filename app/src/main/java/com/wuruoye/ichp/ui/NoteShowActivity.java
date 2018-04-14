@@ -212,6 +212,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         decoration.setDrawable(ActivityCompat.getDrawable(this,
                 R.drawable.decoration_vertical));
         rvComment.addItemDecoration(decoration);
+        rvComment.setNestedScrollingEnabled(false);
     }
 
     private void onEntryLongClick(final Entry entry) {

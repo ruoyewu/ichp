@@ -1,4 +1,4 @@
-package com.wuruoye.ichp.ui.presenter;
+package com.wuruoye.ichp.ui.presenter.pro;
 
 import android.content.Context;
 import android.location.Address;
@@ -29,7 +29,7 @@ import java.util.List;
  * this file is to
  */
 
-public class DevAddNotePresenter extends AddNoteContract.Presenter {
+public class NoteAddPresenter extends AddNoteContract.Presenter {
     private UserCache mUserCache = UserCache.getInstance();
 
     @Override
@@ -40,7 +40,6 @@ public class DevAddNotePresenter extends AddNoteContract.Presenter {
                     try {
                         Geocoder geocoder = new Geocoder(context);
                         List<Address> addresses = geocoder.getFromLocation(model[0], model[1], 1);
-                        StringBuilder sb = new StringBuilder();
                         String[] location = new String[addresses.get(0).getMaxAddressLineIndex()];
                         for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex(); i++) {
                             location[i] = addresses.get(0).getAddressLine(i);
@@ -167,8 +166,26 @@ public class DevAddNotePresenter extends AddNoteContract.Presenter {
         values.put("hold_date", date);
         values.put("hold_addr", course.getHold_addr());
         values.put("act_src", course.getAct_src());
-        values.put("image_src", course.getImage_src());
+        values.put("labels_id_str", course.getLabels_id_str());
 
+        String[] urls = course.getImage_src().split(",");
+        String[] type = course.getType().split(",");
+        JSONArray array = null;
+        try {
+            array = new JSONArray();
+            for (int i = 0; i < urls.length; i++) {
+                JSONObject object = new JSONObject();
+                object.put("url", urls[i]);
+                object.put("type", type[i]);
+                array.put(object.toString());
+            }
+        } catch (JSONException e) {
+            if (isAvailable()) {
+                getView().onNoteAddResult(false, e.getMessage());
+            }
+            return;
+        }
+        values.put("image_src", array.toString());
         WNet.postInBackGround(Api.INSTANCE.getISSUE_ACT(), values,
                 new com.wuruoye.library.model.Listener<String>() {
             @Override

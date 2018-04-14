@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.model.bean.Course;
+import com.wuruoye.library.util.DateUtil;
 
 /**
  * Created by wuruoye on 2018/1/27.
@@ -34,6 +36,13 @@ public class CourseRVAdapter extends BaseRVAdapter<Course> {
                 onItemClick(course);
             }
         });
+        String[] imgs = course.getImage_src().split(",");
+        Glide.with(viewHolder.iv)
+                .load(imgs[0])
+                .into(viewHolder.iv);
+        viewHolder.tvTitle.setText(course.getTitle());
+        viewHolder.tvAuthor.setText(DateUtil.formatTime((long)course.getIssue_date() * 1000,
+                "yyyy-MM-dd"));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,11 +1,14 @@
 package com.wuruoye.ichp.ui.model.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by wuruoye on 2018/1/27.
  * this file is to
  */
 
-public class Course {
+public class Course implements Parcelable {
     private int act_id;
     private float issue_date;
     private float hold_date;
@@ -15,6 +18,24 @@ public class Course {
     private String content;
     private String act_src;
     private String image_src;
+    private String labels_id_str;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getLabels_id_str() {
+        return labels_id_str;
+    }
+
+    public void setLabels_id_str(String labels_id_str) {
+        this.labels_id_str = labels_id_str;
+    }
 
     public int getAct_id() {
         return act_id;
@@ -87,4 +108,53 @@ public class Course {
     public void setImage_src(String image_src) {
         this.image_src = image_src;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.act_id);
+        dest.writeFloat(this.issue_date);
+        dest.writeFloat(this.hold_date);
+        dest.writeString(this.title);
+        dest.writeInt(this.publisher);
+        dest.writeString(this.hold_addr);
+        dest.writeString(this.content);
+        dest.writeString(this.act_src);
+        dest.writeString(this.image_src);
+        dest.writeString(this.labels_id_str);
+        dest.writeString(this.type);
+    }
+
+    public Course() {
+    }
+
+    protected Course(Parcel in) {
+        this.act_id = in.readInt();
+        this.issue_date = in.readFloat();
+        this.hold_date = in.readFloat();
+        this.title = in.readString();
+        this.publisher = in.readInt();
+        this.hold_addr = in.readString();
+        this.content = in.readString();
+        this.act_src = in.readString();
+        this.image_src = in.readString();
+        this.labels_id_str = in.readString();
+        this.type = in.readString();
+    }
+
+    public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>() {
+        @Override
+        public Course createFromParcel(Parcel source) {
+            return new Course(source);
+        }
+
+        @Override
+        public Course[] newArray(int size) {
+            return new Course[size];
+        }
+    };
 }

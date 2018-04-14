@@ -68,7 +68,7 @@ public class CourseFragment extends WBaseFragment<CoursePresenter> implements
 
     @Override
     public void onRefresh() {
-        srl.setRefreshing(false);
+        mPresenter.requestCourse(false);
     }
 
     @Override
@@ -86,11 +86,13 @@ public class CourseFragment extends WBaseFragment<CoursePresenter> implements
 
     @Override
     public void onResultError(String error) {
+        srl.setRefreshing(false);
         Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResultCourse(List<Course> courseList, boolean isAdd) {
+        srl.setRefreshing(false);
         CourseRVAdapter adapter = (CourseRVAdapter) rv.getAdapter();
         if (isAdd) {
             adapter.addData(courseList);
@@ -101,6 +103,10 @@ public class CourseFragment extends WBaseFragment<CoursePresenter> implements
 
     @Override
     public void onItemClick(Course model) {
-        Toast.makeText(getContext(), model.getTitle(), Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("course", model);
+        Intent intent = new Intent(getContext(), CourseShowActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

@@ -1,6 +1,6 @@
 package com.wuruoye.ichp.ui.presenter;
 
-import com.wuruoye.ichp.ui.contract.FoundContract;
+import com.wuruoye.ichp.ui.contract.pro.FoundContract;
 
 /**
  * Created by wuruoye on 2018/2/2.
@@ -10,21 +10,17 @@ import com.wuruoye.ichp.ui.contract.FoundContract;
 public class DevFoundPresenter extends FoundContract.Presenter {
 
     @Override
-    public void requestRecommendNote() {
-        if (isAvailable()) {
+    public void requestRecommend() {
 
-        }
     }
 
     @Override
-    public void requestRecommendEntry() {
-        if (isAvailable()) {
+    public void requestNote(String addr) {
 
-        }
     }
 
     @Override
-    public void requestRecommendCourse() {
+    public void requestCourse(String addr) {
 
     }
 }
