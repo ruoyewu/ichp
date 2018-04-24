@@ -54,8 +54,9 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     public static final String[] VIDEO_ITEM = {"视频选取", "视频拍摄"};
     public static final String[] RECORD_ITEM = {"音频选取", "音频拍摄"};
     public static final String[] TITLE_IT_ITEM = {"照片", "视频", "音频", "词条", "返回", "发布"};
-    public static final int[] ICON_IT_ITEM = {1, 2, 3, 4, 5, 6};
-    public static final int LOCATION_CODE = 1;
+    public static final int[] ICON_IT_ITEM = {R.drawable.ic_photo, R.drawable.ic_movies,
+            R.drawable.ic_audio, R.drawable.ic_entry_black, R.drawable.ic_goleft, R.drawable.ic_edit};
+    public final int LOCATION_CODE = hashCode() % 10000;
     public static final int TIME_RECORD_LIMIT = 100000;
     public static final int CHOOSE_ENTRY = 201;
 
@@ -87,7 +88,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     private Double[] mAddress;
     private String[] mLocation;
     private HashMap<String, Integer> mUrlMap = new HashMap<>();
-    private List<Media> mMediaList;
+    private List<Media> mMediaList = new ArrayList<>();
     private Media mCurrentUploadMedia;
 
     @Override
@@ -159,7 +160,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
         for (int i = 0; i < TITLE_IT_ITEM.length; i++) {
             ImageView iv = llList[i].findViewById(R.id.iv_icon_text);
             TextView tv = llList[i].findViewById(R.id.tv_icon_text);
-//            iv.setImageResource(ICON_IT_ITEM[i]);
+            iv.setImageResource(ICON_IT_ITEM[i]);
             tv.setText(TITLE_IT_ITEM[i]);
             tv.setTextColor(ActivityCompat.getColor(this, R.color.black));
             llList[i].setOnClickListener(this);
@@ -339,11 +340,10 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     }
 
     private void onPublishClick() {
-        if (mMediaList == null) {
-            mMediaList = new ArrayList<>();
-            MediaRVAdapter adapter = (MediaRVAdapter) rvMedia.getAdapter();
-            mMediaList.addAll(adapter.getData());
-        }
+//        if (mUrlMap.size() == 0) {
+//            Toast.makeText(this, "至少添加一张图片", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
         if (mMediaList.size() > 0) {
             dlgUpload.setMessage("正在上传媒体文件...");
             dlgUpload.show();
@@ -463,15 +463,15 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
             }
         }
         String addr = "";
-        if (mLocation.length > 0) {
+        if (mLocation != null && mLocation.length > 0) {
             addr += mLocation[0] + ',';
         }else {
-            addr += ",";
+            addr += " ,";
         }
         if (mAddress != null) {
             addr += mAddress[0] + "," + mAddress[1];
         }else {
-            addr += ",";
+            addr += "0,0";
         }
         StringBuilder entryBuilder = new StringBuilder();
         List<Entry> entryList = ((EntryChooseRVAdapter) rvEntry.getAdapter()).getData();
@@ -524,6 +524,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     }
 
     private void addMedia(Media media) {
+        mMediaList.add(media);
         MediaRVAdapter adapter = (MediaRVAdapter) rvMedia.getAdapter();
         adapter.addData(Collections.singletonList(media));
         rvMedia.smoothScrollToPosition(adapter.getItemCount());

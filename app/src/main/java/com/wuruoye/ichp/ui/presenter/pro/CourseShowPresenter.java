@@ -98,6 +98,9 @@ public class CourseShowPresenter extends CourseShowContract.Presenter {
         List<Media> mediaList = new ArrayList<>();
         String[] urls = url.split(",");
         String[] types = type.split(",");
+        if (urls[0].equals("")) {
+            return mediaList;
+        }
         for (int i = 0; i < urls.length; i++) {
             mediaList.add(new Media(getType(types[i]), urls[i]));
         }

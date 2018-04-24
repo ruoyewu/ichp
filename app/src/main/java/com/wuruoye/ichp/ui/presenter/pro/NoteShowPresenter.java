@@ -139,7 +139,6 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
         });
     }
 
-
     @Override
     public void requestCommentList(int id) {
         ArrayMap<String, String> values = new ArrayMap<>();

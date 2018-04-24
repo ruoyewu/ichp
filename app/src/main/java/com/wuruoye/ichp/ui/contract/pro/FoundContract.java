@@ -24,5 +24,6 @@ public interface FoundContract {
         abstract public void requestRecommend();
         abstract public void requestNote(String addr);
         abstract public void requestCourse(String addr);
+        abstract public String getImg(Object obj);
     }
 }

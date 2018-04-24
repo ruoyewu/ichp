@@ -130,4 +130,14 @@ public class FoundPresenter extends FoundContract.Presenter {
             }
         });
     }
+
+    @Override
+    public String getImg(Object obj) {
+        if (obj instanceof Note) {
+            return ((Note) obj).getUrl().split(",")[0];
+        }else if (obj instanceof Course) {
+            return ((Course) obj).getImage_src().split(",")[0];
+        }
+        return null;
+    }
 }

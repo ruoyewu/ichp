@@ -34,7 +34,7 @@ public class MainActivity extends WBaseActivity<MainPresenter> implements MainCo
     public static final int MAIN_LOGIN = 101;
 
     public static final List<String> TITLE_LIST =
-            Arrays.asList("非遗播客", "非遗课堂", "发现", "我的");
+            Arrays.asList("非遗记录", "非遗课堂", "发现", "我的");
     public static final List<Integer> ICON_LIST =
             Arrays.asList(R.drawable.ic_brodcast, R.drawable.ic_course, R.drawable.ic_found,
                     R.drawable.ic_user);

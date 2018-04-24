@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.NoteAddActivity"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".ui.SearchActivity" />
         <activity android:name=".ui.CollectActivity" />
         <activity android:name=".ui.PersonInfoActivity"
