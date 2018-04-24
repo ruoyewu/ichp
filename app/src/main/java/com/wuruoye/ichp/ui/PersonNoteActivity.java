@@ -14,18 +14,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.BaseActivity;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
-import com.wuruoye.ichp.ui.contract.PersonNoteContract;
+import com.wuruoye.ichp.ui.contract.pro.PersonNoteContract;
 import com.wuruoye.ichp.ui.model.bean.Note;
-import com.wuruoye.ichp.ui.model.bean.User;
-import com.wuruoye.ichp.ui.presenter.DevPersonNotePresenter;
+import com.wuruoye.ichp.ui.presenter.pro.PersonNotePresenter;
 import com.wuruoye.ichp.ui.util.IManagerView;
+import com.wuruoye.library.ui.WBaseActivity;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -33,8 +33,10 @@ import java.util.List;
  * this file is to
  */
 
-public class PersonNoteActivity extends BaseActivity
-        implements PopupMenu.OnMenuItemClickListener, PersonNoteContract.View, IManagerView {
+public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Presenter>
+        implements PopupMenu.OnMenuItemClickListener, PersonNoteContract.View, IManagerView,
+        BaseRVAdapter.OnItemClickListener<Object>,NormalRVAdapter.OnActionListener,
+        View.OnClickListener {
     private Toolbar toolbar;
     private ImageView ibBack;
     private TextView tvTitle;
@@ -44,8 +46,8 @@ public class PersonNoteActivity extends BaseActivity
 
     private PopupMenu pm;
 
-    private User mUser;
-    private PersonNoteContract.Presenter mPresenter;
+    private List<Note> mToDeleteList = new LinkedList<>();
+    private Boolean mManageClicked = false;
 
     @Override
     public int getContentView() {
@@ -54,10 +56,7 @@ public class PersonNoteActivity extends BaseActivity
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-        mUser = bundle.getParcelable("user");
-
-        mPresenter = new DevPersonNotePresenter();
-        mPresenter.attachView(this);
+        setPresenter(new PersonNotePresenter());
     }
 
     @Override
@@ -72,7 +71,7 @@ public class PersonNoteActivity extends BaseActivity
         initLayout();
         initRecyclerView();
         initMenu();
-        requestData(false);
+        requestData();
     }
 
     private void initLayout() {
@@ -84,28 +83,19 @@ public class PersonNoteActivity extends BaseActivity
             }
         });
         tvTitle.setText("我的非遗记录");
-        tvManager.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pm.show();
-            }
-        });
+        tvManager.setOnClickListener(this);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestData(false);
+                requestData();
             }
         });
     }
 
     private void initRecyclerView() {
         NormalRVAdapter adapter = new NormalRVAdapter();
-        adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<Object>() {
-            @Override
-            public void onItemClick(Object model) {
-                PersonNoteActivity.this.onItemClick(model);
-            }
-        });
+        adapter.setOnItemClickListener(this);
+        adapter.setOnActionListener(this);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
     }
@@ -116,14 +106,13 @@ public class PersonNoteActivity extends BaseActivity
         pm.setOnMenuItemClickListener(this);
     }
 
-    private void requestData(boolean isAdd) {
-        mPresenter.requestData(mUser, isAdd);
+    private void requestData() {
+        mPresenter.requestData();
     }
 
-    private void onItemClick(Object data) {
-        if (data instanceof Note) {
-            Toast.makeText(this, ((Note) data).getTitle(), Toast.LENGTH_SHORT).show();
-        }
+    private void changeManagerState(boolean clicked) {
+        tvManager.setText((mManageClicked = clicked) ? "完成" : "管理");
+        ((NormalRVAdapter)rv.getAdapter()).setShowCheck(clicked);
     }
 
     @Override
@@ -143,40 +132,99 @@ public class PersonNoteActivity extends BaseActivity
     }
 
     @Override
-    public void onResultWorn(@NotNull String message) {
-        srl.setRefreshing(false);
-    }
-
-    @Override
-    public void onDataResult(List<Object> dataList, boolean isAdd) {
-        srl.setRefreshing(false);
-        NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
-        if (isAdd) {
-            adapter.addData(dataList);
-        }else {
-            adapter.setData(dataList);
-        }
-    }
-
-    @Override
     public void add() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", NoteAddActivity.TYPE_NOTE);
         Intent intent = new Intent(this, NoteAddActivity.class);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
     @Override
     public void remove() {
-
+        changeManagerState(true);
+        NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
+        changeManagerState(true);
     }
 
     @Override
     public void removeAll() {
-
+        remove();
     }
 
     @Override
-    protected void onDestroy() {
-        mPresenter.detachView();
-        super.onDestroy();
+    public void onResultError(String error) {
+        srl.setRefreshing(false);
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResultData(List<Note> dataList) {
+        srl.setRefreshing(false);
+        NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
+        List<Object> objList = new ArrayList<>();
+        objList.addAll(dataList);
+        adapter.setData(objList);
+    }
+
+    @Override
+    public void onResultRemove(int id) {
+        NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
+        List<Object> objList = adapter.getData();
+        for (Object obj : objList) {
+            if (obj instanceof Note && ((Note) obj).getRec_id() == id) {
+                adapter.removeData(obj);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onItemClick(Object model) {
+        if (model instanceof Note) {
+            Intent intent = new Intent(this, NoteShowActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("note", (Note)model);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(Object obj, boolean checked) {
+        if (checked) {
+            mToDeleteList.add((Note) obj);
+        }else {
+            mToDeleteList.remove(obj);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mManageClicked) {
+            changeManagerState(false);
+        }else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_tb_manager:
+                if (mManageClicked) {
+                    changeManagerState(false);
+                    if (mToDeleteList.size() > 0) {
+                        List<Integer> idList = new ArrayList<>();
+                        for (Note n : mToDeleteList) {
+                            idList.add(n.getRec_id());
+                        }
+                        mPresenter.requestRemove(idList);
+                    }
+                }else {
+                    pm.show();
+                }
+                break;
+        }
     }
 }

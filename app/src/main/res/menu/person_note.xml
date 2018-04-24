@@ -2,11 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/person_note_add"
-        android:name="添加"/>
+        android:name="添加"
+        android:title="添加" />
 
     <item android:id="@+id/person_note_remove"
-        android:name="删除"/>
+        android:name="删除"
+        android:title="删除" />
 
     <item android:id="@+id/person_note_remove_all"
-        android:name="批量删除"/>
+        android:name="批量删除"
+        android:title="批量删除" />
 </menu>

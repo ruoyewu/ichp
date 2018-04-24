@@ -53,6 +53,7 @@
         <activity android:name=".ui.SettingActivity" />
         <activity android:name=".ui.RegisterActivity" />
         <activity android:name=".ui.CourseShowActivity" />
+        <activity android:name=".ui.ModifyPwdActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
