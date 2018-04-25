@@ -17,9 +17,10 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.BaseActivity;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
+import com.wuruoye.ichp.ui.contract.pro.UserInfoContract;
 import com.wuruoye.ichp.ui.model.bean.User;
+import com.wuruoye.library.ui.WBaseActivity;
 import com.wuruoye.library.util.BitmapUtil;
 
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +36,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * this file is to
  */
 
-public class UserInfoActivity extends BaseActivity {
+public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
+        implements UserInfoContract.View {
     public static final String[] ITEM_TITLE = { "TA发布的记录", "TA发布的活动" };
     public static final String[] ITEM_BOTTOM = {"返回", "关注"};
     public static final int[] ICON_BOTTOM = {R.drawable.ic_goleft_white, R.drawable.ic_star};
@@ -141,7 +143,17 @@ public class UserInfoActivity extends BaseActivity {
         if (position == 0) {
             onBackPressed();
         }else if (position == 1) {
-            Toast.makeText(this, "关注", Toast.LENGTH_SHORT).show();
+            mPresenter.requestAttention(true, mUser.getUser_id());
         }
+    }
+
+    @Override
+    public void onResultError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResultAttention(boolean attention) {
+        Toast.makeText(this, "关注用户", Toast.LENGTH_SHORT).show();
     }
 }

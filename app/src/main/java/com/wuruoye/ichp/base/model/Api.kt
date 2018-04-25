@@ -49,4 +49,8 @@ object Api {
     val GET_COLL_REC = REMOTE_HOST + "getCollRec"
     val GET_COLL_ACT = REMOTE_HOST + "getCollAct"
     val GET_COLL_ENTRY = REMOTE_HOST + "getCollEntry"
+    val DELETE_COLL_REC = REMOTE_HOST + "delCollRec"
+    val DELETE_COLL_ACT = REMOTE_HOST + "delCollAct"
+    val DELETE_COLL_ENTRY = REMOTE_HOST + "delCollEntry"
+    val CONCER_USER = REMOTE_HOST + "concerUser"
 }

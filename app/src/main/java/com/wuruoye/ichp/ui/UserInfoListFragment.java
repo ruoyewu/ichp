@@ -11,11 +11,11 @@ import android.widget.Toast;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
-import com.wuruoye.ichp.ui.contract.pro.UserInfoContract;
+import com.wuruoye.ichp.ui.contract.pro.UserInfoListContract;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.model.bean.User;
-import com.wuruoye.ichp.ui.presenter.pro.UserInfoPresenter;
+import com.wuruoye.ichp.ui.presenter.pro.UserInfoListPresenter;
 import com.wuruoye.library.ui.WBaseFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +28,8 @@ import java.util.List;
  * this file is to
  */
 
-public class UserInfoListFragment extends WBaseFragment<UserInfoContract.Presenter>
-        implements UserInfoContract.View, BaseRVAdapter.OnItemClickListener<Object>,
+public class UserInfoListFragment extends WBaseFragment<UserInfoListContract.Presenter>
+        implements UserInfoListContract.View, BaseRVAdapter.OnItemClickListener<Object>,
         SwipeRefreshLayout.OnRefreshListener {
     private SwipeRefreshLayout srl;
     private RecyclerView rv;
@@ -48,7 +48,7 @@ public class UserInfoListFragment extends WBaseFragment<UserInfoContract.Present
         mUser = bundle.getParcelable("user");
         mType = bundle.getInt("type");
 
-        setPresenter(new UserInfoPresenter());
+        setPresenter(new UserInfoListPresenter());
     }
 
     @Override

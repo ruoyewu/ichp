@@ -3,19 +3,24 @@ package com.wuruoye.ichp.ui.contract.pro;
 import com.wuruoye.library.contract.WIView;
 import com.wuruoye.library.contract.WPresenter;
 
+import java.util.List;
+
 /**
  * @Created : wuruoye
- * @Date : 2018/4/25 17:24.
+ * @Date : 2018/4/25 10:50.
  * @Description :
  */
 
-public interface UserInfoContract {
+public interface UserInfoListContract {
+    int TYPE_NOTE = 1;
+    int TYPE_COURSE = 2;
+
     interface View extends WIView {
         void onResultError(String error);
-        void onResultAttention(boolean attention);
+        void onResultData(List<Object> dataList);
     }
 
     abstract class Presenter extends WPresenter<View> {
-        abstract public void requestAttention(boolean att, int userId);
+        abstract public void requestData(int type, int userId);
     }
 }

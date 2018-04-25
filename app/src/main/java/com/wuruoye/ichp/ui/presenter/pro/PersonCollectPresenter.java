@@ -12,6 +12,9 @@ import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.library.model.Listener;
 import com.wuruoye.library.util.net.WNet;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,15 +89,51 @@ public class PersonCollectPresenter extends PersonCollectContract.Presenter {
     }
 
     @Override
-    public void requestRemove(int type, int id) {
+    public void requestRemove(int type, final int id) {
+        ArrayMap<String, String> values = new ArrayMap<>();
+        values.put("token", mUserCache.getToken());
+        String url;
         switch (type) {
             case TYPE_NOTE:
+                url = Api.INSTANCE.getDELETE_COLL_REC();
+                values.put("rec_id", "" + id);
                 break;
-            case PersonCollectContract.TYPE_COURSE:
+            case TYPE_COURSE:
+                url = Api.INSTANCE.getDELETE_COLL_ACT();
+                values.put("act_id", "" + id);
                 break;
-            case PersonCollectContract.TYPE_ENTRY:
+            case TYPE_ENTRY:
+                url = Api.INSTANCE.getDELETE_COLL_ENTRY();
+                values.put("entry_id", "" + id);
                 break;
+            default:
+                url = "";
         }
+
+        WNet.postInBackGround(url, values, new Listener<String>() {
+            @Override
+            public void onSuccessful(String s) {
+                if (isAvailable()) {
+                    try {
+                        JSONObject obj = new JSONObject(s);
+                        if (obj.getInt("code") == 0) {
+                            getView().onResultRemove(id, true);
+                        }else {
+                            getView().onResultRemove(id, false);
+                        }
+                    } catch (JSONException e) {
+                        getView().onResultRemove(id, false);
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(String s) {
+                if (isAvailable()) {
+                    getView().onResultRemove(id, false);
+                }
+            }
+        });
     }
 
     @Override

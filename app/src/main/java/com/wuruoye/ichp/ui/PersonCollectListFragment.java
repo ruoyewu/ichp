@@ -3,6 +3,7 @@ package com.wuruoye.ichp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -38,6 +39,8 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
     private SwipeRefreshLayout srl;
     private RecyclerView rv;
 
+    private AlertDialog dlgDelete;
+
     private int mType;
     private List<Object> mToDeleteList = new LinkedList<>();
     private int mDelSuc = 0;
@@ -61,6 +64,7 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
         rv = view.findViewById(R.id.rv_layout);
 
         initLayout();
+        initDlg();
         initRecyclerView();
 
         requestData();
@@ -73,6 +77,13 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
                 requestData();
             }
         });
+    }
+
+    private void initDlg() {
+        dlgDelete = new AlertDialog.Builder(getContext())
+                .setTitle("提示")
+                .setCancelable(false)
+                .create();
     }
 
     private void initRecyclerView() {
@@ -127,8 +138,6 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
 
     @Override
     public void submit() {
-        mDelSuc = 0;
-        mDelFai = 0;
         if (mToDeleteList.size() > 0) {
             List<Integer> idList = new ArrayList<>();
             for (Object obj : mToDeleteList) {
@@ -143,6 +152,7 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
             mPresenter.requestRemove(mType, idList);
         }
         ((NormalRVAdapter) rv.getAdapter()).setShowCheck(false);
+        dlgDelete.show();
     }
 
     @Override
@@ -182,6 +192,16 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
         }
 
         int total = mDelSuc + mToDeleteList.size();
+        String message = "删除成功 " + mDelSuc + " / " + total + "\n"
+                + "删除失败 " + mDelFai+ " / " + total;
+        dlgDelete.setMessage(message);
+
+        if (mDelFai == mToDeleteList.size()) {
+            dlgDelete.dismiss();
+            mToDeleteList.clear();
+            mDelSuc = 0;
+            mDelFai = 0;
+        }
     }
 
     @Override
