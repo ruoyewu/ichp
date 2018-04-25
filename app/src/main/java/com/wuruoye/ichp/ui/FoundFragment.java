@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,12 +33,14 @@ import java.util.List;
  * this file is to
  */
 
-public class FoundFragment extends WBaseFragment<FoundContract.Presenter> implements FoundContract.View {
+public class FoundFragment extends WBaseFragment<FoundContract.Presenter>
+        implements FoundContract.View, View.OnClickListener {
     public static final int ITEM_SIZE = 2;
 
-    private SearchView svFound;
     private Banner banFound;
+    private TextView tvSearch;
     private LinearLayout[] llFound = new LinearLayout[2];
+    private TextView[] tvTips = new TextView[2];
     private TextView[] tvMores = new TextView[2];
     private ImageView[] ivItems = new ImageView[4];
     private TextView[] tvItems = new TextView[4];
@@ -56,19 +57,20 @@ public class FoundFragment extends WBaseFragment<FoundContract.Presenter> implem
 
     @Override
     public void initView(@NotNull View view) {
-        svFound = view.findViewById(R.id.sv_search);
+        tvSearch = view.findViewById(R.id.tv_found_search);
         banFound = view.findViewById(R.id.banner_found);
         llFound[0] = view.findViewById(R.id.ll_found_1);
         llFound[1] = view.findViewById(R.id.ll_found_2);
 
         for (int i = 0; i < ITEM_SIZE; i++) {
+            tvTips[i] = llFound[i].findViewById(R.id.tv_found_tip);
             tvMores[i] = llFound[i].findViewById(R.id.tv_found_more);
             ivItems[i * 2] = llFound[i].findViewById(R.id.iv_found_1);
             ivItems[i * 2 + 1] = llFound[i].findViewById(R.id.iv_found_2);
             tvItems[i * 2] = llFound[i].findViewById(R.id.tv_found_1);
             tvItems[i * 2 + 1] = llFound[i].findViewById(R.id.tv_found_2);
         }
-        tvMores[1].setText("推荐活动");
+        tvTips[1].setText("推荐活动");
 
         initLayout();
         mPresenter.requestRecommend();
@@ -77,27 +79,7 @@ public class FoundFragment extends WBaseFragment<FoundContract.Presenter> implem
     }
 
     private void initLayout() {
-        svFound.setEnabled(false);
-        svFound.clearFocus();
-//        svFound.setIconified(false);
-//        svFound.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                if (TextUtils.isEmpty(query)) {
-//                    Toast.makeText(getContext(), "请输入查询内容",
-//                            Toast.LENGTH_SHORT).show();
-//                    return true;
-//                }else {
-//                    onQuery(query);
-//                    return false;
-//                }
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                return false;
-//            }
-//        });
+        tvSearch.setOnClickListener(this);
 
         for (int i = 0; i < ITEM_SIZE; i++) {
             tvMores[i].setOnClickListener(new View.OnClickListener() {
@@ -112,8 +94,8 @@ public class FoundFragment extends WBaseFragment<FoundContract.Presenter> implem
     }
 
     private void onMoreClick() {
-//        startActivity(new Intent(getContext(), SearchActivity.class));
-        Toast.makeText(getContext(), "暂无", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(getContext(), SearchActivity.class));
+//        Toast.makeText(getContext(), "暂无", Toast.LENGTH_SHORT).show();
     }
 
     private void onObjClick(Object obj) {
@@ -130,14 +112,6 @@ public class FoundFragment extends WBaseFragment<FoundContract.Presenter> implem
             intent.putExtras(bundle);
             startActivity(intent);
         }
-    }
-
-    private void onQuery(String query) {
-        Bundle bundle = new Bundle();
-        bundle.putString("query", query);
-        Intent intent = new Intent(getContext(), SearchActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 
     @Override
@@ -210,5 +184,14 @@ public class FoundFragment extends WBaseFragment<FoundContract.Presenter> implem
     @Override
     public void onResultError(String error) {
         Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_found_search:
+                onMoreClick();
+                break;
+        }
     }
 }

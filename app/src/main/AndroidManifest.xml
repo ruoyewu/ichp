@@ -30,7 +30,7 @@
         <activity android:name=".ui.NoteAddActivity"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".ui.SearchActivity" />
-        <activity android:name=".ui.CollectActivity" />
+        <activity android:name=".ui.PersonCollectActivity" />
         <activity android:name=".ui.PersonInfoActivity"
             android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".ui.EntryAddActivity" />
@@ -54,6 +54,7 @@
         <activity android:name=".ui.RegisterActivity" />
         <activity android:name=".ui.CourseShowActivity" />
         <activity android:name=".ui.ModifyPwdActivity" />
+        <activity android:name=".ui.PersonTraceActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

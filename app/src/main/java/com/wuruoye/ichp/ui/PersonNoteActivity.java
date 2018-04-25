@@ -3,6 +3,7 @@ package com.wuruoye.ichp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -45,9 +46,12 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
     private RecyclerView rv;
 
     private PopupMenu pm;
+    private AlertDialog dlgDelete;
 
     private List<Note> mToDeleteList = new LinkedList<>();
     private Boolean mManageClicked = false;
+    private int mDelSuc = 0;
+    private int mDelFai = 0;
 
     @Override
     public int getContentView() {
@@ -71,6 +75,7 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
         initLayout();
         initRecyclerView();
         initMenu();
+        initDlg();
         requestData();
     }
 
@@ -106,7 +111,15 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
         pm.setOnMenuItemClickListener(this);
     }
 
+    private void initDlg() {
+        dlgDelete = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setCancelable(false)
+                .create();
+    }
+
     private void requestData() {
+        srl.setRefreshing(true);
         mPresenter.requestData();
     }
 
@@ -168,14 +181,32 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
     }
 
     @Override
-    public void onResultRemove(int id) {
-        NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
-        List<Object> objList = adapter.getData();
-        for (Object obj : objList) {
-            if (obj instanceof Note && ((Note) obj).getRec_id() == id) {
-                adapter.removeData(obj);
-                break;
+    public void onResultRemove(int id, boolean deleted) {
+        if (deleted) {
+            mDelSuc ++;
+            NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
+            List<Object> objList = adapter.getData();
+            for (Object obj : objList) {
+                if (obj instanceof Note && ((Note) obj).getRec_id() == id) {
+                    adapter.removeData(obj);
+                    mToDeleteList.remove(obj);
+                    break;
+                }
             }
+        }else {
+            mDelFai ++;
+        }
+
+        int total = mDelSuc + mToDeleteList.size();
+        String message = "删除成功 " + mDelSuc + " / " + total + "\n"
+                + "删除失败 " + mDelFai+ " / " + total;
+        dlgDelete.setMessage(message);
+
+        if (mDelFai == mToDeleteList.size()) {
+            dlgDelete.dismiss();
+            mToDeleteList.clear();
+            mDelFai = 0;
+            mDelSuc = 0;
         }
     }
 

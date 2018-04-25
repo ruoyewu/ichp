@@ -29,7 +29,8 @@ import java.util.List;
  * this file is to
  */
 
-public class CollectActivity extends BaseActivity implements PopupMenu.OnMenuItemClickListener {
+public class PersonCollectActivity extends BaseActivity implements
+        PopupMenu.OnMenuItemClickListener {
     public static final String[] ITEM_TITLE = { "记录", "活动", "词条" };
 
     private Toolbar toolbar;
@@ -106,7 +107,7 @@ public class CollectActivity extends BaseActivity implements PopupMenu.OnMenuIte
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", mUser);
             bundle.putInt("type", i);
-            CollectListFragment fragment = new CollectListFragment();
+            PersonCollectListFragment fragment = new PersonCollectListFragment();
             fragment.setArguments(bundle);
             fragmentList.add(fragment);
             mManageViewList.add(fragment);

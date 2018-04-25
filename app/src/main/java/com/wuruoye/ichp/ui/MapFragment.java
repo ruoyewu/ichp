@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -103,7 +104,11 @@ public class MapFragment extends WBaseFragment<MapContract.Presenter>
     @Override
     public boolean onMarkerClick(Marker marker) {
         Note note = (Note) marker.getObject();
-        Toast.makeText(getContext(), note.getTitle(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), NoteShowActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("note", note);
+        intent.putExtras(bundle);
+        startActivity(intent);
         return true;
     }
 

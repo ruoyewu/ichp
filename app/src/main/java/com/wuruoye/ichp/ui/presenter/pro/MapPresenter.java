@@ -12,6 +12,8 @@ import com.wuruoye.library.util.net.WNet;
 
 import java.util.List;
 
+import static com.wuruoye.ichp.ui.contract.pro.MapContract.TYPE_ALL;
+
 /**
  * @Created : wuruoye
  * @Date : 2018/4/14 00:23.
@@ -25,7 +27,7 @@ public class MapPresenter extends MapContract.Presenter {
     public void requestNote(int type) {
         ArrayMap<String, String> values = new ArrayMap<>();
         String url;
-        if (type == 0) {
+        if (type == TYPE_ALL) {
             url = Api.INSTANCE.getGET_ALL_REC();
         }else {
             url = Api.INSTANCE.getGET_USER_REC();

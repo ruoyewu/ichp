@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_person_collect_remove"
-        android:name="删除"/>
+        android:name="删除"
+        android:title="删除" />
 
     <item android:id="@+id/menu_person_collect_remove_all"
-        android:name="批量删除"/>
+        android:name="批量删除"
+        android:title="批量删除" />
 </menu>

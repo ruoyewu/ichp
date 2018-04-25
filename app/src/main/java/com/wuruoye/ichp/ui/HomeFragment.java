@@ -12,6 +12,7 @@ import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
 import com.wuruoye.ichp.base.adapter.OnPageChangeListenerAdapter;
 import com.wuruoye.ichp.base.widget.TouchViewPager;
+import com.wuruoye.ichp.ui.contract.pro.MapContract;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -72,7 +73,7 @@ public class HomeFragment extends BaseFragment {
         fragments.add(recommend);
         Fragment mapFragment = new MapFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("type", 0);
+        bundle.putInt("type", MapContract.TYPE_ALL);
         mapFragment.setArguments(bundle);
         fragments.add(mapFragment);
 

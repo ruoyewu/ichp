@@ -6,12 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseActivity;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
-import com.wuruoye.ichp.base.adapter.OnPageChangeListenerAdapter;
 import com.wuruoye.ichp.ui.util.ISearchView;
 
 import org.jetbrains.annotations.Nullable;
@@ -29,19 +27,12 @@ public class SearchActivity extends BaseActivity {
     public static final String[] ITEM_TITLE = {
             "记录", "活动", "词条", "用户"
     };
-    public static final int TYPE_NOTE = 0;
-    public static final int TYPE_COURSE = 1;
-    public static final int TYPE_ENTRY = 2;
-    public static final int TYPE_USER = 3;
-    private static final String TAG = "SearchActivity";
 
     private SearchView svSearch;
     private TabLayout tlSearch;
     private ViewPager vpSearch;
 
-    private String mQueryString;
     private List<ISearchView> mSearchViewList;
-    private int mCurrentFragment;
 
     @Override
     public int getContentView() {
@@ -50,9 +41,7 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-        if (bundle != null) {
-            mQueryString = bundle.getString("query");
-        }
+
     }
 
     @Override
@@ -63,10 +52,6 @@ public class SearchActivity extends BaseActivity {
 
         initLayout();
         initViewPager();
-
-        if (mQueryString != null) {
-            svSearch.setQuery(mQueryString, true);
-        }
     }
 
     private void initLayout() {
@@ -94,7 +79,7 @@ public class SearchActivity extends BaseActivity {
         List<Fragment> fragmentList = new ArrayList<>();
         for (int i = 0; i < ITEM_TITLE.length; i++) {
             Bundle bundle = new Bundle();
-            bundle.putInt("type", i);
+            bundle.putInt("type", i + 1);
             SearchListFragment fragment = new SearchListFragment();
             fragment.setArguments(bundle);
             fragmentList.add(fragment);
@@ -105,23 +90,15 @@ public class SearchActivity extends BaseActivity {
                 Arrays.asList(ITEM_TITLE), fragmentList);
         vpSearch.setAdapter(adapter);
         tlSearch.setupWithViewPager(vpSearch);
+    }
 
-        vpSearch.addOnPageChangeListener(new OnPageChangeListenerAdapter() {
-            @Override
-            public void onPageSelected(int position) {
-                mCurrentFragment = position;
-            }
-        });
-
-        mCurrentFragment = 0;
+    public String getQuery() {
+        return svSearch.getQuery().toString();
     }
 
     private void queryString(String query) {
-        log(query + " " + mCurrentFragment);
-        mSearchViewList.get(mCurrentFragment).search(query);
-    }
-
-    private void log(String message) {
-        Log.e(TAG, message);
+        for (ISearchView search : mSearchViewList) {
+            search.search(query);
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,16 +9,16 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
-import com.wuruoye.ichp.ui.contract.SearchContract;
+import com.wuruoye.ichp.ui.contract.pro.SearchContract;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.model.bean.User;
-import com.wuruoye.ichp.ui.presenter.DevSearchPresenter;
+import com.wuruoye.ichp.ui.presenter.pro.SearchPresenter;
 import com.wuruoye.ichp.ui.util.ISearchView;
+import com.wuruoye.library.ui.WBaseFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,13 +30,14 @@ import java.util.List;
  * this file is to
  */
 
-public class SearchListFragment extends BaseFragment implements ISearchView, SearchContract.View{
+public class SearchListFragment extends WBaseFragment<SearchContract.Presenter>
+        implements ISearchView, SearchContract.View, BaseRVAdapter.OnItemClickListener<Object>,
+        SwipeRefreshLayout.OnRefreshListener {
     private SwipeRefreshLayout srlSearch;
     private RecyclerView rvSearch;
 
-    private String mQueryString;
+    private String mQueryString = "";
     private int mType;
-    private SearchContract.Presenter mPresenter;
 
     @Override
     public int getContentView() {
@@ -48,8 +49,7 @@ public class SearchListFragment extends BaseFragment implements ISearchView, Sea
         assert bundle != null;
         mType = bundle.getInt("type");
 
-        mPresenter = new DevSearchPresenter();
-        mPresenter.attachView(this);
+        setPresenter(new SearchPresenter());
     }
 
     @Override
@@ -59,80 +59,82 @@ public class SearchListFragment extends BaseFragment implements ISearchView, Sea
 
         initRefreshView();
         initRecyclerView();
+
+        if (!getQuery().equals(mQueryString)) {
+            search(getQuery());
+        }
     }
 
     private void initRefreshView() {
-        srlSearch.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                requestQuery(mQueryString, false);
-            }
-        });
+        srlSearch.setOnRefreshListener(this);
     }
 
     private void initRecyclerView() {
         NormalRVAdapter adapter = new NormalRVAdapter();
-        adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<Object>() {
-            @Override
-            public void onItemClick(Object model) {
-                SearchListFragment.this.onItemClick(model);
-            }
-        });
+        adapter.setOnItemClickListener(this);
         rvSearch.setLayoutManager(new LinearLayoutManager(getContext()));
         rvSearch.setAdapter(adapter);
     }
 
-    private void requestQuery(String query, boolean isAdd) {
-        mPresenter.requestSearchResult(query, mType, isAdd);
+    private String getQuery() {
+        return ((SearchActivity) getActivity()).getQuery();
     }
 
-    private void onItemClick(Object data) {
+    @Override
+    public void onItemClick(Object data) {
+        Intent intent;
+        Bundle bundle = new Bundle();
         if (data instanceof Note) {
-            Toast.makeText(getContext(), ((Note) data).getTitle(), Toast.LENGTH_SHORT).show();
+            intent = new Intent(getContext(), NoteShowActivity.class);
+            bundle.putParcelable("note", (Note) data);
+            intent.putExtras(bundle);
+            startActivity(intent);
+//            Toast.makeText(getContext(), ((Note) data).getTitle(), Toast.LENGTH_SHORT).show();
         }else if (data instanceof Course) {
-            Toast.makeText(getContext(), ((Course) data).getTitle(), Toast.LENGTH_SHORT).show();
+            intent = new Intent(getContext(), CourseShowActivity.class);
+            bundle.putParcelable("course", (Course) data);
+            intent.putExtras(bundle);
+            startActivity(intent);
+//            Toast.makeText(getContext(), ((Course) data).getTitle(), Toast.LENGTH_SHORT).show();
         }else if (data instanceof Entry) {
-            Toast.makeText(getContext(), ((Entry) data).getName(), Toast.LENGTH_SHORT).show();
+            intent = new Intent(getContext(), EntryInfoActivity.class);
+            bundle.putParcelable("entry", (Entry) data);
+            intent.putExtras(bundle);
+            startActivity(intent);
+//            Toast.makeText(getContext(), ((Entry) data).getName(), Toast.LENGTH_SHORT).show();
         }else if (data instanceof User) {
-            Toast.makeText(getContext(), ((User) data).getName(), Toast.LENGTH_SHORT).show();
+            intent = new Intent(getContext(), UserInfoActivity.class);
+            bundle.putParcelable("user", (User) data);
+            intent.putExtras(bundle);
+            startActivity(intent);
+//            Toast.makeText(getContext(), ((User) data).getName(), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void search(final String query) {
-        mQueryString = query;
-        if (rvSearch == null) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    requestQuery(mQueryString, false);
-                }
-            }, 200);
-        }else {
-            requestQuery(mQueryString, false);
+    public void search(String query) {
+        if (mPresenter != null) {
+            mQueryString = query;
+            mPresenter.requestData(mType, query);
         }
     }
 
     @Override
-    public void onResultWorn(@NotNull String message) {
+    public void onResultError(String error) {
         srlSearch.setRefreshing(false);
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onSearchResult(List<Object> resultList, boolean isAdd) {
+    public void onResultData(List<Object> dataList) {
         srlSearch.setRefreshing(false);
         NormalRVAdapter adapter = (NormalRVAdapter) rvSearch.getAdapter();
-        if (isAdd) {
-            adapter.addData(resultList);
-        }else {
-            adapter.setData(resultList);
-        }
+        adapter.setData(dataList);
     }
 
     @Override
-    public void onDestroy() {
-        mPresenter.detachView();
-        super.onDestroy();
+    public void onRefresh() {
+        srlSearch.setRefreshing(false);
+        mPresenter.requestData(mType, mQueryString);
     }
 }

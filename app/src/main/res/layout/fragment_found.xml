@@ -8,14 +8,21 @@
     <FrameLayout
         android:background="@color/mainColor"
         android:layout_width="match_parent"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:layout_height="50dp">
 
-        <include
-            android:layout_gravity="center"
+        <TextView
+            android:id="@+id/tv_found_search"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="10dp"
+            android:padding="10dp"
+            android:text="点击搜索"
+            android:background="@drawable/bg_white_round"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="10dp"
-            layout="@layout/layout_search"/>
+            android:layout_height="match_parent" />
     </FrameLayout>
 
     <com.youth.banner.Banner

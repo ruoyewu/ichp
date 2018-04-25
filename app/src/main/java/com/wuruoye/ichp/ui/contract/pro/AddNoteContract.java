@@ -1,4 +1,4 @@
-package com.wuruoye.ichp.ui.contract;
+package com.wuruoye.ichp.ui.contract.pro;
 
 import android.content.Context;
 

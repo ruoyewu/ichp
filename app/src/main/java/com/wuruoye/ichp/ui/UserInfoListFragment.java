@@ -10,27 +10,22 @@ import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
-import com.wuruoye.ichp.ui.contract.EntryInfoContract;
 import com.wuruoye.ichp.ui.model.bean.User;
-import com.wuruoye.ichp.ui.presenter.DevEntryInfoPresenter;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * Created by wuruoye on 2018/2/3.
  * this file is to
  */
 
-public class UserInfoListFragment extends BaseFragment implements EntryInfoContract.View{
+public class UserInfoListFragment extends BaseFragment{
     private SwipeRefreshLayout srl;
     private RecyclerView rv;
 
     private User mUser;
     private int mType;
-    private EntryInfoContract.Presenter mPresenter;
 
     @Override
     public int getContentView() {
@@ -42,9 +37,6 @@ public class UserInfoListFragment extends BaseFragment implements EntryInfoContr
         assert bundle != null;
         mUser = bundle.getParcelable("user");
         mType = bundle.getInt("type");
-
-        mPresenter = new DevEntryInfoPresenter();
-        mPresenter.attachView(this);
     }
 
     @Override
@@ -84,27 +76,5 @@ public class UserInfoListFragment extends BaseFragment implements EntryInfoContr
 
     private void onItemClick(Object object) {
 
-    }
-
-    @Override
-    public void onResultWorn(@NotNull String message) {
-        srl.setRefreshing(false);
-    }
-
-    @Override
-    public void onDataResult(List<Object> dataList, boolean isAdd) {
-        srl.setRefreshing(false);
-        NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
-        if (isAdd) {
-            adapter.addData(dataList);
-        }else {
-            adapter.setData(dataList);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        mPresenter.detachView();
-        super.onDestroy();
     }
 }

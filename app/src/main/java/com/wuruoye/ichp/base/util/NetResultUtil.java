@@ -18,8 +18,6 @@ import java.util.List;
  */
 
 public class NetResultUtil {
-
-
     public static <T> List<T> parseDataList(String data, Class<T> classOf) throws Exception {
         List<T> result = new ArrayList<>();
         JSONObject object = new JSONObject(data);

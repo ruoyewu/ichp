@@ -10,7 +10,7 @@ import com.wuruoye.ichp.base.model.Config;
 import com.wuruoye.ichp.base.model.Listener;
 import com.wuruoye.ichp.base.util.DateUtil;
 import com.wuruoye.ichp.base.util.LocationUtil;
-import com.wuruoye.ichp.ui.contract.AddNoteContract;
+import com.wuruoye.ichp.ui.contract.pro.AddNoteContract;
 import com.wuruoye.ichp.ui.model.UserCache;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Note;

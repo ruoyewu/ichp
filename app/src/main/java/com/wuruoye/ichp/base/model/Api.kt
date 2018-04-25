@@ -33,7 +33,7 @@ object Api {
     val SEARCH_REC = REMOTE_HOST + "searchRec"
     val ISSUE_ACT = REMOTE_HOST + "issueAct"
     val DELETE_ACT = REMOTE_HOST + "delAct"
-    val SEARCH_ACT = REMOTE_HOST + "Act"
+    val SEARCH_ACT = REMOTE_HOST + "searchAct"
     val GET_ALL_ACT = REMOTE_HOST + "getAllAct"
     val GET_USER_ACT = REMOTE_HOST + "getUserAct"
     val COLLECT_ACT = REMOTE_HOST + "collACT"

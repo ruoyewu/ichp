@@ -8,14 +8,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
-import com.wuruoye.ichp.ui.contract.EntryInfoContract;
+import com.wuruoye.ichp.ui.contract.pro.EntryInfoContract;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Note;
-import com.wuruoye.ichp.ui.presenter.DevEntryInfoPresenter;
+import com.wuruoye.ichp.ui.presenter.pro.EntryInfoPresenter;
+import com.wuruoye.library.ui.WBaseFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,16 +27,13 @@ import java.util.List;
  * this file is to
  */
 
-public class EntryInfoListFragment extends BaseFragment implements EntryInfoContract.View{
-    public static final int TYPE_NOTE = 0;
-    public static final int TYPE_COURSE = 1;
-
+public class EntryInfoListFragment extends WBaseFragment<EntryInfoContract.Presenter>
+        implements EntryInfoContract.View{
     private SwipeRefreshLayout srl;
     private RecyclerView rv;
 
     private Entry mEntry;
     private int mType;
-    private EntryInfoContract.Presenter mPresenter;
 
     @Override
     public int getContentView() {
@@ -49,8 +46,7 @@ public class EntryInfoListFragment extends BaseFragment implements EntryInfoCont
         mEntry = bundle.getParcelable("entry");
         mType = bundle.getInt("type");
 
-        mPresenter = new DevEntryInfoPresenter();
-        mPresenter.attachView(this);
+        setPresenter(new EntryInfoPresenter());
     }
 
     @Override
@@ -61,14 +57,14 @@ public class EntryInfoListFragment extends BaseFragment implements EntryInfoCont
         initRefresh();
         initRecyclerView();
 
-        requestDataList(false);
+        requestDataList();
     }
 
     private void initRefresh() {
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestDataList(false);
+                requestDataList();
             }
         });
     }
@@ -85,8 +81,9 @@ public class EntryInfoListFragment extends BaseFragment implements EntryInfoCont
         rv.setAdapter(adapter);
     }
 
-    private void requestDataList(boolean isAdd) {
-        mPresenter.requestData(mEntry, isAdd, mType);
+    private void requestDataList() {
+        srl.setRefreshing(true);
+        mPresenter.requestData(mType);
     }
 
     private void onItemClick(Object data) {
@@ -98,24 +95,12 @@ public class EntryInfoListFragment extends BaseFragment implements EntryInfoCont
     }
 
     @Override
-    public void onResultWorn(@NotNull String message) {
-        srl.setRefreshing(false);
+    public void onResultError(String error) {
+
     }
 
     @Override
-    public void onDataResult(List<Object> dataList, boolean isAdd) {
-        srl.setRefreshing(false);
-        NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
-        if (isAdd) {
-            adapter.addData(dataList);
-        }else {
-            adapter.setData(dataList);
-        }
-    }
+    public void onResultData(List<Object> dataList) {
 
-    @Override
-    public void onDestroy() {
-        mPresenter.detachView();
-        super.onDestroy();
     }
 }

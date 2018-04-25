@@ -28,7 +28,7 @@ import com.wuruoye.ichp.base.util.FileUtil;
 import com.wuruoye.ichp.base.util.PermissionUtil;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.MediaRVAdapter;
-import com.wuruoye.ichp.ui.contract.AddNoteContract;
+import com.wuruoye.ichp.ui.contract.pro.AddNoteContract;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;

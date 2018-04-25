@@ -127,7 +127,7 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
                 break;
             case 2:
                 // 我的收藏
-                intent = new Intent(getContext(), CollectActivity.class);
+                intent = new Intent(getContext(), PersonCollectActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
@@ -139,6 +139,8 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
                 break;
             case 4:
                 // 我的非遗足迹
+                intent = new Intent(getContext(), PersonTraceActivity.class);
+                startActivity(intent);
                 break;
             case 5:
                 // 非遗拾贝

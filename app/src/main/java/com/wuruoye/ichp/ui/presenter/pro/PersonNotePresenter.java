@@ -65,12 +65,12 @@ public class PersonNotePresenter extends PersonNoteContract.Presenter {
                     try {
                         JSONObject obj = new JSONObject(s);
                         if (obj.getInt("code") == 0) {
-                            getView().onResultRemove(id);
+                            getView().onResultRemove(id, true);
                         }else {
-                            getView().onResultError(obj.getString("msg"));
+                            getView().onResultRemove(id, false);
                         }
                     } catch (JSONException e) {
-                        getView().onResultError(e.getMessage());
+                        getView().onResultRemove(id, false);
                     }
                 }
             }
@@ -78,7 +78,7 @@ public class PersonNotePresenter extends PersonNoteContract.Presenter {
             @Override
             public void onFail(String s) {
                 if (isAvailable()) {
-                    getView().onResultError(s);
+                    getView().onResultRemove(id, false);
                 }
             }
         });

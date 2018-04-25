@@ -16,7 +16,7 @@ public interface PersonNoteContract {
     interface View extends WIView {
         void onResultError(String error);
         void onResultData(List<Note> dataList);
-        void onResultRemove(int id);
+        void onResultRemove(int id, boolean deleted);
     }
 
     abstract class Presenter extends WPresenter<View> implements WIPresenter {
