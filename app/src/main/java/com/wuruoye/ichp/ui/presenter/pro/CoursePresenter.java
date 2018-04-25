@@ -4,7 +4,7 @@ import android.support.v4.util.ArrayMap;
 
 import com.wuruoye.ichp.base.model.Api;
 import com.wuruoye.ichp.base.util.NetResultUtil;
-import com.wuruoye.ichp.ui.contract.CourseContract;
+import com.wuruoye.ichp.ui.contract.pro.CourseContract;
 import com.wuruoye.ichp.ui.model.UserCache;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.library.model.Listener;

@@ -5,10 +5,10 @@
     android:layout_height="match_parent">
 
     <include
-        layout="@layout/layout_page_tab"/>
+        layout="@layout/layout_refresh_recycler"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_course_add"
+        android:id="@+id/fab_course"
         android:theme="@style/fabTheme"
         android:src="@drawable/ic_white_add"
         android:layout_alignParentBottom="true"

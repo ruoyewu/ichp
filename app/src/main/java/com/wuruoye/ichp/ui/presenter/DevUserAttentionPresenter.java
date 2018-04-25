@@ -1,6 +1,6 @@
 package com.wuruoye.ichp.ui.presenter;
 
-import com.wuruoye.ichp.ui.contract.UserAttentionContract;
+import com.wuruoye.ichp.ui.contract.pro.UserAttentionContract;
 import com.wuruoye.ichp.ui.model.bean.User;
 
 /**

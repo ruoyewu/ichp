@@ -3,7 +3,7 @@ package com.wuruoye.ichp.ui.presenter.pro;
 import android.support.v4.util.ArrayMap;
 
 import com.wuruoye.ichp.base.model.Api;
-import com.wuruoye.ichp.ui.contract.UserLoginContract;
+import com.wuruoye.ichp.ui.contract.pro.UserLoginContract;
 import com.wuruoye.ichp.ui.model.UserCache;
 import com.wuruoye.library.model.Listener;
 import com.wuruoye.library.util.net.WNet;

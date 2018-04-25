@@ -14,7 +14,7 @@ import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.BaseFragment;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.MessageRVAdapter;
-import com.wuruoye.ichp.ui.contract.MessageContract;
+import com.wuruoye.ichp.ui.contract.pro.MessageContract;
 import com.wuruoye.ichp.ui.model.bean.Comment;
 import com.wuruoye.ichp.ui.model.bean.Message;
 import com.wuruoye.ichp.ui.model.bean.Praise;

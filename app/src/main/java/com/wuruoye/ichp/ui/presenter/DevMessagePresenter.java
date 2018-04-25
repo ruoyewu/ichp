@@ -1,6 +1,6 @@
 package com.wuruoye.ichp.ui.presenter;
 
-import com.wuruoye.ichp.ui.contract.MessageContract;
+import com.wuruoye.ichp.ui.contract.pro.MessageContract;
 import com.wuruoye.ichp.ui.model.bean.Comment;
 import com.wuruoye.ichp.ui.model.bean.Praise;
 import com.wuruoye.ichp.ui.model.bean.User;

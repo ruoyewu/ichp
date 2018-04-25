@@ -15,7 +15,7 @@ import com.wuruoye.ichp.ui.FoundFragment;
 import com.wuruoye.ichp.ui.HomeFragment;
 import com.wuruoye.ichp.ui.UserFragment;
 import com.wuruoye.ichp.ui.UserLoginActivity;
-import com.wuruoye.ichp.ui.contract.MainContract;
+import com.wuruoye.ichp.ui.contract.pro.MainContract;
 import com.wuruoye.ichp.ui.presenter.pro.MainPresenter;
 import com.wuruoye.library.ui.WBaseActivity;
 

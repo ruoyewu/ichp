@@ -1,4 +1,4 @@
-package com.wuruoye.ichp.ui.contract;
+package com.wuruoye.ichp.ui.contract.pro;
 
 import com.wuruoye.library.contract.WIView;
 import com.wuruoye.library.contract.WPresenter;

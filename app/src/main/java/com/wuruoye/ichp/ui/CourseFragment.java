@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.CourseRVAdapter;
-import com.wuruoye.ichp.ui.contract.CourseContract;
+import com.wuruoye.ichp.ui.contract.pro.CourseContract;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.presenter.pro.CoursePresenter;
 import com.wuruoye.library.ui.WBaseFragment;
@@ -34,7 +34,7 @@ public class CourseFragment extends WBaseFragment<CoursePresenter> implements
 
     @Override
     protected int getContentView() {
-        return R.layout.fragment_course_2;
+        return R.layout.fragment_course;
     }
 
     @Override

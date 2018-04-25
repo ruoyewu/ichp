@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -89,12 +90,23 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
 
     @Override
     public void onItemClick(Object data) {
+        Intent intent;
+        Bundle bundle = new Bundle();
         if (data instanceof Note) {
-            Toast.makeText(getContext(), ((Note) data).getTitle(), Toast.LENGTH_SHORT).show();
+            intent = new Intent(getContext(), NoteShowActivity.class);
+            bundle.putParcelable("note", (Note) data);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }else if (data instanceof Course) {
-            Toast.makeText(getContext(), ((Course) data).getTitle(), Toast.LENGTH_SHORT).show();
+            intent = new Intent(getContext(), CourseShowActivity.class);
+            bundle.putParcelable("course", (Course) data);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }else if (data instanceof Entry) {
-            Toast.makeText(getContext(), ((Entry) data).getName(), Toast.LENGTH_SHORT).show();
+            intent = new Intent(getContext(), EntryInfoActivity.class);
+            bundle.putParcelable("entry", (Entry) data);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 

@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
-import com.wuruoye.ichp.ui.contract.UserAttentionContract;
+import com.wuruoye.ichp.ui.contract.pro.UserAttentionContract;
 import com.wuruoye.ichp.ui.model.bean.User;
 import com.wuruoye.ichp.ui.presenter.pro.UserAttentionPresenter;
 import com.wuruoye.library.ui.WBaseActivity;

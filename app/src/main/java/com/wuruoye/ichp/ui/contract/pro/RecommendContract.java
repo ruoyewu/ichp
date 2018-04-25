@@ -1,4 +1,4 @@
-package com.wuruoye.ichp.ui.contract;
+package com.wuruoye.ichp.ui.contract.pro;
 
 import com.wuruoye.ichp.base.presenter.AbsPresenter;
 import com.wuruoye.ichp.base.presenter.IView;

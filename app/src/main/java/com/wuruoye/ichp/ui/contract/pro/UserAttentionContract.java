@@ -1,4 +1,4 @@
-package com.wuruoye.ichp.ui.contract;
+package com.wuruoye.ichp.ui.contract.pro;
 
 import com.wuruoye.ichp.ui.model.bean.User;
 import com.wuruoye.library.contract.WIView;
