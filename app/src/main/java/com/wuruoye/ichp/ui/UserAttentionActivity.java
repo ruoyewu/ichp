@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,16 +12,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.BaseActivity;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
 import com.wuruoye.ichp.ui.contract.UserAttentionContract;
 import com.wuruoye.ichp.ui.model.bean.User;
-import com.wuruoye.ichp.ui.presenter.DevUserAttentionPresenter;
+import com.wuruoye.ichp.ui.presenter.pro.UserAttentionPresenter;
+import com.wuruoye.library.ui.WBaseActivity;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,8 @@ import java.util.List;
  * this file is to
  */
 
-public class UserAttentionActivity extends BaseActivity implements UserAttentionContract.View{
+public class UserAttentionActivity extends WBaseActivity<UserAttentionContract.Presenter>
+        implements UserAttentionContract.View, BaseRVAdapter.OnItemClickListener<Object> {
     public static final int TYPE_FOCUS = 1;
     public static final int TYPE_FOCUSED = 2;
 
@@ -39,9 +41,7 @@ public class UserAttentionActivity extends BaseActivity implements UserAttention
     private SwipeRefreshLayout srl;
     private RecyclerView rv;
 
-    private User mUser;
     private int mType;
-    private UserAttentionContract.Presenter mPresenter;
 
     @Override
     public int getContentView() {
@@ -50,11 +50,9 @@ public class UserAttentionActivity extends BaseActivity implements UserAttention
 
     @Override
     public void initData(@Nullable Bundle bundle) {
-        mUser = bundle.getParcelable("user");
         mType = bundle.getInt("type");
 
-        mPresenter = new DevUserAttentionPresenter();
-        mPresenter.attachView(this);
+        setPresenter(new UserAttentionPresenter());
     }
 
     @Override
@@ -89,47 +87,31 @@ public class UserAttentionActivity extends BaseActivity implements UserAttention
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestData(false);
+                requestData();
             }
         });
     }
 
     private void initRecyclerView() {
         NormalRVAdapter adapter = new NormalRVAdapter();
-        adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<Object>() {
-            @Override
-            public void onItemClick(Object model) {
-                UserAttentionActivity.this.onItemClick(model);
-            }
-        });
+        adapter.setOnItemClickListener(this);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
     }
 
-    private void requestData(boolean isAdd) {
-        mPresenter.requestData(mUser, mType, isAdd);
+    private void requestData() {
+        srl.setRefreshing(true);
+        mPresenter.requestData(mType);
     }
 
-    private void onItemClick(Object data) {
+    @Override
+    public void onItemClick(Object data) {
         if (data instanceof User) {
-            Toast.makeText(this, ((User) data).getName(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onResultWorn(@NotNull String message) {
-        srl.setRefreshing(false);
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onDataResult(List<Object> userList, boolean isAdd) {
-        srl.setRefreshing(false);
-        NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
-        if (isAdd) {
-            adapter.addData(userList);
-        }else {
-            adapter.setData(userList);
+            Intent intent = new Intent(this, UserInfoActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", (User) data);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 
@@ -137,5 +119,19 @@ public class UserAttentionActivity extends BaseActivity implements UserAttention
     protected void onDestroy() {
         mPresenter.detachView();
         super.onDestroy();
+    }
+
+    @Override
+    public void onResultError(String error) {
+        srl.setRefreshing(false);
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResultData(List<User> userList) {
+        srl.setRefreshing(false);
+        List<Object> objList = new ArrayList<>();
+        objList.addAll(userList);
+        ((NormalRVAdapter) rv.getAdapter()).setData(objList);
     }
 }

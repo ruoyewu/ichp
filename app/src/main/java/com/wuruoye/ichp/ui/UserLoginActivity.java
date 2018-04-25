@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.ui.contract.UserLoginContract;
-import com.wuruoye.ichp.ui.presenter.UserLoginPresenter;
+import com.wuruoye.ichp.ui.presenter.pro.UserLoginPresenter;
 import com.wuruoye.library.ui.WBaseActivity;
 
 /**

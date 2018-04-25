@@ -1,8 +1,8 @@
 package com.wuruoye.ichp.ui.contract;
 
-import com.wuruoye.ichp.base.presenter.AbsPresenter;
-import com.wuruoye.ichp.base.presenter.IView;
 import com.wuruoye.ichp.ui.model.bean.User;
+import com.wuruoye.library.contract.WIView;
+import com.wuruoye.library.contract.WPresenter;
 
 import java.util.List;
 
@@ -12,11 +12,15 @@ import java.util.List;
  */
 
 public interface UserAttentionContract {
-    interface View extends IView {
-        void onDataResult(List<Object> userList, boolean isAdd);
+    int TYPE_ATTEN = 1;
+    int TYPE_ATTED = 2;
+
+    interface View extends WIView {
+        void onResultError(String error);
+        void onResultData(List<User> userList);
     }
 
-    abstract class Presenter extends AbsPresenter<View> {
-        public abstract void requestData(User user, int type, boolean isAdd);
+    abstract class Presenter extends WPresenter<View> {
+        public abstract void requestData(int type);
     }
 }

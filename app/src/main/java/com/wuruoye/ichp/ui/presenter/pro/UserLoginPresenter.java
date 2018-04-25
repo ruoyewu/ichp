@@ -1,4 +1,4 @@
-package com.wuruoye.ichp.ui.presenter;
+package com.wuruoye.ichp.ui.presenter.pro;
 
 import android.support.v4.util.ArrayMap;
 

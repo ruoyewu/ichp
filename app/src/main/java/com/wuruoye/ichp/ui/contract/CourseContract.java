@@ -1,22 +1,24 @@
 package com.wuruoye.ichp.ui.contract;
 
-import com.wuruoye.ichp.base.presenter.AbsPresenter;
-import com.wuruoye.ichp.base.presenter.IView;
 import com.wuruoye.ichp.ui.model.bean.Course;
+import com.wuruoye.library.contract.WIView;
+import com.wuruoye.library.contract.WPresenter;
 
 import java.util.List;
 
 /**
- * Created by wuruoye on 2018/1/27.
- * this file is to
+ * @Created : wuruoye
+ * @Date : 2018/3/31.
+ * @Description : 新的「用户界面」对应 contract
  */
 
 public interface CourseContract {
-    interface View extends IView{
-        void onCourseListResult(List<Course> courseList, boolean isAdd);
+    interface View extends WIView {
+        void onResultError(String error);
+        void onResultCourse(List<Course> courseList, boolean isAdd);
     }
 
-    abstract class Presenter extends AbsPresenter<View> {
-        public abstract void requestCourseList(boolean isAdd, int type);
+    abstract class Presenter extends WPresenter<View> {
+        public abstract void requestCourse(boolean isAdd);
     }
 }

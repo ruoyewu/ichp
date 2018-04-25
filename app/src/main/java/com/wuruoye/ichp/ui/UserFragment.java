@@ -108,16 +108,28 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
         }
     }
 
+    private boolean checkUserAvaiable() {
+        if (mUser == null) {
+            Toast.makeText(getContext(), "正在加载用户信息", Toast.LENGTH_SHORT).show();
+            mPresenter.requestUserInfo();
+            return false;
+        }else {
+            return true;
+        }
+    }
+
     private void onItemClick(int position) {
         Bundle bundle = new Bundle();
         Intent intent;
         switch (position) {
             case 0:
                 // 我的信息
-                intent = new Intent(getContext(), PersonInfoActivity.class);
-                bundle.putParcelable("user", mUser);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, USER_INFO);
+                if (checkUserAvaiable()) {
+                    intent = new Intent(getContext(), PersonInfoActivity.class);
+                    bundle.putParcelable("user", mUser);
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, USER_INFO);
+                }
                 break;
             case 1:
                 // 我的非遗记录
@@ -174,9 +186,12 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
                 startActivity(intent);
                 break;
             case R.id.civ_user:
-                intent = new Intent(getContext(), UserInfoActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (checkUserAvaiable()) {
+                    intent = new Intent(getContext(), UserInfoActivity.class);
+                    bundle.putParcelable("user", mUser);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
                 break;
 
         }

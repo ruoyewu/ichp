@@ -16,7 +16,7 @@ import com.wuruoye.ichp.ui.HomeFragment;
 import com.wuruoye.ichp.ui.UserFragment;
 import com.wuruoye.ichp.ui.UserLoginActivity;
 import com.wuruoye.ichp.ui.contract.MainContract;
-import com.wuruoye.ichp.ui.presenter.MainPresenter;
+import com.wuruoye.ichp.ui.presenter.pro.MainPresenter;
 import com.wuruoye.library.ui.WBaseActivity;
 
 import org.jetbrains.annotations.Nullable;

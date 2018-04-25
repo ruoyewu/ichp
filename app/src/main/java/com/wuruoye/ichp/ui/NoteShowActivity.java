@@ -51,7 +51,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         View.OnClickListener, NoteShowContract.View{
     public static final String[] ITEM_BOTTOM = {"点赞", "评论", "收藏", "词条", "分享"};
     public static final int[] ICON_BOTTOM = {R.drawable.ic_like, R.drawable.ic_comment,
-            R.drawable.ic_start, R.drawable.ic_entry, R.drawable.ic_share};
+            R.drawable.ic_star, R.drawable.ic_entry, R.drawable.ic_share};
 
     private Toolbar toolbar;
     private ImageView ivBack;

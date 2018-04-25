@@ -12,9 +12,9 @@ import android.widget.Toast;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.CourseRVAdapter;
-import com.wuruoye.ichp.ui.contract.CourseContract2;
+import com.wuruoye.ichp.ui.contract.CourseContract;
 import com.wuruoye.ichp.ui.model.bean.Course;
-import com.wuruoye.ichp.ui.presenter.CoursePresenter;
+import com.wuruoye.ichp.ui.presenter.pro.CoursePresenter;
 import com.wuruoye.library.ui.WBaseFragment;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 
 public class CourseFragment extends WBaseFragment<CoursePresenter> implements
-        SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, CourseContract2.View,
+        SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, CourseContract.View,
         BaseRVAdapter.OnItemClickListener<Course> {
     private SwipeRefreshLayout srl;
     private RecyclerView rv;

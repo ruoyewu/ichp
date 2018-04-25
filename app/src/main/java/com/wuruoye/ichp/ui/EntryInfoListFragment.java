@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public class EntryInfoListFragment extends WBaseFragment<EntryInfoContract.Presenter>
-        implements EntryInfoContract.View{
+        implements EntryInfoContract.View, SwipeRefreshLayout.OnRefreshListener {
     private SwipeRefreshLayout srl;
     private RecyclerView rv;
 
@@ -61,12 +61,7 @@ public class EntryInfoListFragment extends WBaseFragment<EntryInfoContract.Prese
     }
 
     private void initRefresh() {
-        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                requestDataList();
-            }
-        });
+        srl.setOnRefreshListener(this);
     }
 
     private void initRecyclerView() {
@@ -102,5 +97,10 @@ public class EntryInfoListFragment extends WBaseFragment<EntryInfoContract.Prese
     @Override
     public void onResultData(List<Object> dataList) {
 
+    }
+
+    @Override
+    public void onRefresh() {
+        requestDataList();
     }
 }

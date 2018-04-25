@@ -41,7 +41,7 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
         implements CourseShowContract.View, View.OnClickListener {
     public static final String[] ITEM_BOTTOM = {"返回", "入口地址", "收藏", "分享"};
     public static final int[] ICON_BOTTOM = {R.drawable.ic_goleft, R.drawable.ic_edit,
-            R.drawable.ic_start, R.drawable.ic_share};
+            R.drawable.ic_star, R.drawable.ic_share};
 
     private Toolbar toolbar;
     private ImageView ivBack;
