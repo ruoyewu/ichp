@@ -46,4 +46,7 @@ object Api {
     val DELETE_COMMENT_REC = REMOTE_HOST + "delCommRec"
     val COMMENT_COMMENT = REMOTE_HOST + "commComm"
     val DELETE_COMMENT_COMMENT = REMOTE_HOST + "delCommComm"
+    val GET_COLL_REC = REMOTE_HOST + "getCollRec"
+    val GET_COLL_ACT = REMOTE_HOST + "getCollAct"
+    val GET_COLL_ENTRY = REMOTE_HOST + "getCollEntry"
 }

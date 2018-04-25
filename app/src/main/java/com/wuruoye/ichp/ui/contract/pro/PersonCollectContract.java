@@ -17,7 +17,7 @@ public interface PersonCollectContract {
     int TYPE_ENTRY = 3;
 
     interface View extends WIView {
-        void onResultError();
+        void onResultError(String error);
         void onResultRemove(int id, boolean result);
         void onResultData(List<Object> dataList);
     }
@@ -25,5 +25,6 @@ public interface PersonCollectContract {
     abstract class Presenter extends WPresenter<View> {
         abstract public void requestData(int type);
         abstract public void requestRemove(int type, int id);
+        abstract public void requestRemove(int type, List<Integer> id);
     }
 }

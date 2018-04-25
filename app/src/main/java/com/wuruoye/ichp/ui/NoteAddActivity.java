@@ -81,6 +81,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     private AlertDialog dlgRecord;
     private AlertDialog dlgUpload;
     private AlertDialog dlgUploadError;
+    private AlertDialog dlgLocation;
 
     private int mCurrentMediaType;
     private int mType;
@@ -165,6 +166,8 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
             tv.setTextColor(ActivityCompat.getColor(this, R.color.black));
             llList[i].setOnClickListener(this);
         }
+
+        tvLocation.setOnClickListener(this);
     }
 
     private void initRecyclerView() {
@@ -464,7 +467,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
         }
         String addr = "";
         if (mLocation != null && mLocation.length > 0) {
-            addr += mLocation[0] + ',';
+            addr += tvLocation.getText().toString() + ',';
         }else {
             addr += " ,";
         }
@@ -565,6 +568,20 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
                 break;
             case R.id.ll_note_add_publish:
                 onPublishClick();
+                break;
+            case R.id.tv_note_add_location:
+                if (mLocation != null && mLocation.length > 0) {
+                    dlgLocation = new AlertDialog.Builder(this)
+                            .setTitle("选择地址")
+                            .setItems(mLocation, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    tvLocation.setText(mLocation[i]);
+                                }
+                            })
+                            .create();
+                    dlgLocation.show();
+                }
                 break;
         }
     }

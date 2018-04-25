@@ -14,12 +14,15 @@ import com.wuruoye.ichp.ui.contract.pro.PersonCollectContract;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Note;
+import com.wuruoye.ichp.ui.presenter.pro.PersonCollectPresenter;
 import com.wuruoye.ichp.ui.util.IManagerView;
 import com.wuruoye.library.ui.WBaseFragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -28,12 +31,16 @@ import java.util.List;
  */
 
 public class PersonCollectListFragment extends WBaseFragment<PersonCollectContract.Presenter>
-        implements PersonCollectContract.View, IManagerView{
+        implements PersonCollectContract.View, IManagerView, BaseRVAdapter.OnItemClickListener<Object>,
+        NormalRVAdapter.OnActionListener {
 
     private SwipeRefreshLayout srl;
     private RecyclerView rv;
 
     private int mType;
+    private List<Object> mToDeleteList = new LinkedList<>();
+    private int mDelSuc = 0;
+    private int mDelFai = 0;
 
     @Override
     public int getContentView() {
@@ -43,6 +50,8 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
     @Override
     public void initData(@Nullable Bundle bundle) {
         mType = bundle.getInt("type");
+
+        setPresenter(new PersonCollectPresenter());
     }
 
     @Override
@@ -53,35 +62,33 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
         initLayout();
         initRecyclerView();
 
-        requestData(false);
+        requestData();
     }
 
     private void initLayout() {
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestData(false);
+                requestData();
             }
         });
     }
 
     private void initRecyclerView() {
         NormalRVAdapter adapter = new NormalRVAdapter();
-        adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<Object>() {
-            @Override
-            public void onItemClick(Object model) {
-                PersonCollectListFragment.this.onItemClick(model);
-            }
-        });
+        adapter.setOnItemClickListener(this);
+        adapter.setOnActionListener(this);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
     }
 
-    private void requestData(boolean isAdd) {
+    private void requestData() {
         srl.setRefreshing(true);
+        mPresenter.requestData(mType);
     }
 
-    private void onItemClick(Object data) {
+    @Override
+    public void onItemClick(Object data) {
         if (data instanceof Note) {
             Toast.makeText(getContext(), ((Note) data).getTitle(), Toast.LENGTH_SHORT).show();
         }else if (data instanceof Course) {
@@ -98,26 +105,86 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
 
     @Override
     public void remove() {
-        Toast.makeText(getContext(), "remove", Toast.LENGTH_SHORT).show();
+        ((NormalRVAdapter) rv.getAdapter()).setShowCheck(true);
     }
 
     @Override
     public void removeAll() {
-        Toast.makeText(getContext(), "remove all", Toast.LENGTH_SHORT).show();
+        remove();
     }
 
     @Override
-    public void onResultError() {
+    public void submit() {
+        mDelSuc = 0;
+        mDelFai = 0;
+        if (mToDeleteList.size() > 0) {
+            List<Integer> idList = new ArrayList<>();
+            for (Object obj : mToDeleteList) {
+                if (obj instanceof Note) {
+                    idList.add(((Note) obj).getRec_id());
+                }else if (obj instanceof Course) {
+                    idList.add(((Course) obj).getAct_id());
+                }else if (obj instanceof Entry) {
+                    idList.add(((Entry) obj).getEntry_id());
+                }
+            }
+            mPresenter.requestRemove(mType, idList);
+        }
+        ((NormalRVAdapter) rv.getAdapter()).setShowCheck(false);
+    }
 
+    @Override
+    public void onResultError(String error) {
+        srl.setRefreshing(false);
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResultRemove(int id, boolean result) {
+        if (result) {
+            for (Object obj : mToDeleteList) {
+                if (obj instanceof Note) {
+                    if (((Note) obj).getRec_id() == id) {
+                        ((NormalRVAdapter) rv.getAdapter()).removeData(obj);
+                        mToDeleteList.remove(obj);
+                        break;
+                    }
+                }else if (obj instanceof Course) {
+                    if (((Course) obj).getAct_id() == id) {
+                        ((NormalRVAdapter) rv.getAdapter()).removeData(obj);
+                        mToDeleteList.remove(obj);
+                        break;
+                    }
+                }else if (obj instanceof Entry) {
+                    if (((Entry) obj).getEntry_id() == id) {
+                        ((NormalRVAdapter) rv.getAdapter()).removeData(obj);
+                        mToDeleteList.remove(obj);
+                        break;
+                    }
+                }
+            }
 
+            mDelSuc ++;
+        }else {
+            mDelFai ++;
+        }
+
+        int total = mDelSuc + mToDeleteList.size();
     }
 
     @Override
     public void onResultData(List<Object> dataList) {
+        srl.setRefreshing(false);
+        NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
+        adapter.setData(dataList);
+    }
 
+    @Override
+    public void onCheckedChanged(Object obj, boolean checked) {
+        if (checked) {
+            mToDeleteList.add(obj);
+        }else {
+            mToDeleteList.remove(obj);
+        }
     }
 }

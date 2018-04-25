@@ -9,4 +9,5 @@ public interface IManagerView {
     void add();
     void remove();
     void removeAll();
+    void submit();
 }

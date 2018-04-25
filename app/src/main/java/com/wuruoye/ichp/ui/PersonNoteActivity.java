@@ -156,13 +156,22 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
     @Override
     public void remove() {
         changeManagerState(true);
-        NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
-        changeManagerState(true);
     }
 
     @Override
     public void removeAll() {
         remove();
+    }
+
+    @Override
+    public void submit() {
+        if (mToDeleteList.size() > 0) {
+            List<Integer> idList = new ArrayList<>();
+            for (Note n : mToDeleteList) {
+                idList.add(n.getRec_id());
+            }
+            mPresenter.requestRemove(idList);
+        }
     }
 
     @Override
@@ -245,13 +254,7 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
             case R.id.tv_tb_manager:
                 if (mManageClicked) {
                     changeManagerState(false);
-                    if (mToDeleteList.size() > 0) {
-                        List<Integer> idList = new ArrayList<>();
-                        for (Note n : mToDeleteList) {
-                            idList.add(n.getRec_id());
-                        }
-                        mPresenter.requestRemove(idList);
-                    }
+                    submit();
                 }else {
                     pm.show();
                 }
