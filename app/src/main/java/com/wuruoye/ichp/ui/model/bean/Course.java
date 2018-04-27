@@ -20,6 +20,15 @@ public class Course implements Parcelable {
     private String image_src;
     private String labels_id_str;
     private String type;
+    private boolean isColl;
+
+    public boolean isColl() {
+        return isColl;
+    }
+
+    public void setColl(boolean coll) {
+        isColl = coll;
+    }
 
     public String getType() {
         return type;
@@ -109,6 +118,9 @@ public class Course implements Parcelable {
         this.image_src = image_src;
     }
 
+    public Course() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -127,9 +139,7 @@ public class Course implements Parcelable {
         dest.writeString(this.image_src);
         dest.writeString(this.labels_id_str);
         dest.writeString(this.type);
-    }
-
-    public Course() {
+        dest.writeByte(this.isColl ? (byte) 1 : (byte) 0);
     }
 
     protected Course(Parcel in) {
@@ -144,9 +154,10 @@ public class Course implements Parcelable {
         this.image_src = in.readString();
         this.labels_id_str = in.readString();
         this.type = in.readString();
+        this.isColl = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>() {
+    public static final Creator<Course> CREATOR = new Creator<Course>() {
         @Override
         public Course createFromParcel(Parcel source) {
             return new Course(source);

@@ -22,15 +22,17 @@ public interface NoteShowContract {
         void onResultError(String error);
         void onResultNoteComment(List<NoteComment> commentList);
         void onResultUpComment(boolean result, String info);
+        void onResultModifyEntry(boolean result, String info);
     }
 
     abstract class Presenter extends WPresenter<View> {
-        abstract public void requestPraise(int id);
+        abstract public void requestPraise(int id, boolean praise);
         abstract public void requestComment(int id, String content);
-        abstract public void requestCollect(int id);
+        abstract public void requestCollect(int id, boolean collect);
         abstract public void requestCommentList(int id);
         abstract public void requestEntryList(String str);
         abstract public void requestUserInfo(int id);
+        abstract public void requestModifyEntry(int recId, List<Entry> entryList);
         abstract public String parseDate(float time);
         abstract public List<Media> parseMedia(String url, String type)
                 throws IllegalArgumentException;

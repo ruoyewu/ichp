@@ -21,6 +21,6 @@ public interface EntryInfoContract {
     }
 
     abstract class Presenter extends WPresenter<View> {
-        abstract public void requestData(int type);
+        abstract public void requestData(int type, int entryId);
     }
 }

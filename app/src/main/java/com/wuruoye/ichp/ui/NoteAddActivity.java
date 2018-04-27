@@ -24,7 +24,6 @@ import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.MediaActivity;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.base.model.Config;
-import com.wuruoye.ichp.base.util.FileUtil;
 import com.wuruoye.ichp.base.util.PermissionUtil;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.MediaRVAdapter;
@@ -264,7 +263,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
                 .setNegativeButton("否", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mMediaList.clear();
+//                        mMediaList.clear();
                     }
                 })
                 .create();
@@ -313,12 +312,10 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
                 .setPositiveButton("删除", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (media.getType() == Media.Type.RECORD || media.getType() == Media.Type.VIDEO) {
-                            FileUtil.INSTANCE.removeFile(media.getContent());
-                        }
                         MediaRVAdapter adapter = (MediaRVAdapter) rvMedia.getAdapter();
                         adapter.removeData(media);
                         checkRecyclerView();
+                        mMediaList.remove(media);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -401,40 +398,21 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
             return;
         }
 
-        StringBuilder entryBuilder = new StringBuilder();
         List<Entry> entryList = ((EntryChooseRVAdapter) rvEntry.getAdapter()).getData();
-        if (entryList.size() > 0) {
-            for (int i = 0; i < entryList.size() - 1; i++) {
-                entryBuilder.append(entryList.get(i).getEntry_id()).append(",");
-            }
-            entryBuilder.append(entryList.get(entryList.size() - 1).getEntry_id());
-        }else {
+        if (entryList.size() <= 0) {
             onResultError("entry is empty");
             return;
         }
 
-        StringBuilder urlBuilder = new StringBuilder();
-        StringBuilder typeBuilder = new StringBuilder();
-        int size = mUrlMap.size();
-        int j = 0;
-        for (Map.Entry<String, Integer> entry : mUrlMap.entrySet()) {
-            if (j++ < size - 1) {
-                urlBuilder.append(entry.getKey()).append(",");
-                typeBuilder.append(entry.getValue()).append(",");
-            }else {
-                urlBuilder.append(entry.getKey());
-                typeBuilder.append(entry.getValue());
-            }
-        }
-
+        String[] urls = generateUrl();
         Course course = new Course();
         course.setTitle(title);
         course.setContent(content);
         course.setHold_addr(place);
         course.setAct_src(entrance);
-        course.setLabels_id_str(entryBuilder.toString());
-        course.setImage_src(urlBuilder.toString());
-        course.setType(typeBuilder.toString());
+        course.setLabels_id_str(generateEntry());
+        course.setImage_src(urls[0]);
+        course.setType(urls[1]);
 
         mPresenter.requestUpCourse(course, date);
     }
@@ -452,6 +430,28 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
             dlgUpload.dismiss();
             return;
         }
+
+
+        List<Entry> entryList = ((EntryChooseRVAdapter) rvEntry.getAdapter()).getData();
+        if (entryList.size() <= 0) {
+            Toast.makeText(this, "entry is empty", Toast.LENGTH_SHORT).show();
+            dlgUpload.dismiss();
+            return;
+        }
+
+        String[] urls = generateUrl();
+        Note note = new Note();
+        note.setTitle(title);
+        note.setDiscribe(content);
+        note.setUrl(urls[0]);
+        note.setType(urls[1]);
+        note.setAddr(generateAddr());
+        note.setLabels_id_str(generateEntry());
+        mPresenter.requestUpNote(note);
+        dlgUpload.setMessage("正在上传记录...");
+    }
+
+    private String[] generateUrl() {
         StringBuilder urlBuilder = new StringBuilder();
         StringBuilder typeBuilder = new StringBuilder();
         int size = mUrlMap.size();
@@ -465,39 +465,32 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
                 typeBuilder.append(entry.getValue());
             }
         }
+        return new String[] {urlBuilder.toString(), typeBuilder.toString()};
+    }
+
+    private String generateEntry() {
+        StringBuilder entryBuilder = new StringBuilder();
+        List<Entry> entryList = ((EntryChooseRVAdapter) rvEntry.getAdapter()).getData();
+        for (int i = 0; i < entryList.size() - 1; i++) {
+            entryBuilder.append(entryList.get(i).getEntry_id()).append(",");
+        }
+        entryBuilder.append(entryList.get(entryList.size() - 1).getEntry_id());
+        return entryBuilder.toString();
+    }
+
+    private String generateAddr() {
         String addr = "";
         if (mLocation != null && mLocation.length > 0) {
             addr += tvLocation.getText().toString() + ',';
         }else {
-            addr += " ,";
+            addr += " , ";
         }
         if (mAddress != null) {
             addr += mAddress[0] + "," + mAddress[1];
         }else {
             addr += "0,0";
         }
-        StringBuilder entryBuilder = new StringBuilder();
-        List<Entry> entryList = ((EntryChooseRVAdapter) rvEntry.getAdapter()).getData();
-        if (entryList.size() > 0) {
-            for (int i = 0; i < entryList.size() - 1; i++) {
-                entryBuilder.append(entryList.get(i).getEntry_id()).append(",");
-            }
-            entryBuilder.append(entryList.get(entryList.size() - 1).getEntry_id());
-        }else {
-            Toast.makeText(this, "entry is empty", Toast.LENGTH_SHORT).show();
-            dlgUpload.dismiss();
-            return;
-        }
-
-        Note note = new Note();
-        note.setTitle(title);
-        note.setDiscribe(content);
-        note.setUrl(urlBuilder.toString());
-        note.setType(typeBuilder.toString());
-        note.setAddr(addr);
-        note.setLabels_id_str(entryBuilder.toString());
-        mPresenter.requestUpNote(note);
-        dlgUpload.setMessage("正在上传记录...");
+        return addr;
     }
 
     private String getType(Media media) {

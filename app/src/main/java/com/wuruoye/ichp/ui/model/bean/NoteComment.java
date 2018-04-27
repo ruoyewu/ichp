@@ -17,6 +17,7 @@ public class NoteComment implements Parcelable {
     private int rec_id;
     private int appr_num;
     private String account_name;
+    private String image_src;
 
     public int getComm_rec_id() {
         return comm_rec_id;
@@ -74,6 +75,17 @@ public class NoteComment implements Parcelable {
         this.account_name = account_name;
     }
 
+    public String getImage_src() {
+        return image_src;
+    }
+
+    public void setImage_src(String image_src) {
+        this.image_src = image_src;
+    }
+
+    public NoteComment() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -88,9 +100,7 @@ public class NoteComment implements Parcelable {
         dest.writeInt(this.rec_id);
         dest.writeInt(this.appr_num);
         dest.writeString(this.account_name);
-    }
-
-    public NoteComment() {
+        dest.writeString(this.image_src);
     }
 
     protected NoteComment(Parcel in) {
@@ -101,9 +111,10 @@ public class NoteComment implements Parcelable {
         this.rec_id = in.readInt();
         this.appr_num = in.readInt();
         this.account_name = in.readString();
+        this.image_src = in.readString();
     }
 
-    public static final Parcelable.Creator<NoteComment> CREATOR = new Parcelable.Creator<NoteComment>() {
+    public static final Creator<NoteComment> CREATOR = new Creator<NoteComment>() {
         @Override
         public NoteComment createFromParcel(Parcel source) {
             return new NoteComment(source);

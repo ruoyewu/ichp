@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.model.bean.NoteComment;
@@ -44,6 +45,9 @@ public class NoteCommentRVAdapter extends BaseRVAdapter<NoteComment> {
             viewHolder.tvTime.setText(DateUtil.formatTime((long)(comment.getComm_date() * 1000),
                     "yyyy/MM/dd HH:mm:ss"));
             viewHolder.tvContent.setText(comment.getContent());
+            Glide.with(viewHolder.civ)
+                    .load(comment.getImage_src())
+                    .into(viewHolder.civ);
         }
     }
 

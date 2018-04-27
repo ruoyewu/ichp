@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -20,6 +21,7 @@ import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
 import com.wuruoye.ichp.ui.contract.pro.UserInfoContract;
 import com.wuruoye.ichp.ui.model.bean.User;
+import com.wuruoye.ichp.ui.presenter.pro.UserInfoPresenter;
 import com.wuruoye.library.ui.WBaseActivity;
 import com.wuruoye.library.util.BitmapUtil;
 
@@ -31,16 +33,19 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.wuruoye.ichp.ui.contract.pro.UserAttentionContract.TYPE_ATTED;
+import static com.wuruoye.ichp.ui.contract.pro.UserAttentionContract.TYPE_ATTEN;
+
 /**
  * Created by wuruoye on 2018/2/3.
  * this file is to
  */
 
 public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
-        implements UserInfoContract.View {
+        implements UserInfoContract.View, View.OnClickListener {
     public static final String[] ITEM_TITLE = { "TA发布的记录", "TA发布的活动" };
     public static final String[] ITEM_BOTTOM = {"返回", "关注"};
-    public static final int[] ICON_BOTTOM = {R.drawable.ic_goleft_white, R.drawable.ic_star};
+    public static final int[] ICON_BOTTOM = {R.drawable.ic_goleft_white, R.drawable.ic_star_white};
 
     private CircleImageView civ;
     private ImageView ivBack;
@@ -62,6 +67,8 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
     @Override
     public void initData(@Nullable Bundle bundle) {
         mUser = bundle.getParcelable("user");
+
+        setPresenter(new UserInfoPresenter());
     }
 
     @Override
@@ -95,6 +102,9 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
                 }
             });
         }
+
+        tvFocused.setOnClickListener(this);
+        tvFocus.setOnClickListener(this);
 
         tvTitle.setText(mUser.getAccount_name());
         tvIntro.setText(mUser.getSign());
@@ -155,5 +165,25 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
     @Override
     public void onResultAttention(boolean attention) {
         Toast.makeText(this, "关注用户", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View view) {
+        Intent intent;
+        Bundle bundle = new Bundle();
+        switch (view.getId()) {
+            case R.id.tv_user_info_focus:
+                intent = new Intent(this, UserAttentionActivity.class);
+                bundle.putInt("type", TYPE_ATTEN);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case R.id.tv_user_info_focused:
+                intent = new Intent(this, UserAttentionActivity.class);
+                bundle.putInt("type", TYPE_ATTED);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+        }
     }
 }

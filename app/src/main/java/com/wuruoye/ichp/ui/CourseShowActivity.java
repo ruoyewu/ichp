@@ -1,9 +1,12 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +20,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
+import com.wuruoye.ichp.base.util.ClipboardUtil;
+import com.wuruoye.ichp.base.util.ShareUtil;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.contract.pro.CourseShowContract;
 import com.wuruoye.ichp.ui.model.bean.Course;
@@ -41,7 +46,7 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
         implements CourseShowContract.View, View.OnClickListener {
     public static final String[] ITEM_BOTTOM = {"返回", "入口地址", "收藏", "分享"};
     public static final int[] ICON_BOTTOM = {R.drawable.ic_goleft, R.drawable.ic_edit,
-            R.drawable.ic_star, R.drawable.ic_share};
+            R.drawable.ic_star_white, R.drawable.ic_share};
 
     private Toolbar toolbar;
     private ImageView ivBack;
@@ -56,6 +61,10 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
     private TextView tvDate;
     private TextView tvPlace;
     private LinearLayout llBottom;
+
+    private TextView tvCollect;
+    private ImageView ivCollect;
+    private AlertDialog dlgEntrance;
 
     private Course mCourse;
 
@@ -87,6 +96,7 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
         llBottom = findViewById(R.id.ll_course_show_bottom);
 
         initLayout();
+        initDlg();
         initVP();
         initRV();
         mPresenter.requestUserInfo(mCourse.getPublisher());
@@ -116,7 +126,32 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
                     onBottomClick(finalI);
                 }
             });
+            if (i == 2) {
+                tvCollect = tv;
+                ivCollect = iv;
+            }
         }
+
+        changeCollect(mCourse.isColl());
+    }
+
+    private void initDlg() {
+        dlgEntrance = new AlertDialog.Builder(this)
+                .setTitle("入口地址")
+                .setMessage(mCourse.getHold_addr())
+                .setPositiveButton("复制", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ClipboardUtil.copyText(mCourse.getHold_addr(), CourseShowActivity.this);
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create();
     }
 
     private void initVP() {
@@ -149,6 +184,13 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
                 R.drawable.decoration_horizontal));
         rvEntry.addItemDecoration(decoration);
         rvEntry.setAdapter(adapter);
+    }
+
+    private void changeCollect(boolean collect) {
+        tvCollect.setText(collect ? "已收藏" : "收藏");
+        tvCollect.setTextColor(collect ? Color.BLACK : Color.WHITE);
+        ivCollect.setImageResource(collect ? R.drawable.ic_star_black : R.drawable.ic_star_white);
+        ivCollect.setTag(collect);
     }
 
     @Override
@@ -185,10 +227,16 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
                 onBackPressed();
                 break;
             case 1:
+                dlgEntrance.show();
                 break;
             case 2:
+                boolean coll = !mCourse.isColl();
+                changeCollect(coll);
+                mPresenter.requestCollect(mCourse.getAct_id(), coll);
                 break;
             case 3:
+                String text = mCourse.getTitle() + "\n" + mCourse.getContent();
+                ShareUtil.INSTANCE.shareText(text, this);
                 break;
         }
     }

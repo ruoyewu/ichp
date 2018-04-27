@@ -10,6 +10,9 @@ import com.wuruoye.ichp.ui.model.bean.User;
 import com.wuruoye.library.model.Listener;
 import com.wuruoye.library.util.net.WNet;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 /**
@@ -55,7 +58,41 @@ public class UserPresenter extends UserContract.Presenter {
     }
 
     @Override
-    public int getUserId() {
-        return mUserCache.getUserId();
+    public void requestLogout() {
+        ArrayMap<String, String> values = new ArrayMap<>();
+        values.put("token", mUserCache.getToken());
+
+        WNet.postInBackGround(Api.INSTANCE.getLOGOUT(), values, new Listener<String>() {
+            @Override
+            public void onSuccessful(String s) {
+                if (isAvailable()) {
+                    try {
+                        JSONObject obj = new JSONObject(s);
+                        if (obj.getInt("code") == 0) {
+                            mUserCache.setLogin(false);
+                            mUserCache.setToken("");
+                            getView().onResultLogout();
+                        }else {
+                            getView().onResultError(obj.getString("msg"));
+                        }
+                    } catch (JSONException e) {
+                        getView().onResultError(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(String s) {
+                if (isAvailable()) {
+                    getView().onResultError(s);
+                }
+            }
+        });
     }
+
+    @Override
+    public boolean isLogin() {
+        return mUserCache.isLogin();
+    }
+
 }

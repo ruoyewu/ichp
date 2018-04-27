@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,7 +29,8 @@ import java.util.List;
  */
 
 public class EntryInfoListFragment extends WBaseFragment<EntryInfoContract.Presenter>
-        implements EntryInfoContract.View, SwipeRefreshLayout.OnRefreshListener {
+        implements EntryInfoContract.View, SwipeRefreshLayout.OnRefreshListener,
+        BaseRVAdapter.OnItemClickListener<Object> {
     private SwipeRefreshLayout srl;
     private RecyclerView rv;
 
@@ -66,37 +68,43 @@ public class EntryInfoListFragment extends WBaseFragment<EntryInfoContract.Prese
 
     private void initRecyclerView() {
         NormalRVAdapter adapter = new NormalRVAdapter();
-        adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<Object>() {
-            @Override
-            public void onItemClick(Object model) {
-                EntryInfoListFragment.this.onItemClick(model);
-            }
-        });
+        adapter.setOnItemClickListener(this);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(adapter);
     }
 
     private void requestDataList() {
         srl.setRefreshing(true);
-        mPresenter.requestData(mType);
+        mPresenter.requestData(mType, mEntry.getEntry_id());
     }
 
-    private void onItemClick(Object data) {
+    @Override
+    public void onItemClick(Object data) {
+        Intent intent;
+        Bundle bundle = new Bundle();
         if (data instanceof Note) {
-            Toast.makeText(getContext(), ((Note) data).getTitle(), Toast.LENGTH_SHORT).show();
+            intent = new Intent(getContext(), NoteShowActivity.class);
+            bundle.putParcelable("note", (Note) data);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }else if (data instanceof Course) {
-            Toast.makeText(getContext(), ((Course) data).getTitle(), Toast.LENGTH_SHORT).show();
+            intent = new Intent(getContext(), CourseShowActivity.class);
+            bundle.putParcelable("course", (Course) data);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 
     @Override
     public void onResultError(String error) {
-
+        srl.setRefreshing(false);
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResultData(List<Object> dataList) {
-
+        srl.setRefreshing(false);
+        ((NormalRVAdapter)rv.getAdapter()).setData(dataList);
     }
 
     @Override

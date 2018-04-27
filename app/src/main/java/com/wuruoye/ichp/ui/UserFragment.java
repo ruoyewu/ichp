@@ -1,7 +1,9 @@
 package com.wuruoye.ichp.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,8 +24,8 @@ import org.jetbrains.annotations.Nullable;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.wuruoye.ichp.ui.UserAttentionActivity.TYPE_FOCUS;
-import static com.wuruoye.ichp.ui.UserAttentionActivity.TYPE_FOCUSED;
+import static com.wuruoye.ichp.ui.contract.pro.UserAttentionContract.TYPE_ATTED;
+import static com.wuruoye.ichp.ui.contract.pro.UserAttentionContract.TYPE_ATTEN;
 
 /**
  * Created by wuruoye on 2018/1/27.
@@ -33,13 +35,14 @@ import static com.wuruoye.ichp.ui.UserAttentionActivity.TYPE_FOCUSED;
 public class UserFragment extends WBaseFragment<UserContract.Presenter>
         implements View.OnClickListener, UserContract.View{
     public static final String[] ITEM_TITLE = new String[] {
-            "我的信息", "我的非遗记录", "我的收藏", "我的消息", "我的非遗足迹",
-            "非遗拾贝", "设置", "关于"
+            "我的信息", "我的非遗记录", "我的收藏", "我的认证", "我的非遗足迹",
+        "非遗拾贝", "注销登录", "关于"
     };
     public static final int[] ITEM_ICON = new int[] {
 
     };
     public final int USER_INFO = hashCode() % 10000;
+    public final int USER_LOGIN = hashCode() % 10000 + 1;
 
     private CircleImageView civ;
     private TextView tvName;
@@ -47,6 +50,9 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
     private TextView tvFocus;
     private TextView tvFocused;
     private LinearLayout llUser;
+
+    private TextView tvLogin;
+    private AlertDialog dlgLogout;
 
     private User mUser;
 
@@ -70,6 +76,7 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
         tvFocused = view.findViewById(R.id.tv_user_focused);
 
         initLayout();
+        initDlg();
         initItems();
 
         mPresenter.requestUserInfo();
@@ -79,6 +86,8 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == USER_INFO && resultCode == RESULT_OK) {
             mUser = data.getParcelableExtra("user");
+        }else if (requestCode == USER_LOGIN && resultCode == RESULT_OK) {
+            tvLogin.setText("注销登录");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -87,6 +96,26 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
         tvFocused.setOnClickListener(this);
         tvFocus.setOnClickListener(this);
         civ.setOnClickListener(this);
+    }
+
+    private void initDlg() {
+
+        dlgLogout = new AlertDialog.Builder(getContext())
+                .setTitle("提示")
+                .setMessage("注销登录？")
+                .setPositiveButton("注销", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mPresenter.requestLogout();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create();
     }
 
     private void initItems() {
@@ -105,13 +134,21 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
             iv.setImageResource(R.drawable.ic_home);
             tv.setText(ITEM_TITLE[i]);
             llUser.addView(view);
+            if (i == 6) {
+                tvLogin = tv;
+                tv.setText(mPresenter.isLogin() ? "注销登录" : "登录");
+            }
         }
     }
 
-    private boolean checkUserAvaiable() {
+    private boolean checkUserAvailable() {
         if (mUser == null) {
-            Toast.makeText(getContext(), "正在加载用户信息", Toast.LENGTH_SHORT).show();
-            mPresenter.requestUserInfo();
+            if (mPresenter.isLogin()) {
+                Toast.makeText(getContext(), "正在加载用户信息", Toast.LENGTH_SHORT).show();
+                mPresenter.requestUserInfo();
+            }else {
+                Toast.makeText(getContext(), "请先登录", Toast.LENGTH_SHORT).show();
+            }
             return false;
         }else {
             return true;
@@ -124,7 +161,7 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
         switch (position) {
             case 0:
                 // 我的信息
-                if (checkUserAvaiable()) {
+                if (checkUserAvailable()) {
                     intent = new Intent(getContext(), PersonInfoActivity.class);
                     bundle.putParcelable("user", mUser);
                     intent.putExtras(bundle);
@@ -144,10 +181,8 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
                 startActivity(intent);
                 break;
             case 3:
-                // 我的消息
-                intent = new Intent(getContext(), MessageActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                // 我的认证
+
                 break;
             case 4:
                 // 我的非遗足迹
@@ -158,9 +193,13 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
                 // 非遗拾贝
                 break;
             case 6:
-                // 设置
-                intent = new Intent(getContext(), SettingActivity.class);
-                startActivity(intent);
+                // 注销登录
+                if (mPresenter.isLogin()) {
+                    dlgLogout.show();
+                }else {
+                    startActivityForResult(new Intent(getContext(), UserLoginActivity.class),
+                            USER_LOGIN);
+                }
                 break;
             case 7:
                 // 关于
@@ -174,26 +213,25 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
         Intent intent;
         switch (v.getId()) {
             case R.id.tv_user_focus:
-                bundle.putInt("type", TYPE_FOCUS);
+                bundle.putInt("type", TYPE_ATTEN);
                 intent = new Intent(getContext(), UserAttentionActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             case R.id.tv_user_focused:
-                bundle.putInt("type", TYPE_FOCUSED);
+                bundle.putInt("type", TYPE_ATTED);
                 intent = new Intent(getContext(), UserAttentionActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             case R.id.civ_user:
-                if (checkUserAvaiable()) {
+                if (checkUserAvailable()) {
                     intent = new Intent(getContext(), UserInfoActivity.class);
                     bundle.putParcelable("user", mUser);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
                 break;
-
         }
     }
 
@@ -210,5 +248,11 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
         Glide.with(civ)
                 .load(user.getImage_src())
                 .into(civ);
+    }
+
+    @Override
+    public void onResultLogout() {
+        tvLogin.setText("登录");
+        Toast.makeText(getContext(), "已注销登录", Toast.LENGTH_SHORT).show();
     }
 }

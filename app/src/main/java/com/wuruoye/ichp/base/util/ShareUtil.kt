@@ -47,4 +47,11 @@ object ShareUtil{
         intent.putExtra(Intent.EXTRA_STREAM, uri)
         context.startActivity(intent)
     }
+
+    fun shareText(text: String, context: Context) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, text)
+        context.startActivity(intent)
+    }
 }

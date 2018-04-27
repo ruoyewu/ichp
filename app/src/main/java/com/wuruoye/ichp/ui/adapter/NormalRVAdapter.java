@@ -12,8 +12,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
+import com.wuruoye.ichp.base.util.NetResultUtil;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
+import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.model.bean.User;
 
@@ -62,21 +64,34 @@ public class NormalRVAdapter extends BaseRVAdapter<Object> {
         if (data instanceof Note) {
             viewHolder.civ.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((Note) data).getTitle());
-            String[] ss = ((Note) data).getUrl().split(",");
-            if (ss.length > 0 && !ss[0].equals("")) {
+            viewHolder.tvContent.setText(((Note) data).getDiscribe());
+            Media m = NetResultUtil.getFirstImage((Note) data);
+            if (m != null) {
                 Glide.with(viewHolder.iv)
-                        .load(ss[0])
+                        .load(m.getContent())
                         .into(viewHolder.iv);
             }
         }else if (data instanceof Course) {
-
+            viewHolder.civ.setVisibility(View.GONE);
+            viewHolder.tvTitle.setText(((Course) data).getTitle());
+            viewHolder.tvContent.setText(((Course) data).getContent());
+            Glide.with(viewHolder.iv)
+                    .load(((Course) data).getImage_src())
+                    .into(viewHolder.iv);
         }else if (data instanceof Entry) {
             viewHolder.civ.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((Entry) data).getName());
-
+            viewHolder.tvContent.setText(((Entry) data).getContent());
+            Glide.with(viewHolder.iv)
+                    .load(((Entry) data).getUrl())
+                    .into(viewHolder.iv);
         }else if (data instanceof User) {
             viewHolder.iv.setVisibility(View.GONE);
-            viewHolder.tvTitle.setText(((User) data).getName());
+            viewHolder.tvTitle.setText(((User) data).getAccount_name());
+            viewHolder.tvContent.setText(((User) data).getSign());
+            Glide.with(viewHolder.civ)
+                    .load(((User) data).getImage_src())
+                    .into(viewHolder.civ);
         }
     }
 

@@ -24,6 +24,7 @@ public interface CourseShowContract {
     abstract class Presenter extends WPresenter<View> {
         abstract public void requestUserInfo(int id);
         abstract public void requestEntryList(String s);
+        abstract public void requestCollect(int id, boolean collect);
         abstract public List<Media> parseMedia(String url, String type);
         abstract public String parseDate(float time);
     }

@@ -73,7 +73,7 @@ public class FoundFragment extends WBaseFragment<FoundContract.Presenter>
         tvTips[1].setText("推荐活动");
 
         initLayout();
-        mPresenter.requestRecommend();
+//        mPresenter.requestRecommend();
         mPresenter.requestCourse("0,0");
         mPresenter.requestNote("0,0");
     }
@@ -82,10 +82,11 @@ public class FoundFragment extends WBaseFragment<FoundContract.Presenter>
         tvSearch.setOnClickListener(this);
 
         for (int i = 0; i < ITEM_SIZE; i++) {
+            final int finalI = i;
             tvMores[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onMoreClick();
+                    onMoreClick(finalI);
                 }
             });
         }
@@ -93,9 +94,12 @@ public class FoundFragment extends WBaseFragment<FoundContract.Presenter>
         banFound.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE);
     }
 
-    private void onMoreClick() {
-        startActivity(new Intent(getContext(), SearchActivity.class));
-//        Toast.makeText(getContext(), "暂无", Toast.LENGTH_SHORT).show();
+    private void onMoreClick(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", position);
+        Intent intent = new Intent(getContext(), SearchActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void onObjClick(Object obj) {
@@ -190,7 +194,7 @@ public class FoundFragment extends WBaseFragment<FoundContract.Presenter>
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_found_search:
-                onMoreClick();
+                onMoreClick(0);
                 break;
         }
     }

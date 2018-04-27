@@ -2,7 +2,10 @@ package com.wuruoye.ichp.ui;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -23,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
+import com.wuruoye.ichp.base.util.ShareUtil;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NoteCommentRVAdapter;
 import com.wuruoye.ichp.ui.contract.pro.NoteShowContract;
@@ -49,9 +53,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> implements
         View.OnClickListener, NoteShowContract.View{
-    public static final String[] ITEM_BOTTOM = {"点赞", "评论", "收藏", "词条", "分享"};
-    public static final int[] ICON_BOTTOM = {R.drawable.ic_like, R.drawable.ic_comment,
-            R.drawable.ic_star, R.drawable.ic_entry, R.drawable.ic_share};
+    public static final String[] ITEM_BOTTOM = {"点赞", "收藏", "评论", "词条", "分享"};
+    public static final int[] ICON_BOTTOM = {R.drawable.ic_like_white, R.drawable.ic_star_white,
+            R.drawable.ic_comment, R.drawable.ic_entry, R.drawable.ic_share};
+
+    public final int NOTE_SHOW_ENTRY = hashCode() % 10000;
 
     private Toolbar toolbar;
     private ImageView ivBack;
@@ -68,10 +74,17 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
     private LinearLayout llBottom;
 
     private AlertDialog dlgComment;
+    private AlertDialog dlgEntry;
+    private AlertDialog dlgError;
     private EditText etComment;
+    private TextView tvPraise;
+    private ImageView ivPraise;
+    private TextView tvCollect;
+    private ImageView ivCollect;
 
+    private User mUser;
     private Note mNote;
-    private String[] mLocation;
+    private boolean isModifyEntry;
 
     @Override
     public int getContentView() {
@@ -132,12 +145,27 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
                     }
                 })
                 .create();
+        dlgEntry = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("正在更改词条信息...")
+                .create();
+        dlgError = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setCancelable(false)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .create();
     }
 
     private void initLayout() {
         setSupportActionBar(toolbar);
         ivBack.setOnClickListener(this);
         tvManager.setVisibility(View.GONE);
+        civ.setOnClickListener(this);
 
         for (int i = 0; i < llBottom.getChildCount(); i++) {
             LinearLayout ll = (LinearLayout) llBottom.getChildAt(i);
@@ -152,12 +180,22 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
                     onBottomClick(finalI);
                 }
             });
+            if (i == 0) {
+                tvPraise = tv;
+                ivPraise = iv;
+            }else if (i == 1) {
+                tvCollect = tv;
+                ivCollect = iv;
+            }
         }
 
         tvTitle.setText(mNote.getTitle());
         tvTime.setText(mPresenter.parseDate(mNote.getIssue_date()));
         tvContent.setText(mNote.getDiscribe());
-        tvLocation.setText((mLocation = mPresenter.parseLocation(mNote.getAddr()))[0]);
+        tvLocation.setText(mPresenter.parseLocation(mNote.getAddr())[0]);
+
+        changePraise(mNote.isApprove());
+        changeCollect(mNote.isColl());
     }
 
     private void initVP() {
@@ -215,6 +253,20 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         rvComment.setNestedScrollingEnabled(false);
     }
 
+    private void changePraise(boolean praise) {
+        tvPraise.setText(praise ? "已点赞" : "点赞");
+        tvPraise.setTextColor(praise ? Color.BLACK : Color.WHITE);
+        ivPraise.setImageResource(praise ? R.drawable.ic_like_black : R.drawable.ic_like_white);
+        ivPraise.setTag(praise);
+    }
+
+    private void changeCollect(boolean collect) {
+        tvCollect.setText(collect ? "已收藏" : "收藏");
+        tvCollect.setTextColor(collect ? Color.BLACK : Color.WHITE);
+        ivCollect.setImageResource(collect ? R.drawable.ic_star_black : R.drawable.ic_star_white);
+        ivCollect.setTag(collect);
+    }
+
     private void onEntryLongClick(final Entry entry) {
         new AlertDialog.Builder(this)
                 .setTitle("是否删除词条？")
@@ -223,6 +275,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
                     public void onClick(DialogInterface dialog, int which) {
                         EntryChooseRVAdapter adapter = (EntryChooseRVAdapter) rvEntry.getAdapter();
                         adapter.removeData(entry);
+                        isModifyEntry = true;
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -233,11 +286,37 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
                 }).show();
     }
 
+    private void share() {
+        String text = mNote.getTitle() + "\n" + mNote.getDiscribe();
+        ShareUtil.INSTANCE.shareText(text, this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == NOTE_SHOW_ENTRY) {
+                List<Entry> entryList = data.getParcelableArrayListExtra("entry");
+                ((EntryChooseRVAdapter)rvEntry.getAdapter()).setData(entryList);
+                isModifyEntry = true;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_tb_back:
                 onBackPressed();
+                break;
+            case R.id.civ_note_show:
+                if (mUser != null) {
+                    Intent intent = new Intent(this, UserInfoActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("user", mUser);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
                 break;
         }
     }
@@ -245,17 +324,30 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
     private void onBottomClick(int position) {
         switch (position) {
             case 0:     // 点赞
-                mPresenter.requestPraise(mNote.getRec_id());
+                boolean approve = !mNote.isApprove();
+                mNote.setApprove(!mNote.isApprove());
+                changePraise(approve);
+                mPresenter.requestPraise(mNote.getRec_id(), approve);
                 break;
-            case 1:     // 评论
+            case 1:     // 收藏
+                boolean coll = !mNote.isColl();
+                mNote.setColl(coll);
+                changeCollect(coll);
+                mPresenter.requestCollect(mNote.getRec_id(), coll);
+                break;
+            case 2:     // 评论
                 dlgComment.show();
                 break;
-            case 2:     // 收藏
-                mPresenter.requestCollect(mNote.getRec_id());
-                break;
             case 3:     // 词条
+                Intent intent = new Intent(this, EntryChooseActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("entry", (ArrayList<? extends Parcelable>)
+                        ((EntryChooseRVAdapter)rvEntry.getAdapter()).getData());
+                intent.putExtras(bundle);
+                startActivityForResult(intent, NOTE_SHOW_ENTRY);
                 break;
             case 4:     // 分享
+                share();
                 break;
         }
     }
@@ -266,6 +358,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
                 .load(user.getImage_src())
                 .into(civ);
         tvUser.setText(user.getAccount_name());
+        mUser = user;
     }
 
     @Override
@@ -291,6 +384,27 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         if (result) {
             etComment.getText().clear();
             mPresenter.requestCommentList(mNote.getRec_id());
+        }
+    }
+
+    @Override
+    public void onResultModifyEntry(boolean result, String info) {
+        dlgEntry.dismiss();
+        if (result) {
+            finish();
+        }else {
+            dlgError.show();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isModifyEntry) {
+            dlgEntry.show();
+            mPresenter.requestModifyEntry(mNote.getRec_id(),
+                    ((EntryChooseRVAdapter) rvEntry.getAdapter()).getData());
+        }else {
+            super.onBackPressed();
         }
     }
 }

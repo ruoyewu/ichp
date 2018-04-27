@@ -175,7 +175,7 @@ public class PersonInfoActivity extends WBaseActivity<PersonInfoContract.Present
                 save();
                 break;
             case R.id.tv_person_info_pwd:
-
+                Intent intent = new Intent(this, ModifyPwdActivity.class);
                 break;
             case R.id.civ_person_info:
                 dlgPhoto.show();

@@ -41,13 +41,9 @@ public class MediaFragment extends WBaseFragment implements View.OnClickListener
         ivPlay.setOnClickListener(this);
         switch (mMedia.getType()) {
             case RECORD:
-                ivBg.setVisibility(View.GONE);
                 ivPlay.setVisibility(View.VISIBLE);
                 break;
             case VIDEO:
-                Glide.with(ivBg)
-                        .load(mMedia.getContent())
-                        .into(ivBg);
                 ivPlay.setVisibility(View.VISIBLE);
                 break;
             case IMAGE:

@@ -91,4 +91,14 @@ public class Entry implements Parcelable {
             return new Entry[size];
         }
     };
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Entry && ((Entry) obj).getEntry_id() == entry_id;
+    }
+
+    @Override
+    public int hashCode() {
+        return getEntry_id();
+    }
 }

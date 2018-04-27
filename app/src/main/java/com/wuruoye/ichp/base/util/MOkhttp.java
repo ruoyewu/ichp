@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -44,13 +43,12 @@ public class MOkhttp implements IWNet {
     public MOkhttp() {
         this.mType = PARAM_TYPE.FORM;
         mCookies = new ArrayList();
-        mClient = (new OkHttpClient.Builder()).connectTimeout(30L, TimeUnit.SECONDS).cookieJar(new CookieJar() {
+        mClient = (new OkHttpClient.Builder()).cookieJar(new CookieJar() {
             public void saveFromResponse(@NonNull HttpUrl url, @NonNull List<Cookie> cookies) {
                 MOkhttp.mCookies.clear();
                 if(MOkhttp.mCookies != null) {
                     MOkhttp.mCookies.addAll(cookies);
                 }
-
             }
 
             public List<Cookie> loadForRequest(@NonNull HttpUrl url) {

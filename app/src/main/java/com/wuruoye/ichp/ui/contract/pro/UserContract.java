@@ -14,10 +14,12 @@ public interface UserContract {
     interface View extends WIView {
         void onResultError(String error);
         void onResultUserInfo(User user);
+        void onResultLogout();
     }
 
     abstract class Presenter extends WPresenter<View> {
         abstract public void requestUserInfo();
-        abstract public int getUserId();
+        abstract public void requestLogout();
+        abstract public boolean isLogin();
     }
 }

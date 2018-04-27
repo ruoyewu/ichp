@@ -34,6 +34,8 @@ public class SearchActivity extends BaseActivity {
 
     private List<ISearchView> mSearchViewList;
 
+    private int mPosition;
+
     @Override
     public int getContentView() {
         return R.layout.activity_search;
@@ -41,7 +43,11 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     public void initData(@Nullable Bundle bundle) {
+        try {
+            mPosition = bundle.getInt("position");
+        } catch (NullPointerException ignored) {
 
+        }
     }
 
     @Override
@@ -90,6 +96,8 @@ public class SearchActivity extends BaseActivity {
                 Arrays.asList(ITEM_TITLE), fragmentList);
         vpSearch.setAdapter(adapter);
         tlSearch.setupWithViewPager(vpSearch);
+
+        vpSearch.setCurrentItem(mPosition);
     }
 
     public String getQuery() {

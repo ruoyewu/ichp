@@ -33,11 +33,12 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
     private UserCache mUserCache = UserCache.getInstance();
 
     @Override
-    public void requestPraise(int id) {
+    public void requestPraise(int id, boolean praise) {
         ArrayMap<String, String> values = new ArrayMap<>();
         values.put("token", mUserCache.getToken());
         values.put("rec_id", String.valueOf(id));
-        WNet.postInBackGround(Api.INSTANCE.getPRAISE_REC(), values, new Listener<String>() {
+        String url = praise ? Api.INSTANCE.getPRAISE_REC() : Api.INSTANCE.getREMOVE_APPR_REC();
+        WNet.postInBackGround(url, values, new Listener<String>() {
             @Override
             public void onSuccessful(String s) {
                 try {
@@ -105,11 +106,12 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
     }
 
     @Override
-    public void requestCollect(int id) {
+    public void requestCollect(int id, boolean coll) {
         ArrayMap<String, String> values = new ArrayMap<>();
         values.put("token", mUserCache.getToken());
         values.put("rec_id", String.valueOf(id));
-        WNet.postInBackGround(Api.INSTANCE.getCOLLECT_RECORD(), values, new Listener<String>() {
+        String url = coll ? Api.INSTANCE.getCOLLECT_RECORD() : Api.INSTANCE.getDELETE_COLL_REC();
+        WNet.postInBackGround(url, values, new Listener<String>() {
             @Override
             public void onSuccessful(String s) {
                 try {
@@ -173,10 +175,10 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
     public void requestEntryList(String str) {
         final String[] ss = str.split(",");
         final List<Entry> entryList = new ArrayList<>();
-        for (int i = 0; i < ss.length; i++) {
+        for (String s : ss) {
             ArrayMap<String, String> values = new ArrayMap<>();
             values.put("token", mUserCache.getToken());
-            values.put("entry_id", ss[i]);
+            values.put("entry_id", s);
             WNet.postInBackGround(Api.INSTANCE.getGET_ENTRY(), values, new Listener<String>() {
                 @Override
                 public void onSuccessful(String s) {
@@ -235,6 +237,48 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
                 }
             }
         });
+    }
+
+    @Override
+    public void requestModifyEntry(int recId, List<Entry> entryList) {
+        if (entryList.size() > 0) {
+            StringBuilder sEntry = new StringBuilder();
+            sEntry.append(entryList.remove(0).getEntry_id());
+            for (Entry entry : entryList) {
+                sEntry.append(",").append(entry.getEntry_id());
+            }
+            ArrayMap<String, String> values = new ArrayMap<>();
+            values.put("token", mUserCache.getToken());
+            values.put("rec_id", "" + recId);
+            values.put("labels_id_str", sEntry.toString());
+
+            WNet.postInBackGround(Api.INSTANCE.getMODIFY_REC_LAB(), values, new Listener<String>() {
+                @Override
+                public void onSuccessful(String s) {
+                    if (isAvailable()) {
+                        try {
+                            JSONObject obj = new JSONObject(s);
+                            if (obj.getInt("code") == 0) {
+                                getView().onResultModifyEntry(true, null);
+                            }else {
+                                getView().onResultModifyEntry(false, obj.getString("msg"));
+                            }
+                        } catch (JSONException e) {
+                            getView().onResultModifyEntry(false, e.getMessage());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFail(String s) {
+                    if (isAvailable()) {
+                        getView().onResultModifyEntry(false, s);
+                    }
+                }
+            });
+        }else {
+            getView().onResultError("词条数量不能为0");
+        }
     }
 
     @Override

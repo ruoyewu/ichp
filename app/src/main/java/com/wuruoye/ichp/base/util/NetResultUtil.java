@@ -2,6 +2,7 @@ package com.wuruoye.ichp.base.util;
 
 import com.google.gson.Gson;
 import com.wuruoye.ichp.ui.model.bean.Course;
+import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.model.bean.Note;
 
 import org.json.JSONArray;
@@ -71,5 +72,16 @@ public class NetResultUtil {
             course.setType(type);
         }
         return courseList;
+    }
+
+    public static Media getFirstImage(Note note) {
+        String[] urls = note.getUrl().split(",");
+        String[] types = note.getType().split(",");
+        for (int i = 0; i < types.length; i++) {
+            if (types[i].equals("1")) {
+                return new Media(Media.Type.IMAGE, urls[i]);
+            }
+        }
+        return null;
     }
 }

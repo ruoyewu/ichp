@@ -24,6 +24,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.wuruoye.ichp.ui.contract.pro.UserAttentionContract.TYPE_ATTEN;
+
 /**
  * Created by wuruoye on 2018/2/3.
  * this file is to
@@ -31,8 +33,6 @@ import java.util.List;
 
 public class UserAttentionActivity extends WBaseActivity<UserAttentionContract.Presenter>
         implements UserAttentionContract.View, BaseRVAdapter.OnItemClickListener<Object> {
-    public static final int TYPE_FOCUS = 1;
-    public static final int TYPE_FOCUSED = 2;
 
     private Toolbar toolbar;
     private ImageView ivBack;
@@ -66,13 +66,14 @@ public class UserAttentionActivity extends WBaseActivity<UserAttentionContract.P
 
         initLayout();
         initRecyclerView();
+        mPresenter.requestData(mType);
     }
 
     private void initLayout() {
         setSupportActionBar(toolbar);
 
         tvManager.setVisibility(View.GONE);
-        if (mType == TYPE_FOCUS) {
+        if (mType == TYPE_ATTEN) {
             tvTitle.setText("我的关注");
         }else {
             tvTitle.setText("关注我的");

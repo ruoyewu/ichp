@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
+import com.wuruoye.ichp.base.util.NetResultUtil;
+import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.model.bean.Note;
 
 /**
@@ -37,10 +39,10 @@ public class RecordRVAdapter extends BaseRVAdapter<Note> {
             }
         });
         viewHolder.tv.setText(note.getTitle());
-        String[] url = note.getUrl().split(",");
-        if (url.length > 0) {
+        Media m = NetResultUtil.getFirstImage(note);
+        if (m != null) {
             Glide.with(viewHolder.iv)
-                    .load(url[0])
+                    .load(m.getContent())
                     .into(viewHolder.iv);
         }
     }

@@ -21,6 +21,16 @@ public class Note implements Parcelable {
     private int comm_num;
     private String title;
     private String labels_id_str;
+    private boolean isApprove;
+    private boolean isColl;
+
+    public boolean isColl() {
+        return isColl;
+    }
+
+    public void setColl(boolean coll) {
+        isColl = coll;
+    }
 
     public int getRec_id() {
         return rec_id;
@@ -110,6 +120,17 @@ public class Note implements Parcelable {
         this.labels_id_str = labels_id_str;
     }
 
+    public boolean isApprove() {
+        return isApprove;
+    }
+
+    public void setApprove(boolean approve) {
+        isApprove = approve;
+    }
+
+    public Note() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -128,9 +149,8 @@ public class Note implements Parcelable {
         dest.writeInt(this.comm_num);
         dest.writeString(this.title);
         dest.writeString(this.labels_id_str);
-    }
-
-    public Note() {
+        dest.writeByte(this.isApprove ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isColl ? (byte) 1 : (byte) 0);
     }
 
     protected Note(Parcel in) {
@@ -145,9 +165,11 @@ public class Note implements Parcelable {
         this.comm_num = in.readInt();
         this.title = in.readString();
         this.labels_id_str = in.readString();
+        this.isApprove = in.readByte() != 0;
+        this.isColl = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<Note> CREATOR = new Parcelable.Creator<Note>() {
+    public static final Creator<Note> CREATOR = new Creator<Note>() {
         @Override
         public Note createFromParcel(Parcel source) {
             return new Note(source);

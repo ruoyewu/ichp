@@ -13,6 +13,9 @@ import com.wuruoye.library.model.Listener;
 import com.wuruoye.library.util.DateUtil;
 import com.wuruoye.library.util.net.WNet;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,6 +94,39 @@ public class CourseShowPresenter extends CourseShowContract.Presenter {
                 }
             });
         }
+    }
+
+    @Override
+    public void requestCollect(int id, boolean collect) {
+        ArrayMap<String, String> values = new ArrayMap<>();
+        values.put("token", mUserCache.getToken());
+        values.put("act_id", "" + id);
+        String url = collect ? Api.INSTANCE.getCOLLECT_ACT() : Api.INSTANCE.getDELETE_COLL_ACT();
+
+        WNet.postInBackGround(url, values, new Listener<String>() {
+            @Override
+            public void onSuccessful(String s) {
+                if (isAvailable()) {
+                    try {
+                        JSONObject obj = new JSONObject(s);
+                        if (obj.getInt("code") == 0) {
+                            getView().onResultError("收藏成功");
+                        }else {
+                            getView().onResultError(obj.getString("msg"));
+                        }
+                    } catch (JSONException e) {
+                        getView().onResultError(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(String s) {
+                if (isAvailable()) {
+                    getView().onResultError(s);
+                }
+            }
+        });
     }
 
     @Override
