@@ -37,7 +37,8 @@ import java.util.List;
  */
 
 public class EntryChooseActivity extends WBaseActivity<EntryChooseContract.Presenter>
-        implements View.OnClickListener, EntryChooseContract.View {
+        implements View.OnClickListener, EntryChooseContract.View,
+        BaseRVAdapter.OnItemClickListener<Entry>,EntrySearchRVAdapter.OnAddClickListener {
 
     private Toolbar toolbar;
     private ImageView ivBack;
@@ -127,12 +128,8 @@ public class EntryChooseActivity extends WBaseActivity<EntryChooseContract.Prese
 
     private void initSearchRV() {
         EntrySearchRVAdapter adapter = new EntrySearchRVAdapter(mEntryList);
-        adapter.setOnAddClickListener(new EntrySearchRVAdapter.OnAddClickListener() {
-            @Override
-            public void onAddClick(Entry entry) {
-                onAddEntry(entry);
-            }
-        });
+        adapter.setOnAddClickListener(this);
+        adapter.setOnItemClickListener(this);
         rvSearch.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration decoration = new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL);
@@ -206,5 +203,19 @@ public class EntryChooseActivity extends WBaseActivity<EntryChooseContract.Prese
     @Override
     public void onResultEntryError(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(Entry model) {
+        Intent intent = new Intent(this, EntryInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("entry", model);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onAddClick(Entry entry) {
+        onAddEntry(entry);
     }
 }

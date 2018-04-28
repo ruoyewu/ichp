@@ -2,6 +2,7 @@ package com.wuruoye.ichp.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -57,6 +58,9 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
     private ViewPager vp;
     private LinearLayout llBottom;
 
+    private TextView tvAttention;
+    private ImageView ivAttention;
+
     private User mUser;
 
     @Override
@@ -101,6 +105,10 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
                     onBottomClick(finalI);
                 }
             });
+            if (i == 1) {
+                ivAttention = iv;
+                tvAttention = tv;
+            }
         }
 
         tvFocused.setOnClickListener(this);
@@ -130,6 +138,8 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
                     }
                 })
                 .submit();
+
+        changeAttention(mUser.isConcern());
     }
 
     private void initViewPager() {
@@ -149,11 +159,20 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
         tl.setupWithViewPager(vp);
     }
 
+    private void changeAttention(boolean att) {
+        tvAttention.setText(att ? "" : "");
+        tvAttention.setTextColor(att ? Color.BLACK : Color.WHITE);
+        ivAttention.setImageResource(att ? R.drawable.ic_star_black : R.drawable.ic_star_white);
+    }
+
     private void onBottomClick(int position) {
         if (position == 0) {
             onBackPressed();
         }else if (position == 1) {
-            mPresenter.requestAttention(true, mUser.getUser_id());
+            boolean att = !mUser.isConcern();
+            mUser.setConcern(att);
+            changeAttention(att);
+            mPresenter.requestAttention(att, mUser.getUser_id());
         }
     }
 

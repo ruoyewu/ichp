@@ -54,6 +54,7 @@ object Api {
     val DELETE_COLL_ACT = REMOTE_HOST + "delCollAct"
     val DELETE_COLL_ENTRY = REMOTE_HOST + "delCollEntry"
     val CONCER_USER = REMOTE_HOST + "concerUser"
+    val CANCEL_CONCER_USER = REMOTE_HOST + "cancelConcern"
     val GET_ENTRY_REC = REMOTE_HOST + "getEntryRec"
     val GET_ENTRY_ACT = REMOTE_HOST + "getEntryAct"
     val MODIFY_REC_LAB = REMOTE_HOST + "modifyRecLab"

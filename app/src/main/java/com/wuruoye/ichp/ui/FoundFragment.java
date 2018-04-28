@@ -73,7 +73,7 @@ public class FoundFragment extends WBaseFragment<FoundContract.Presenter>
         tvTips[1].setText("推荐活动");
 
         initLayout();
-//        mPresenter.requestRecommend();
+        mPresenter.requestRecommend();
         mPresenter.requestCourse("0,0");
         mPresenter.requestNote("0,0");
     }

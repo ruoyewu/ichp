@@ -393,6 +393,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         if (result) {
             finish();
         }else {
+            dlgEntry.setMessage(info);
             dlgError.show();
         }
     }

@@ -6,6 +6,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
 import com.wuruoye.ichp.base.model.Listener
 
 /**
@@ -16,6 +17,7 @@ object LocationUtil {
 
     @SuppressLint("MissingPermission")
     fun getLocation(context: Context, listener: Listener<Array<Double>>) {
+        Looper.prepare()
         val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val providers = lm.getProviders(true)
         if (providers.size > 0) {
@@ -34,6 +36,7 @@ object LocationUtil {
             lm.requestLocationUpdates(provider, 10, 10F, object : LocationListener {
                 override fun onLocationChanged(p0: Location?) {
                     listener.onSuccess(arrayOf(p0!!.latitude, p0.longitude))
+                    lm.removeUpdates(this)
                 }
 
                 override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
@@ -48,7 +51,9 @@ object LocationUtil {
 
                 }
 
-            })
+            }, Looper.myLooper())
+
+            Looper.loop()
         }else {
             listener.onFail("error")
         }

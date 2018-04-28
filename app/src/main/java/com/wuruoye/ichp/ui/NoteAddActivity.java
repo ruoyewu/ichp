@@ -657,12 +657,6 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     }
 
     @Override
-    protected void onDestroy() {
-        mPresenter.detachView();
-        super.onDestroy();
-    }
-
-    @Override
     public void onPhotoBack(String s) {
         Media.Type type;
         if (mCurrentMediaType == 0) {

@@ -5,6 +5,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.support.v4.util.ArrayMap;
 
+import com.wuruoye.ichp.base.App;
 import com.wuruoye.ichp.base.model.Api;
 import com.wuruoye.ichp.base.model.Config;
 import com.wuruoye.ichp.base.model.Listener;
@@ -36,28 +37,48 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
 
     @Override
     public void requestLocation(final Context context) {
-            LocationUtil.INSTANCE.getLocation(context, new Listener<Double[]>() {
-                @Override
-                public void onSuccess(Double[] model) {
-                    try {
-                        Geocoder geocoder = new Geocoder(context);
-                        List<Address> addresses = geocoder.getFromLocation(model[0], model[1], 1);
-                        String[] location = new String[addresses.get(0).getMaxAddressLineIndex()];
-                        for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex(); i++) {
-                            location[i] = addresses.get(0).getAddressLine(i);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                LocationUtil.INSTANCE.getLocation(context, new Listener<Double[]>() {
+                    @Override
+                    public void onSuccess(final Double[] model) {
+                        try {
+                            Geocoder geocoder = new Geocoder(context);
+                            List<Address> addresses = geocoder.getFromLocation(model[0],
+                                    model[1], 1);
+                            final String[] location = new String[addresses.get(0)
+                                    .getMaxAddressLineIndex()];
+                            for (int i = 0; i < addresses.get(0)
+                                    .getMaxAddressLineIndex(); i++) {
+                                location[i] = addresses.get(0).getAddressLine(i);
+                            }
+                            if (isAvailable()) {
+                                App.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getView().onLocationResult(model, location);
+                                    }
+                                });
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                        if (isAvailable()) {
-                            getView().onLocationResult(model, location);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
-                @Override
-                public void onFail(@NotNull String message) {
-                    getView().onLocationError(message);
-                }
-            });
+                    @Override
+                    public void onFail(@NotNull final String message) {
+                        if (isAvailable()) {
+                            App.runOnMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getView().onLocationError(message);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override

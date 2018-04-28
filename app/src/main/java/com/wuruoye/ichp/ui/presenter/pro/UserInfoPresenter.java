@@ -26,14 +26,15 @@ public class UserInfoPresenter extends UserInfoContract.Presenter {
         values.put("token", mUserCache.getToken());
         values.put("user_id", "" + userId);
 
-        WNet.postInBackGround(Api.INSTANCE.getCONCER_USER(), values, new Listener<String>() {
+        String url = att ? Api.INSTANCE.getCONCER_USER() : Api.INSTANCE.getCANCEL_CONCER_USER();
+        WNet.postInBackGround(url, values, new Listener<String>() {
             @Override
             public void onSuccessful(String s) {
                 if (isAvailable()) {
                     try {
                         JSONObject obj = new JSONObject(s);
                         if (obj.getInt("code") == 0) {
-                            getView().onResultAttention(true);
+                            getView().onResultError("操作成功");
                         }else {
                             getView().onResultError(obj.getString("msg"));
                         }

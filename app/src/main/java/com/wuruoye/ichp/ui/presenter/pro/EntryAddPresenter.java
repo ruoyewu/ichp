@@ -7,6 +7,8 @@ import com.wuruoye.ichp.ui.contract.pro.EntryAddContract;
 import com.wuruoye.ichp.ui.model.UserCache;
 import com.wuruoye.library.model.Listener;
 import com.wuruoye.library.util.net.WNet;
+import com.zxy.tiny.Tiny;
+import com.zxy.tiny.callback.FileCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,41 +62,55 @@ public class EntryAddPresenter extends EntryAddContract.Presenter {
 
     @Override
     public void requestUpload(String path) {
-        ArrayMap<String, String> values = new ArrayMap<>();
+        final ArrayMap<String, String> values = new ArrayMap<>();
         values.put("token", mUserCache.getToken());
-        ArrayMap<String, String> files = new ArrayMap<>();
+        final ArrayMap<String, String> files = new ArrayMap<>();
         files.put("the_file", path);
-        WNet.uploadFileInBackground(Api.INSTANCE.getUPLOAD(), values, files, "image/*",
-                new Listener<String>() {
-                    @Override
-                    public void onSuccessful(String s) {
-                        try {
-                            JSONObject object = new JSONObject(s);
-                            boolean isOk;
-                            String url;
-                            if (object.getInt("code") == 0) {
-                                isOk = true;
-                                url = object.getString("addr");
-                            }else {
-                                isOk = false;
-                                url = object.getString("msg");
-                            }
-                            if (isAvailable()) {
-                                getView().onResultUpload(isOk, url);
-                            }
-                        } catch (JSONException e) {
-                            if (isAvailable()) {
-                                getView().onResultUpload(false, e.getMessage());
-                            }
-                        }
-                    }
+        Tiny.getInstance().source(path)
+                .asFile().compress(new FileCallback() {
+            @Override
+            public void callback(boolean isSuccess, String outfile, Throwable t) {
+                if (isSuccess) {
+                    files.put("the_file", outfile);
+                    WNet.uploadFileInBackground(Api.INSTANCE.getUPLOAD(), values, files, "image/*",
+                            new Listener<String>() {
+                                @Override
+                                public void onSuccessful(String s) {
+                                    try {
+                                        JSONObject object = new JSONObject(s);
+                                        boolean isOk;
+                                        String url;
+                                        if (object.getInt("code") == 0) {
+                                            isOk = true;
+                                            url = object.getString("addr");
+                                        }else {
+                                            isOk = false;
+                                            url = object.getString("msg");
+                                        }
+                                        if (isAvailable()) {
+                                            getView().onResultUpload(isOk, url);
+                                        }
+                                    } catch (JSONException e) {
+                                        if (isAvailable()) {
+                                            getView().onResultUpload(false, e.getMessage());
+                                        }
+                                    }
+                                }
 
-                    @Override
-                    public void onFail(String s) {
-                        if (isAvailable()) {
-                            getView().onResultUpload(false, s);
-                        }
+                                @Override
+                                public void onFail(String s) {
+                                    if (isAvailable()) {
+                                        getView().onResultUpload(false, s);
+                                    }
+                                }
+                            });
+                }else {
+                    if (t != null) {
+                        getView().onResultError(t.getMessage());
                     }
-                });
+                }
+            }
+        });
+
     }
 }

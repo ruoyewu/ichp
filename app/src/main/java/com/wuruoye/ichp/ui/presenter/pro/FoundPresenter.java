@@ -42,8 +42,9 @@ public class FoundPresenter extends FoundContract.Presenter {
                         if (object.getInt("code") == 0) {
                             List<Note> noteList = new ArrayList<>();
                             List<Course> courseList = new ArrayList<>();
-                            JSONArray noteArray = object.getJSONArray("dataRec");
-                            JSONArray courseArray = object.getJSONArray("dataAct");
+                            JSONObject dataObj = object.getJSONObject("data");
+                            JSONArray noteArray = dataObj.getJSONArray("rec");
+                            JSONArray courseArray = dataObj.getJSONArray("act");
                             for (int i = 0; i < noteArray.length(); i++) {
                                 noteList.add(gson.fromJson(noteArray.getString(i), Note.class));
                             }

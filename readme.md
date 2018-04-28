@@ -46,4 +46,5 @@
 
 ## 待解决问题
 
-- [ ] 收藏活动 /collAct 报错
+- [ ] delCollAct act_id = 22 报错 "no such activity"
+- [ ] getCollAct 报错 "get activity failed"

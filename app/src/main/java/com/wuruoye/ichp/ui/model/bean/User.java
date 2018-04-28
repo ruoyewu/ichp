@@ -18,6 +18,15 @@ public class User implements Parcelable {
     private String telephone;
     private String sign;
     private int user_id;
+    private boolean isConcern;
+
+    public boolean isConcern() {
+        return isConcern;
+    }
+
+    public void setConcern(boolean concern) {
+        isConcern = concern;
+    }
 
     public String getImage_src() {
         return image_src;
@@ -91,6 +100,9 @@ public class User implements Parcelable {
         this.user_id = user_id;
     }
 
+    public User() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -107,9 +119,7 @@ public class User implements Parcelable {
         dest.writeString(this.telephone);
         dest.writeString(this.sign);
         dest.writeInt(this.user_id);
-    }
-
-    public User() {
+        dest.writeByte(this.isConcern ? (byte) 1 : (byte) 0);
     }
 
     protected User(Parcel in) {
@@ -122,9 +132,10 @@ public class User implements Parcelable {
         this.telephone = in.readString();
         this.sign = in.readString();
         this.user_id = in.readInt();
+        this.isConcern = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+    public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel source) {
             return new User(source);

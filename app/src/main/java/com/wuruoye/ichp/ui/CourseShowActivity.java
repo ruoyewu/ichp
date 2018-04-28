@@ -231,6 +231,7 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
                 break;
             case 2:
                 boolean coll = !mCourse.isColl();
+                mCourse.setColl(coll);
                 changeCollect(coll);
                 mPresenter.requestCollect(mCourse.getAct_id(), coll);
                 break;

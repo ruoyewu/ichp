@@ -118,7 +118,7 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
                     JSONObject object = new JSONObject(s);
                     if (object.getInt("code") == 0) {
                         if (isAvailable()) {
-                            getView().onResultError("收藏成功");
+                            getView().onResultError("操作成功");
                         }
                     }else {
                         if (isAvailable()) {

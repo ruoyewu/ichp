@@ -110,7 +110,7 @@ public class CourseShowPresenter extends CourseShowContract.Presenter {
                     try {
                         JSONObject obj = new JSONObject(s);
                         if (obj.getInt("code") == 0) {
-                            getView().onResultError("收藏成功");
+                            getView().onResultError("操作成功");
                         }else {
                             getView().onResultError(obj.getString("msg"));
                         }
