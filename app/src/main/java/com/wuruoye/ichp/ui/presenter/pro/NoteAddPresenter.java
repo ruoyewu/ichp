@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 
 import com.wuruoye.ichp.base.App;
 import com.wuruoye.ichp.base.model.Api;
@@ -11,20 +12,22 @@ import com.wuruoye.ichp.base.model.Config;
 import com.wuruoye.ichp.base.model.Listener;
 import com.wuruoye.ichp.base.util.DateUtil;
 import com.wuruoye.ichp.base.util.LocationUtil;
+import com.wuruoye.ichp.base.util.NetResultUtil;
 import com.wuruoye.ichp.ui.contract.pro.AddNoteContract;
 import com.wuruoye.ichp.ui.model.UserCache;
 import com.wuruoye.ichp.ui.model.bean.Course;
+import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.library.util.net.WNet;
 import com.zxy.tiny.Tiny;
 import com.zxy.tiny.callback.FileCallback;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +60,7 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
                                 App.runOnMainThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        getView().onLocationResult(model, location);
+                                        getView().onResultLocation(model, location);
                                     }
                                 });
                             }
@@ -71,7 +74,7 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
                             App.runOnMainThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    getView().onLocationError(message);
+                                    getView().onResultLocationError(message);
                                 }
                             });
                         }
@@ -110,11 +113,11 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
                                                         url = object.getString("msg");
                                                     }
                                                     if (isAvailable()) {
-                                                        getView().onFileUploadResult(isOk, url);
+                                                        getView().onResultUpload(isOk, url);
                                                     }
                                                 } catch (JSONException e) {
                                                     if (isAvailable()) {
-                                                        getView().onFileUploadResult(false,
+                                                        getView().onResultUpload(false,
                                                                 e.getMessage());
                                                     }
                                                 }
@@ -123,13 +126,13 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
                                             @Override
                                             public void onFail(String s) {
                                                 if (isAvailable()) {
-                                                    getView().onFileUploadResult(false, s);
+                                                    getView().onResultUpload(false, s);
                                                 }
                                             }
                                         });
                             }else {
                                 if (isAvailable()) {
-                                    getView().onFileUploadResult(false, t.getMessage());
+                                    getView().onResultUpload(false, t.getMessage());
                                 }
                             }
                         }
@@ -151,11 +154,11 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
                                     url = object.getString("msg");
                                 }
                                 if (isAvailable()) {
-                                    getView().onFileUploadResult(isOk, url);
+                                    getView().onResultUpload(isOk, url);
                                 }
                             } catch (JSONException e) {
                                 if (isAvailable()) {
-                                    getView().onFileUploadResult(false,
+                                    getView().onResultUpload(false,
                                             e.getMessage());
                                 }
                             }
@@ -164,7 +167,7 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
                         @Override
                         public void onFail(String s) {
                             if (isAvailable()) {
-                                getView().onFileUploadResult(false, s);
+                                getView().onResultUpload(false, s);
                             }
                         }
                     });
@@ -172,51 +175,48 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
     }
 
     @Override
-    public void requestUpNote(Note note) {
+    public void requestUpNote(Note note, final boolean modify) {
         ArrayMap<String, String> values = new ArrayMap<>();
         values.put("token", mUserCache.getToken());
         values.put("title", note.getTitle());
         values.put("discribe", note.getDiscribe());
-//        values.put("url", note.getUrl());
         values.put("type", "0");
         values.put("addr", note.getAddr());
         values.put("labels_id_str", note.getLabels_id_str());
-        String[] urls = note.getUrl().split(",");
-        String[] type = note.getType().split(",");
-        JSONArray array = null;
+
         try {
-            array = new JSONArray();
-            for (int i = 0; i < urls.length; i++) {
-                JSONObject object = new JSONObject();
-                object.put("url", urls[i]);
-                object.put("type", type[i]);
-                array.put(object.toString());
-            }
+            values.put("url", NetResultUtil.generateUrl(note.getUrl(), note.getType()));
         } catch (JSONException e) {
-            if (isAvailable()) {
-                getView().onNoteAddResult(false, e.getMessage());
-            }
+            getView().onResultError(e.getMessage());
             return;
         }
-        values.put("url", array.toString());
-        WNet.postInBackGround(Api.INSTANCE.getADD_REC(), values,
-                new com.wuruoye.library.model.Listener<String>() {
+
+        String url;
+        if (modify) {
+            url = Api.INSTANCE.getMODIFY_REC();
+            values.put("rec_id", "" + note.getRec_id());
+            values.put("dicribe", note.getDiscribe());
+        }else {
+            url = Api.INSTANCE.getADD_REC();
+        }
+
+        WNet.postInBackGround(url, values, new com.wuruoye.library.model.Listener<String>() {
             @Override
             public void onSuccessful(String s) {
-                try {
-                    JSONObject object = new JSONObject(s);
-                    if (object.getInt("code") == 0) {
-                        if (isAvailable()) {
-                            getView().onNoteAddResult(true, null);
+                if (isAvailable()) {
+                    try {
+                        JSONObject obj = new JSONObject(s);
+                        if (obj.getInt("code") == 0) {
+                            if (modify) {
+                                getView().onResultModify();
+                            }else {
+                                getView().onResultAddNote();
+                            }
+                        }else {
+                            getView().onResultError(obj.getString("msg"));
                         }
-                    }else {
-                        if (isAvailable()) {
-                            getView().onNoteAddResult(false, object.getString("msg"));
-                        }
-                    }
-                } catch (JSONException e) {
-                    if (isAvailable()) {
-                        getView().onNoteAddResult(false, e.getMessage());
+                    } catch (JSONException e) {
+                        getView().onResultError(e.getMessage());
                     }
                 }
             }
@@ -224,14 +224,14 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
             @Override
             public void onFail(String s) {
                 if (isAvailable()) {
-                    getView().onNoteAddResult(false, s);
+                    getView().onResultError(s);
                 }
             }
         });
     }
 
     @Override
-    public void requestUpCourse(Course course, String date) {
+    public void requestUpCourse(Course course, String date, final boolean modify) {
         ArrayMap<String, String> values = new ArrayMap<>();
         values.put("token", mUserCache.getToken());
         values.put("title", course.getTitle());
@@ -241,40 +241,39 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
         values.put("act_src", course.getAct_src());
         values.put("labels_id_str", course.getLabels_id_str());
 
-        String[] urls = course.getImage_src().split(",");
-        String[] type = course.getType().split(",");
-        JSONArray array = null;
         try {
-            array = new JSONArray();
-            for (int i = 0; i < urls.length; i++) {
-                JSONObject object = new JSONObject();
-                object.put("url", urls[i]);
-                object.put("type", type[i]);
-                array.put(object.toString());
-            }
+            values.put("image_src", NetResultUtil.generateUrl(course.getImage_src(), course.getType()));
         } catch (JSONException e) {
-            if (isAvailable()) {
-                getView().onNoteAddResult(false, e.getMessage());
-            }
+            getView().onResultError(e.getMessage());
             return;
         }
-        values.put("image_src", array.toString());
-        WNet.postInBackGround(Api.INSTANCE.getISSUE_ACT(), values,
-                new com.wuruoye.library.model.Listener<String>() {
+
+        String url;
+        if (modify) {
+            values.put("act_id", "" + course.getAct_id());
+            url = Api.INSTANCE.getMODIFY_ACT();
+        }else {
+            url = Api.INSTANCE.getISSUE_ACT();
+        }
+
+        WNet.postInBackGround(url, values, new com.wuruoye.library.model.Listener<String>() {
             @Override
             public void onSuccessful(String s) {
                 if (isAvailable()) {
                     try {
-                        JSONObject object = new JSONObject(s);
-                        if (object.getInt("code") == 0) {
-                            getView().onResultCourse();
+                        JSONObject obj = new JSONObject(s);
+                        if (obj.getInt("code") == 0) {
+                            if (modify) {
+                                getView().onResultModify();
+                            }else {
+                                getView().onResultAddCourse();
+                            }
                         }else {
-                            getView().onResultError(object.getString("msg"));
+                            getView().onResultError(obj.getString("msg"));
                         }
                     } catch (JSONException e) {
-                        getView().onResultError(e.getMessage());
+                        getView().onResultError(s);
                     }
-
                 }
             }
 
@@ -303,5 +302,36 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
     public String generateRecordName() {
         return Config.INSTANCE.getRECORD_PATH() +
                 DateUtil.INSTANCE.getDateString(System.currentTimeMillis()) + ".m4a";
+    }
+
+    @Override
+    public String formatDate(float date) {
+        return DateUtil.INSTANCE.formatTime((long)(date * 1000), "yyyy-MM-dd");
+    }
+
+    @Override
+    public List<Media> parseMedia(String url, String type) {
+        List<Media> mediaList = new ArrayList<>();
+        String[] urls = url.split(",");
+        String[] types = type.split(",");
+        if (!TextUtils.isEmpty(urls[0])) {
+            for (int i = 0; i < urls.length; i++) {
+                mediaList.add(new Media(getType(types[i]), urls[i]));
+            }
+        }
+
+        return mediaList;
+    }
+
+    private Media.Type getType(String type) {
+        switch (type) {
+            case "1":
+                return Media.Type.IMAGE;
+            case "2":
+                return Media.Type.VIDEO;
+            case "3":
+                return Media.Type.RECORD;
+        }
+        return Media.Type.IMAGE;
     }
 }

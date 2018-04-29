@@ -1,8 +1,10 @@
 package com.wuruoye.ichp.ui;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -47,6 +49,8 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
     public static final String[] ITEM_BOTTOM = {"返回", "入口地址", "收藏", "分享"};
     public static final int[] ICON_BOTTOM = {R.drawable.ic_goleft_black, R.drawable.ic_edit,
             R.drawable.ic_star_white, R.drawable.ic_share};
+
+    public final int COURSE_MODIFY = hashCode() % 10000;
 
     private Toolbar toolbar;
     private ImageView ivBack;
@@ -133,6 +137,8 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
         }
 
         changeCollect(mCourse.isColl());
+
+        checkModify();
     }
 
     private void initDlg() {
@@ -186,6 +192,14 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
         rvEntry.setAdapter(adapter);
     }
 
+    private void checkModify() {
+        if (mCourse.getPublisher() == mPresenter.getUserId()) {
+            tvManager.setVisibility(View.VISIBLE);
+            tvManager.setText("修改");
+            tvManager.setOnClickListener(this);
+        }
+    }
+
     private void changeCollect(boolean collect) {
         tvCollect.setText(collect ? "已收藏" : "收藏");
         tvCollect.setTextColor(collect ? Color.BLACK : Color.WHITE);
@@ -217,6 +231,17 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
         switch (view.getId()) {
             case R.id.iv_tb_back:
                 onBackPressed();
+                break;
+            case R.id.tv_tb_manager:
+                Intent intent = new Intent(this, NoteAddActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", NoteAddActivity.TYPE_COURSE);
+                bundle.putParcelable("data", mCourse);
+                bundle.putBoolean("modify", true);
+                bundle.putParcelableArrayList("entry", (ArrayList<? extends Parcelable>)
+                        ((EntryChooseRVAdapter)rvEntry.getAdapter()).getData());
+                intent.putExtras(bundle);
+                startActivityForResult(intent, COURSE_MODIFY);
                 break;
         }
     }

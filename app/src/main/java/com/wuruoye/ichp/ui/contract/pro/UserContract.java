@@ -21,5 +21,6 @@ public interface UserContract {
         abstract public void requestUserInfo();
         abstract public void requestLogout();
         abstract public boolean isLogin();
+        abstract public boolean isConfirm();
     }
 }

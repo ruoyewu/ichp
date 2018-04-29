@@ -84,4 +84,18 @@ public class NetResultUtil {
         }
         return null;
     }
+
+    public static String generateUrl(String url, String type) throws JSONException {
+        String[] urls = url.split(",");
+        String[] types = type.split(",");
+        JSONArray array = null;
+        array = new JSONArray();
+        for (int i = 0; i < urls.length; i++) {
+            JSONObject object = new JSONObject();
+            object.put("url", urls[i]);
+            object.put("type", types[i]);
+            array.put(object.toString());
+        }
+        return array.toString();
+    }
 }

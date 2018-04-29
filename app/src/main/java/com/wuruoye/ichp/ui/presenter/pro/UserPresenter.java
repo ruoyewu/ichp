@@ -95,4 +95,9 @@ public class UserPresenter extends UserContract.Presenter {
         return mUserCache.isLogin();
     }
 
+    @Override
+    public boolean isConfirm() {
+        return mUserCache.getUserConfirm();
+    }
+
 }

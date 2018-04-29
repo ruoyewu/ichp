@@ -27,5 +27,6 @@ public interface CourseShowContract {
         abstract public void requestCollect(int id, boolean collect);
         abstract public List<Media> parseMedia(String url, String type);
         abstract public String parseDate(float time);
+        abstract public int getUserId();
     }
 }

@@ -21,7 +21,6 @@ import com.bumptech.glide.request.target.Target;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
 import com.wuruoye.ichp.base.util.ShareUtil;
-import com.wuruoye.ichp.ui.contract.pro.EntryAddContract;
 import com.wuruoye.ichp.ui.contract.pro.EntryInfoContract;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.presenter.pro.EntryInfoPresenter;
@@ -171,7 +170,7 @@ public class EntryInfoActivity extends WBaseActivity<EntryInfoContract.Presenter
             case 1:
                 Intent intent = new Intent(this, EntryAddActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt("type", EntryAddContract.TYPE_MODIFY);
+                bundle.putBoolean("modify", true);
                 bundle.putParcelable("entry", mEntry);
                 intent.putExtras(bundle);
                 startActivity(intent);

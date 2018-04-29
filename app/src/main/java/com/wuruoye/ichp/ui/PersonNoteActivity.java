@@ -18,6 +18,7 @@ import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NormalRVAdapter;
 import com.wuruoye.ichp.ui.contract.pro.PersonNoteContract;
+import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.presenter.pro.PersonNotePresenter;
 import com.wuruoye.ichp.ui.util.IManagerView;
@@ -48,7 +49,9 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
     private PopupMenu pm;
     private AlertDialog dlgDelete;
 
-    private List<Note> mToDeleteList = new LinkedList<>();
+    private int mType;
+
+    private List<Object> mToDeleteList = new LinkedList<>();
     private Boolean mManageClicked = false;
     private int mDelSuc = 0;
     private int mDelFai = 0;
@@ -60,6 +63,8 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
 
     @Override
     public void initData(@Nullable Bundle bundle) {
+        mType = bundle.getInt("type");
+
         setPresenter(new PersonNotePresenter());
     }
 
@@ -87,7 +92,11 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
                 onBackPressed();
             }
         });
-        tvTitle.setText("我的非遗记录");
+        if (mType == PersonNoteContract.TYPE_NOTE) {
+            tvTitle.setText("我的非遗记录");
+        }else {
+            tvTitle.setText("我的非遗活动");
+        }
         tvManager.setOnClickListener(this);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -120,7 +129,7 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
 
     private void requestData() {
         srl.setRefreshing(true);
-        mPresenter.requestData();
+        mPresenter.requestData(mType);
     }
 
     private void changeManagerState(boolean clicked) {
@@ -147,7 +156,7 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
     @Override
     public void add() {
         Bundle bundle = new Bundle();
-        bundle.putInt("type", NoteAddActivity.TYPE_NOTE);
+        bundle.putInt("type", mType);
         Intent intent = new Intent(this, NoteAddActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -167,10 +176,16 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
     public void submit() {
         if (mToDeleteList.size() > 0) {
             List<Integer> idList = new ArrayList<>();
-            for (Note n : mToDeleteList) {
-                idList.add(n.getRec_id());
+            if (mType == PersonNoteContract.TYPE_NOTE) {
+                for (Object n : mToDeleteList) {
+                    idList.add(((Note) n).getRec_id());
+                }
+            }else {
+                for (Object c : mToDeleteList) {
+                    idList.add(((Course)c).getAct_id());
+                }
             }
-            mPresenter.requestRemove(idList);
+            mPresenter.requestRemove(idList, mType);
         }
     }
 
@@ -181,12 +196,10 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
     }
 
     @Override
-    public void onResultData(List<Note> dataList) {
+    public void onResultData(List<Object> dataList) {
         srl.setRefreshing(false);
         NormalRVAdapter adapter = (NormalRVAdapter) rv.getAdapter();
-        List<Object> objList = new ArrayList<>();
-        objList.addAll(dataList);
-        adapter.setData(objList);
+        adapter.setData(dataList);
     }
 
     @Override
@@ -197,6 +210,10 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
             List<Object> objList = adapter.getData();
             for (Object obj : objList) {
                 if (obj instanceof Note && ((Note) obj).getRec_id() == id) {
+                    adapter.removeData(obj);
+                    mToDeleteList.remove(obj);
+                    break;
+                }else if (obj instanceof Course && ((Course)obj).getAct_id() == id) {
                     adapter.removeData(obj);
                     mToDeleteList.remove(obj);
                     break;
@@ -227,13 +244,19 @@ public class PersonNoteActivity extends WBaseActivity<PersonNoteContract.Present
             bundle.putParcelable("note", (Note)model);
             intent.putExtras(bundle);
             startActivity(intent);
+        }else if (model instanceof Course) {
+            Intent intent = new Intent(this, CourseShowActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("course", (Course) model);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 
     @Override
     public void onCheckedChanged(Object obj, boolean checked) {
         if (checked) {
-            mToDeleteList.add((Note) obj);
+            mToDeleteList.add(obj);
         }else {
             mToDeleteList.remove(obj);
         }

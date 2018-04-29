@@ -43,7 +43,7 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
     private String mPhotoPath;
     private String mPhotoUrl;
 
-    private int mType = EntryAddContract.TYPE_ADD;
+    private boolean mModify = false;
     private Entry mEntry;
 
     @Override
@@ -54,7 +54,7 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
     @Override
     public void initData(@Nullable Bundle bundle) {
         try {
-            mType = bundle.getInt("type");
+            mModify = bundle.getBoolean("modify");
             mEntry = bundle.getParcelable("entry");
             mPhotoUrl = mEntry.getUrl();
         } catch (Exception ignored) {
@@ -87,7 +87,7 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
 
         civ.setOnClickListener(this);
 
-        if (mType == EntryAddContract.TYPE_MODIFY) {
+        if (mModify) {
             etTitle.setEnabled(false);
             etTitle.setText(mEntry.getName());
             etContent.setText(mEntry.getContent());
@@ -137,7 +137,7 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
 
     private void publishEntry() {
         if (TextUtils.isEmpty(mPhotoPath)) {
-            if (mType == EntryAddContract.TYPE_ADD) {
+            if (!mModify) {
                 Toast.makeText(this, "请添加图片", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -156,10 +156,10 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
         String title = etTitle.getText().toString();
         String content = etContent.getText().toString();
 
-        if (mType == EntryAddContract.TYPE_ADD) {
-            mPresenter.requestAddEntry(title, content, mPhotoUrl);
-        }else {
+        if (mModify) {
             mPresenter.requestModifyEntry(mEntry.getEntry_id(), content, mPhotoUrl);
+        } else {
+            mPresenter.requestAddEntry(title, content, mPhotoUrl);
         }
     }
 

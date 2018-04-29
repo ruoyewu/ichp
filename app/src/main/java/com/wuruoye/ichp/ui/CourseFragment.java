@@ -25,7 +25,7 @@ import java.util.List;
  * @Description : 新的「活动界面」
  */
 
-public class CourseFragment extends WBaseFragment<CoursePresenter> implements
+public class CourseFragment extends WBaseFragment<CourseContract.Presenter> implements
         SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, CourseContract.View,
         BaseRVAdapter.OnItemClickListener<Course> {
     private SwipeRefreshLayout srl;
@@ -57,6 +57,8 @@ public class CourseFragment extends WBaseFragment<CoursePresenter> implements
     private void initLayout() {
         srl.setOnRefreshListener(this);
         fab.setOnClickListener(this);
+
+        fab.setVisibility(mPresenter.isUserConfirm() ? View.VISIBLE : View.GONE);
     }
 
     private void initRV() {

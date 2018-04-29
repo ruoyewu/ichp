@@ -37,6 +37,7 @@ public class UserLoginPresenter extends UserLoginContract.Presenter {
                         mUserCache.setName(name);
                         mUserCache.setPwd(pwd);
                         mUserCache.setToken(token);
+                        mUserCache.setUserConfirm(object.getString("data").equals("1"));
                         mUserCache.setUserId(object.getInt("uid"));
                         mUserCache.setLogin(true);
                     }else {

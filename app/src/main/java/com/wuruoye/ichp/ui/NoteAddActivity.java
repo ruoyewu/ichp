@@ -84,6 +84,9 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
 
     private int mCurrentMediaType;
     private int mType;
+    private boolean mModify = false;
+    private Object mData;
+    private List<Entry> mEntryList;
 
     private Double[] mAddress;
     private String[] mLocation;
@@ -99,6 +102,14 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     @Override
     public void initData(@Nullable Bundle bundle) {
         mType = bundle.getInt("type");
+
+        try {
+            mModify = bundle.getBoolean("modify");
+            mData = bundle.getParcelable("data");
+            mEntryList = bundle.getParcelableArrayList("entry");
+        } catch (Exception ignored) {
+
+        }
 
         setPresenter(new NoteAddPresenter());
     }
@@ -130,6 +141,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
         initDialog();
         getLocation();
         remeasureET();
+        checkModify();
     }
 
     @Override
@@ -316,6 +328,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
                         adapter.removeData(media);
                         checkRecyclerView();
                         mMediaList.remove(media);
+                        removeFromUrlMap(media);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -324,6 +337,40 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
 
                     }
                 }).show();
+    }
+
+    private void checkModify() {
+        if (mModify) {
+            List<Media> mediaList = null;
+            if (mType == TYPE_NOTE) {
+                Note note = (Note) mData;
+                etTitle.setEnabled(false);
+                etTitle.setText(note.getTitle());
+                etContent.setText(note.getDiscribe());
+                mediaList = mPresenter.parseMedia(note.getUrl(), note.getType());
+            }else {
+                Course course = (Course) mData;
+                etTitle.setEnabled(false);
+                etTitle.setText(course.getTitle());
+                etContent.setText(course.getContent());
+                etDate.setText(mPresenter.formatDate(course.getHold_date()));
+                etEntrance.setText(course.getAct_src());
+                etPlace.setText(course.getHold_addr());
+                mediaList = mPresenter.parseMedia(course.getImage_src(), course.getType());
+            }
+
+            for(Media m : mediaList) {
+                mUrlMap.put(m.getContent(), getIntType(m));
+            }
+            ((MediaRVAdapter)rvMedia.getAdapter()).setData(mediaList);
+            checkRecyclerView();
+
+            ((EntryChooseRVAdapter)rvEntry.getAdapter()).setData(mEntryList);
+        }
+    }
+
+    private void removeFromUrlMap(Media m) {
+        mUrlMap.remove(m.getContent());
     }
 
     private void checkRecyclerView() {
@@ -340,10 +387,6 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     }
 
     private void onPublishClick() {
-//        if (mUrlMap.size() == 0) {
-//            Toast.makeText(this, "至少添加一张图片", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
         if (mMediaList.size() > 0) {
             dlgUpload.setMessage("正在上传媒体文件...");
             dlgUpload.show();
@@ -414,7 +457,11 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
         course.setImage_src(urls[0]);
         course.setType(urls[1]);
 
-        mPresenter.requestUpCourse(course, date);
+
+        if (mModify) {
+            course.setAct_id(((Course)mData).getAct_id());
+        }
+        mPresenter.requestUpCourse(course, date, mModify);
     }
 
     private void doPublishNote() {
@@ -447,8 +494,12 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
         note.setType(urls[1]);
         note.setAddr(generateAddr());
         note.setLabels_id_str(generateEntry());
-        mPresenter.requestUpNote(note);
         dlgUpload.setMessage("正在上传记录...");
+
+        if (mModify) {
+            note.setRec_id(((Note) mData).getRec_id());
+        }
+        mPresenter.requestUpNote(note, mModify);
     }
 
     private String[] generateUrl() {
@@ -529,9 +580,17 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
 
     private void getLocation() {
         if (mType == TYPE_NOTE) {
-            if (new PermissionUtil(this)
-                    .requestPermission(Config.INSTANCE.getLOCATION_PERMISSION(), LOCATION_CODE)) {
-                mPresenter.requestLocation(getApplicationContext());
+            if (!mModify) {
+                if (new PermissionUtil(this)
+                        .requestPermission(Config.INSTANCE.getLOCATION_PERMISSION(), LOCATION_CODE)) {
+                    mPresenter.requestLocation(getApplicationContext());
+                }
+            }else {
+                Note note = (Note) mData;
+                String[] location = note.getAddr().split(",");
+                mLocation = new String[] {location[0]};
+                mAddress = new Double[] {Double.parseDouble(location[1]),
+                        Double.parseDouble(location[2])};
             }
         }
     }
@@ -586,7 +645,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     }
 
     @Override
-    public void onLocationResult(Double[] addr, String[] location) {
+    public void onResultLocation(Double[] addr, String[] location) {
         mAddress = addr;
         mLocation = location;
         if (mLocation.length > 0) {
@@ -597,12 +656,12 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     }
 
     @Override
-    public void onLocationError(String error) {
+    public void onResultLocationError(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onFileUploadResult(boolean result, String url) {
+    public void onResultUpload(boolean result, String url) {
         if (result) {
             mMediaList.remove(mCurrentUploadMedia);
             int type = getIntType(mCurrentUploadMedia);
@@ -625,19 +684,22 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     }
 
     @Override
-    public void onNoteAddResult(boolean result, String info) {
+    public void onResultAddNote() {
         dlgUpload.dismiss();
-        if (result) {
-            Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
-            finish();
-        }else {
-            Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
-        }
+        Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
-    public void onResultCourse() {
+    public void onResultAddCourse() {
         Toast.makeText(this, "发布成功", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    @Override
+    public void onResultModify() {
+        Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK);
         finish();
     }
 
@@ -671,6 +733,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
 
     @Override
     public void onPhotoError(String s) {
+        dlgUpload.dismiss();
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }

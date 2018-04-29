@@ -38,6 +38,8 @@ public class MainPresenter extends MainContract.Presenter {
                         getView().onLoginResult(true, token);
                         mUserCache.setName(id);
                         mUserCache.setPwd(pwd);
+                        mUserCache.setUserConfirm(object.getString("data").equals("1"));
+                        mUserCache.setUserId(object.getInt("uid"));
                         mUserCache.setToken(token);
                         mUserCache.setLogin(true);
                     }else {

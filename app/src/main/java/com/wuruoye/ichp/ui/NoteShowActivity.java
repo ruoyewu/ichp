@@ -57,6 +57,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
             R.drawable.ic_comment, R.drawable.ic_entry, R.drawable.ic_share};
 
     public final int NOTE_SHOW_ENTRY = hashCode() % 10000;
+    public final int NOTE_MODIFY = hashCode() % 10000 + 1;
 
     private Toolbar toolbar;
     private ImageView ivBack;
@@ -195,6 +196,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
 
         changePraise(mNote.isApprove());
         changeCollect(mNote.isColl());
+        checkModify();
     }
 
     private void initVP() {
@@ -246,6 +248,14 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         rvComment.setNestedScrollingEnabled(false);
     }
 
+    private void checkModify() {
+        if (mNote.getRecorder() == mPresenter.getUserId()) {
+            tvManager.setVisibility(View.VISIBLE);
+            tvManager.setText("修改");
+            tvManager.setOnClickListener(this);
+        }
+    }
+
     private void changePraise(boolean praise) {
         tvPraise.setText(praise ? "已点赞" : "点赞");
         tvPraise.setTextColor(praise ? Color.BLACK : Color.WHITE);
@@ -291,6 +301,17 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
+                break;
+            case R.id.tv_tb_manager:
+                Intent intent = new Intent(this, NoteAddActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", NoteAddActivity.TYPE_NOTE);
+                bundle.putParcelable("data", mNote);
+                bundle.putBoolean("modify", true);
+                bundle.putParcelableArrayList("entry", (ArrayList<? extends Parcelable>)
+                        ((EntryChooseRVAdapter)rvEntry.getAdapter()).getData());
+                intent.putExtras(bundle);
+                startActivityForResult(intent, NOTE_MODIFY);
                 break;
         }
     }

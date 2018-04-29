@@ -68,4 +68,9 @@ public class CoursePresenter extends CourseContract.Presenter {
             }
         });
     }
+
+    @Override
+    public boolean isUserConfirm() {
+        return mUserCache.getUserConfirm();
+    }
 }

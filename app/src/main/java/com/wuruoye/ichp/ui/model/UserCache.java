@@ -15,6 +15,7 @@ public class UserCache extends WBaseCache {
     public static final String USER_LOGIN = "user_login";
     public static final String USER_TOKEN = "user_token";
     public static final String USER_ID = "user_id";
+    public static final String USER_CONFIRM = "user_confirm";
 
     private static UserCache mUserCache;
 
@@ -71,5 +72,13 @@ public class UserCache extends WBaseCache {
 
     public void setUserId(int id) {
         putInt(USER_ID, id);
+    }
+
+    public boolean getUserConfirm() {
+        return getBoolean(USER_CONFIRM, false);
+    }
+
+    public void setUserConfirm(boolean confirm) {
+        putBoolean(USER_CONFIRM, confirm);
     }
 }

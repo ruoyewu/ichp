@@ -148,6 +148,11 @@ public class CourseShowPresenter extends CourseShowContract.Presenter {
         return DateUtil.formatTime((long)(time * 1000), "yyyy-MM-dd");
     }
 
+    @Override
+    public int getUserId() {
+        return mUserCache.getUserId();
+    }
+
     private Media.Type getType(String type) {
         switch (type) {
             case "1":

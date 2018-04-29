@@ -20,5 +20,6 @@ public interface CourseContract {
 
     abstract class Presenter extends WPresenter<View> {
         public abstract void requestCourse(boolean isAdd);
+        abstract public boolean isUserConfirm();
     }
 }

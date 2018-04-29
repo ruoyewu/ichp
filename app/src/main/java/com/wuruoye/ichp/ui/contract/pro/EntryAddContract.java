@@ -10,8 +10,6 @@ import com.wuruoye.library.contract.WPresenter;
  */
 
 public interface EntryAddContract {
-    int TYPE_ADD = 1;
-    int TYPE_MODIFY = 2;
 
     interface View extends WIView {
         void onResultError(String error);
