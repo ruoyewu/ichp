@@ -36,6 +36,7 @@ public interface NoteShowContract {
         abstract public String parseDate(float time);
         abstract public List<Media> parseMedia(String url, String type)
                 throws IllegalArgumentException;
+        abstract public int getUserId();
         public abstract String[] parseLocation(String location);
     }
 }

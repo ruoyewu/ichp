@@ -10,14 +10,20 @@ import com.wuruoye.library.contract.WPresenter;
  */
 
 public interface EntryAddContract {
+    int TYPE_ADD = 1;
+    int TYPE_MODIFY = 2;
+
     interface View extends WIView {
         void onResultError(String error);
         void onResultAdd(boolean result, String info);
         void onResultUpload(boolean result, String info);
+        void onResultModify();
     }
 
     abstract class Presenter extends WPresenter<View> {
         abstract public void requestAddEntry(String name, String content, String url);
+        abstract public void requestModifyEntry(int id, String content, String url);
         abstract public void requestUpload(String path);
+        abstract public String generatePhotoPath();
     }
 }

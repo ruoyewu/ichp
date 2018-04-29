@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
-import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
 import com.wuruoye.ichp.base.util.ShareUtil;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
@@ -225,12 +224,6 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
 
     private void initEntryRV() {
         EntryChooseRVAdapter adapter = new EntryChooseRVAdapter();
-        adapter.setOnItemLongClickListener(new BaseRVAdapter.OnItemLongClickListener<Entry>() {
-            @Override
-            public void onItemLongClick(Entry model) {
-                onEntryLongClick(model);
-            }
-        });
         rvEntry.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         DividerItemDecoration decoration = new DividerItemDecoration(this,
@@ -265,25 +258,6 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         tvCollect.setTextColor(collect ? Color.BLACK : Color.WHITE);
         ivCollect.setImageResource(collect ? R.drawable.ic_star_black : R.drawable.ic_star_white);
         ivCollect.setTag(collect);
-    }
-
-    private void onEntryLongClick(final Entry entry) {
-        new AlertDialog.Builder(this)
-                .setTitle("是否删除词条？")
-                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        EntryChooseRVAdapter adapter = (EntryChooseRVAdapter) rvEntry.getAdapter();
-                        adapter.removeData(entry);
-                        isModifyEntry = true;
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
     }
 
     private void share() {
@@ -339,12 +313,16 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
                 dlgComment.show();
                 break;
             case 3:     // 词条
-                Intent intent = new Intent(this, EntryChooseActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("entry", (ArrayList<? extends Parcelable>)
-                        ((EntryChooseRVAdapter)rvEntry.getAdapter()).getData());
-                intent.putExtras(bundle);
-                startActivityForResult(intent, NOTE_SHOW_ENTRY);
+                if (mPresenter.getUserId() == mNote.getRecorder()) {
+                    Intent intent = new Intent(this, EntryChooseActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("entry", (ArrayList<? extends Parcelable>)
+                            ((EntryChooseRVAdapter)rvEntry.getAdapter()).getData());
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, NOTE_SHOW_ENTRY);
+                }else {
+                    Toast.makeText(this, "没有操作权限", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case 4:     // 分享
                 share();

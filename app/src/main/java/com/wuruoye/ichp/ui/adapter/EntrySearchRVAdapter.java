@@ -38,6 +38,12 @@ public class EntrySearchRVAdapter extends BaseRVAdapter<Entry> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Entry entry = getData(position);
         final ViewHolder viewHolder = (ViewHolder) holder;
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClick(entry);
+            }
+        });
         viewHolder.tvTitle.setText(entry.getName());
         viewHolder.tvContent.setText(entry.getName());
         if (mChoseEntryList.contains(entry)) {

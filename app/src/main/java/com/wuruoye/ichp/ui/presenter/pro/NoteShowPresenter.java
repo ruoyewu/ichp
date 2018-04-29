@@ -45,7 +45,7 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
                     JSONObject object = new JSONObject(s);
                     if (object.getInt("code") == 0) {
                         if (isAvailable()) {
-                            getView().onResultError("点赞成功");
+                            getView().onResultError("操作成功");
                         }
                     } else {
                         if (isAvailable()) {
@@ -303,6 +303,11 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
             mediaList.add(new Media(getType(types[i]), urls[i]));
         }
         return mediaList;
+    }
+
+    @Override
+    public int getUserId() {
+        return mUserCache.getUserId();
     }
 
     @Override

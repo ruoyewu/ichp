@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.ui.contract.pro.EntryAddContract;
+import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.presenter.pro.EntryAddPresenter;
 import com.wuruoye.library.ui.WPhotoActivity;
 
@@ -42,6 +43,9 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
     private String mPhotoPath;
     private String mPhotoUrl;
 
+    private int mType = EntryAddContract.TYPE_ADD;
+    private Entry mEntry;
+
     @Override
     public int getContentView() {
         return R.layout.activity_entry_add;
@@ -49,6 +53,14 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
 
     @Override
     public void initData(@Nullable Bundle bundle) {
+        try {
+            mType = bundle.getInt("type");
+            mEntry = bundle.getParcelable("entry");
+            mPhotoUrl = mEntry.getUrl();
+        } catch (Exception ignored) {
+
+        }
+
         setPresenter(new EntryAddPresenter());
     }
 
@@ -74,6 +86,15 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
         }
 
         civ.setOnClickListener(this);
+
+        if (mType == EntryAddContract.TYPE_MODIFY) {
+            etTitle.setEnabled(false);
+            etTitle.setText(mEntry.getName());
+            etContent.setText(mEntry.getContent());
+            Glide.with(civ)
+                    .load(mEntry.getUrl())
+                    .into(civ);
+        }
     }
 
     private void initDialog() {
@@ -87,7 +108,7 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
                                 choosePhoto();
                                 break;
                             case 1:
-                                takePhoto("");
+                                takePhoto(mPresenter.generatePhotoPath());
                                 break;
                         }
                     }
@@ -116,12 +137,18 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
 
     private void publishEntry() {
         if (TextUtils.isEmpty(mPhotoPath)) {
-            Toast.makeText(this, "请添加图片", Toast.LENGTH_SHORT).show();
-            return;
+            if (mType == EntryAddContract.TYPE_ADD) {
+                Toast.makeText(this, "请添加图片", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
         dlgUpload.setMessage("正在上传媒体文件...");
         dlgUpload.show();
-        mPresenter.requestUpload(mPhotoPath);
+        if (TextUtils.isEmpty(mPhotoPath)) {
+            doPublish();
+        }else {
+            mPresenter.requestUpload(mPhotoPath);
+        }
     }
 
     private void doPublish() {
@@ -129,7 +156,11 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
         String title = etTitle.getText().toString();
         String content = etContent.getText().toString();
 
-        mPresenter.requestAddEntry(title, content, mPhotoUrl);
+        if (mType == EntryAddContract.TYPE_ADD) {
+            mPresenter.requestAddEntry(title, content, mPhotoUrl);
+        }else {
+            mPresenter.requestModifyEntry(mEntry.getEntry_id(), content, mPhotoUrl);
+        }
     }
 
     @Override
@@ -170,5 +201,12 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
             dlgUpload.dismiss();
             Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onResultModify() {
+        Toast.makeText(this, "修改完成", Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK);
+        finish();
     }
 }

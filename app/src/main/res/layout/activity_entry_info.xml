@@ -100,12 +100,37 @@
     </android.support.v4.widget.NestedScrollView>
 
     <LinearLayout
+        android:id="@+id/ll_entry_info_bottom"
         app:layout_behavior="com.wuruoye.ichp.ui.adapter.CustomBottomBehavior"
         android:orientation="horizontal"
         android:layout_gravity="bottom"
         android:background="@color/mainColor"
         android:layout_width="match_parent"
-        android:layout_height="80dp">
+        android:layout_height="80dp"
+        android:baselineAligned="false">
 
+        <include
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            layout="@layout/item_icon_text"/>
+
+        <include
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            layout="@layout/item_icon_text"/>
+
+        <include
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            layout="@layout/item_icon_text"/>
+
+        <include
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            layout="@layout/item_icon_text"/>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

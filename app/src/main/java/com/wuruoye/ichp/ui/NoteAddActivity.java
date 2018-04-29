@@ -54,7 +54,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     public static final String[] RECORD_ITEM = {"音频选取", "音频拍摄"};
     public static final String[] TITLE_IT_ITEM = {"照片", "视频", "音频", "词条", "返回", "发布"};
     public static final int[] ICON_IT_ITEM = {R.drawable.ic_photo, R.drawable.ic_movies,
-            R.drawable.ic_audio, R.drawable.ic_entry_black, R.drawable.ic_goleft, R.drawable.ic_edit};
+            R.drawable.ic_audio, R.drawable.ic_entry_black, R.drawable.ic_goleft_black, R.drawable.ic_edit};
     public final int LOCATION_CODE = hashCode() % 10000;
     public static final int TIME_RECORD_LIMIT = 100000;
     public static final int CHOOSE_ENTRY = 201;

@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/iv_tb_back"
             android:background="@null"
-            android:src="@drawable/ic_goleft"
+            android:src="@drawable/ic_goleft_black"
             android:layout_centerVertical="true"
             android:padding="13dp"
             android:layout_width="50dp"

@@ -3,6 +3,7 @@ package com.wuruoye.ichp.ui.presenter.pro;
 import android.support.v4.util.ArrayMap;
 
 import com.wuruoye.ichp.base.model.Api;
+import com.wuruoye.ichp.base.model.Config;
 import com.wuruoye.ichp.ui.contract.pro.EntryAddContract;
 import com.wuruoye.ichp.ui.model.UserCache;
 import com.wuruoye.library.model.Listener;
@@ -46,6 +47,40 @@ public class EntryAddPresenter extends EntryAddContract.Presenter {
                     }
                 } catch (JSONException e) {
                     if (isAvailable()) {
+                        getView().onResultError(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(String s) {
+                if (isAvailable()) {
+                    getView().onResultError(s);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void requestModifyEntry(int id, String content, String url) {
+        ArrayMap<String, String> values = new ArrayMap<>();
+        values.put("token", mUserCache.getToken());
+        values.put("entry_id", "" + id);
+        values.put("content", content);
+        values.put("url", url);
+
+        WNet.postInBackGround(Api.INSTANCE.getMODIFY_ENTRY(), values, new Listener<String>() {
+            @Override
+            public void onSuccessful(String s) {
+                if (isAvailable()) {
+                    try {
+                        JSONObject obj = new JSONObject(s);
+                        if (obj.getInt("code") == 0) {
+                            getView().onResultModify();
+                        }else {
+                            getView().onResultError(obj.getString("msg"));
+                        }
+                    } catch (JSONException e) {
                         getView().onResultError(e.getMessage());
                     }
                 }
@@ -112,5 +147,10 @@ public class EntryAddPresenter extends EntryAddContract.Presenter {
             }
         });
 
+    }
+
+    @Override
+    public String generatePhotoPath() {
+        return Config.INSTANCE.getIMAGE_PATH() + System.currentTimeMillis() + ".jpg";
     }
 }

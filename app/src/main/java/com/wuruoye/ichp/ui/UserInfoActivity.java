@@ -160,7 +160,7 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
     }
 
     private void changeAttention(boolean att) {
-        tvAttention.setText(att ? "" : "");
+        tvAttention.setText(att ? "已关注" : "关注");
         tvAttention.setTextColor(att ? Color.BLACK : Color.WHITE);
         ivAttention.setImageResource(att ? R.drawable.ic_star_black : R.drawable.ic_star_white);
     }

@@ -14,6 +14,15 @@ public class Entry implements Parcelable {
     private String content;
     private int editor;
     private String url;
+    private boolean isApprove;
+
+    public boolean isApprove() {
+        return isApprove;
+    }
+
+    public void setApprove(boolean approve) {
+        isApprove = approve;
+    }
 
     public int getEntry_id() {
         return entry_id;
@@ -55,6 +64,19 @@ public class Entry implements Parcelable {
         this.url = url;
     }
 
+    public Entry() {
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Entry && ((Entry) obj).getEntry_id() == entry_id;
+    }
+
+    @Override
+    public int hashCode() {
+        return getEntry_id();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,9 +89,7 @@ public class Entry implements Parcelable {
         dest.writeString(this.content);
         dest.writeInt(this.editor);
         dest.writeString(this.url);
-    }
-
-    public Entry() {
+        dest.writeByte(this.isApprove ? (byte) 1 : (byte) 0);
     }
 
     protected Entry(Parcel in) {
@@ -78,9 +98,10 @@ public class Entry implements Parcelable {
         this.content = in.readString();
         this.editor = in.readInt();
         this.url = in.readString();
+        this.isApprove = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<Entry> CREATOR = new Parcelable.Creator<Entry>() {
+    public static final Creator<Entry> CREATOR = new Creator<Entry>() {
         @Override
         public Entry createFromParcel(Parcel source) {
             return new Entry(source);
@@ -91,14 +112,4 @@ public class Entry implements Parcelable {
             return new Entry[size];
         }
     };
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof Entry && ((Entry) obj).getEntry_id() == entry_id;
-    }
-
-    @Override
-    public int hashCode() {
-        return getEntry_id();
-    }
 }

@@ -45,7 +45,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CourseShowActivity extends WBaseActivity<CourseShowContract.Presenter>
         implements CourseShowContract.View, View.OnClickListener {
     public static final String[] ITEM_BOTTOM = {"返回", "入口地址", "收藏", "分享"};
-    public static final int[] ICON_BOTTOM = {R.drawable.ic_goleft, R.drawable.ic_edit,
+    public static final int[] ICON_BOTTOM = {R.drawable.ic_goleft_black, R.drawable.ic_edit,
             R.drawable.ic_star_white, R.drawable.ic_share};
 
     private Toolbar toolbar;

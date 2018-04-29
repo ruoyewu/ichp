@@ -46,5 +46,7 @@
 
 ## 待解决问题
 
-- [ ] delCollAct act_id = 22 报错 "no such activity"
-- [ ] getCollAct 报错 "get activity failed"
+- [ ] 修改词条目前只能修改 content ，考虑是否添加修改 名称和图片 功能
+- [ ] 修改记录同上
+- [ ] 修改活动目前没有，功能考虑同上
+
