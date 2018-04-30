@@ -199,7 +199,8 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
                 break;
             case 4:
                 // 我的认证
-
+                intent = new Intent(getContext(), UserConfirmActivity.class);
+                startActivity(intent);
                 break;
             case 5:
                 // 我的非遗足迹

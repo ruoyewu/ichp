@@ -56,6 +56,7 @@
         <activity android:name=".ui.CourseShowActivity" />
         <activity android:name=".ui.ModifyPwdActivity" />
         <activity android:name=".ui.PersonTraceActivity" />
+        <activity android:name=".ui.UserConfirmActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
