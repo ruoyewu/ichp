@@ -28,7 +28,7 @@ import static com.wuruoye.ichp.ui.NoteAddActivity.TYPE_NOTE;
  * this file is to
  */
 
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment{
     public static final List<String> TITLE_LIST =
             Arrays.asList("关注", "推荐", "地图");
     public static final int TYPE_RECOMMEND = 1;

@@ -7,7 +7,10 @@ import com.wuruoye.ichp.ui.contract.pro.PersonInfoContract;
 import com.wuruoye.ichp.ui.model.UserCache;
 import com.wuruoye.ichp.ui.model.bean.User;
 import com.wuruoye.library.model.Listener;
+import com.wuruoye.library.model.WConfig;
 import com.wuruoye.library.util.net.WNet;
+import com.zxy.tiny.Tiny;
+import com.zxy.tiny.callback.FileCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,41 +26,57 @@ public class PersonInfoPresenter extends PersonInfoContract.Presenter {
 
     @Override
     public void requestUploadFile(String path) {
-        ArrayMap<String, String> values = new ArrayMap<>();
+        final ArrayMap<String, String> values = new ArrayMap<>();
         values.put("token", mUserCache.getToken());
-        ArrayMap<String, String> files = new ArrayMap<>();
+        final ArrayMap<String, String> files = new ArrayMap<>();
         files.put("the_file", path);
-        WNet.uploadFileInBackground(Api.INSTANCE.getUPLOAD(), values, files, "image/*",
-                new Listener<String>() {
-                    @Override
-                    public void onSuccessful(String s) {
-                        try {
-                            JSONObject object = new JSONObject(s);
-                            boolean isOk;
-                            String url;
-                            if (object.getInt("code") == 0) {
-                                if (isAvailable()) {
-                                    getView().onResultUploadFile(object.getString("addr"));
-                                }
-                            }else {
-                                if (isAvailable()) {
-                                    getView().onResultError(object.getString("msg"));
-                                }
-                            }
-                        } catch (JSONException e) {
-                            if (isAvailable()) {
-                                getView().onResultError(e.getMessage());
-                            }
-                        }
-                    }
 
-                    @Override
-                    public void onFail(String s) {
-                        if (isAvailable()) {
-                            getView().onResultError(s);
-                        }
+        Tiny.getInstance().source(path)
+                .asFile().compress(new FileCallback() {
+            @Override
+            public void callback(boolean isSuccess, String outfile, Throwable t) {
+                if (isSuccess) {
+                    files.put("the_file", outfile);
+                    WNet.uploadFileInBackground(Api.INSTANCE.getUPLOAD(), values, files, "image/*",
+                            new Listener<String>() {
+                                @Override
+                                public void onSuccessful(String s) {
+                                    try {
+                                        JSONObject object = new JSONObject(s);
+                                        if (object.getInt("code") == 0) {
+                                            if (isAvailable()) {
+                                                getView().onResultUploadFile(object
+                                                        .getString("addr"));
+                                            }
+                                        }else {
+                                            if (isAvailable()) {
+                                                getView().onResultError(object.getString("msg"));
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        if (isAvailable()) {
+                                            getView().onResultError(e.getMessage());
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFail(String s) {
+                                    if (isAvailable()) {
+                                        getView().onResultError(s);
+                                    }
+                                }
+                            });
+                }else {
+                    if (t != null) {
+                        getView().onResultError(t.getMessage());
+                    }else {
+                        getView().onResultError("compress error");
                     }
-                });
+                }
+            }
+        });
+
     }
 
     @Override
@@ -97,5 +116,10 @@ public class PersonInfoPresenter extends PersonInfoContract.Presenter {
                 }
             }
         });
+    }
+
+    @Override
+    public String generatePhotoPath() {
+        return WConfig.IMAGE_PATH + System.currentTimeMillis() + ".jpg";
     }
 }

@@ -134,7 +134,7 @@ public class PersonInfoActivity extends WBaseActivity<PersonInfoContract.Present
                                 mPhotoGet.choosePhoto(PersonInfoActivity.this);
                                 break;
                             case 1:
-                                mPhotoGet.takePhoto("", PersonInfoActivity.this);
+                                mPhotoGet.takePhoto(mPresenter.generatePhotoPath(), PersonInfoActivity.this);
                                 break;
                         }
                     }
@@ -176,6 +176,7 @@ public class PersonInfoActivity extends WBaseActivity<PersonInfoContract.Present
                 break;
             case R.id.tv_person_info_pwd:
                 Intent intent = new Intent(this, ModifyPwdActivity.class);
+                startActivity(intent);
                 break;
             case R.id.civ_person_info:
                 dlgPhoto.show();
@@ -233,7 +234,7 @@ public class PersonInfoActivity extends WBaseActivity<PersonInfoContract.Present
 
     @Override
     public void onPhotoError(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

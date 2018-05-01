@@ -82,7 +82,7 @@ public class PersonCollectListFragment extends WBaseFragment<PersonCollectContra
     private void initDlg() {
         dlgDelete = new AlertDialog.Builder(getContext())
                 .setTitle("提示")
-                .setCancelable(false)
+                .setMessage("正在执行操作")
                 .create();
     }
 

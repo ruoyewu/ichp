@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
+import com.wuruoye.ichp.base.util.NetResultUtil;
 import com.wuruoye.ichp.ui.model.bean.Media;
 
 /**
@@ -53,7 +54,7 @@ public class MediaRVAdapter extends BaseRVAdapter<Media> {
             if (media.getType() == Media.Type.RECORD) {
 
             }else {
-                ViewHolder viewHolder = (ViewHolder) holder;
+                final ViewHolder viewHolder = (ViewHolder) holder;
                 if (media.getType() == Media.Type.IMAGE) {
                     Glide.with(viewHolder.ivBack)
                             .load(media.getContent())
@@ -62,6 +63,9 @@ public class MediaRVAdapter extends BaseRVAdapter<Media> {
                 if (media.getType() == Media.Type.VIDEO) {
                     viewHolder.ivTag.setVisibility(View.VISIBLE);
                     viewHolder.ivTag.setImageResource(R.drawable.ic_play);
+
+                    viewHolder.ivBack.setImageBitmap(NetResultUtil
+                            .getFirstFrame(media.getContent()));
                 }
             }
         }

@@ -41,6 +41,8 @@ public class MainActivity extends WBaseActivity<MainPresenter> implements MainCo
 
     private BottomNavigationBar bnbBottomBar;
 
+    private AlertDialog dlgLogin;
+
     private List<Fragment> mFragmentList;
 
     @Override
@@ -51,15 +53,39 @@ public class MainActivity extends WBaseActivity<MainPresenter> implements MainCo
     @Override
     public void initData(@Nullable Bundle bundle) {
         setPresenter(new MainPresenter());
-        checkLogin();
     }
 
     @Override
     public void initView() {
         bnbBottomBar = findViewById(R.id.bnb_main);
 
+        initDlg();
         initFragment();
         initBottombar();
+
+        checkLogin();
+    }
+
+    private void initDlg() {
+        dlgLogin = new AlertDialog.Builder(this)
+                .setTitle("未登录")
+                .setMessage("未登录用户不能使用")
+                .setPositiveButton("登录", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(MainActivity.this,
+                                UserLoginActivity.class);
+                        startActivityForResult(intent, MAIN_LOGIN);
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .setCancelable(false)
+                .create();
     }
 
     private void initBottombar() {
@@ -120,33 +146,15 @@ public class MainActivity extends WBaseActivity<MainPresenter> implements MainCo
         if (mPresenter.isUserLogin()) {
             mPresenter.requestLogin(mPresenter.getUserName(), mPresenter.getUserPwd());
         }else {
-            new AlertDialog.Builder(this)
-                    .setTitle("未登录\n是否进入登录？")
-                    .setPositiveButton("登录", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Intent intent = new Intent(MainActivity.this,
-                                    UserLoginActivity.class);
-                            startActivityForResult(intent, MAIN_LOGIN);
-                        }
-                    })
-                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Toast.makeText(MainActivity.this, "未登录用户不能访问某些功能",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .show();
+            dlgLogin.show();
         }
     }
 
     @Override
     public void onLoginResult(boolean result, String token) {
         if (!result) {
-            Toast.makeText(this, "error in login", Toast.LENGTH_SHORT).show();
-        }else {
-
+            dlgLogin.setMessage("用户登录失败，请重新登录");
+            dlgLogin.show();
         }
     }
 
@@ -156,6 +164,9 @@ public class MainActivity extends WBaseActivity<MainPresenter> implements MainCo
         if (requestCode == MAIN_LOGIN) {
             if (resultCode == RESULT_OK) {
                 Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
+                recreate();
+            }else if (resultCode == RESULT_CANCELED) {
+                dlgLogin.show();
             }
         }
     }

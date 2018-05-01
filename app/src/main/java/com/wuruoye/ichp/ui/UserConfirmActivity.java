@@ -50,6 +50,7 @@ public class UserConfirmActivity extends WBaseActivity<ConfirmContract.Presenter
 
     private AlertDialog dlgPhoto;
     private AlertDialog dlgTip;
+    private AlertDialog dlgSuc;
     private WPhoto mPhotoGet;
 
     @Override
@@ -130,6 +131,16 @@ public class UserConfirmActivity extends WBaseActivity<ConfirmContract.Presenter
         dlgTip = new AlertDialog.Builder(this)
                 .setTitle("提示")
                 .setMessage("正在上传中...")
+                .create();
+        dlgSuc = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("您的认证已经提交审核，请耐心等待结果！")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
                 .setCancelable(false)
                 .create();
     }
@@ -200,8 +211,7 @@ public class UserConfirmActivity extends WBaseActivity<ConfirmContract.Presenter
     @Override
     public void onResultUpload() {
         dlgTip.dismiss();
-        onResultError("上传成功，等待验证");
-        finish();
+        dlgSuc.show();
     }
 
     @Override

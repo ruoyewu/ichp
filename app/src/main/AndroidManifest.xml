@@ -57,6 +57,7 @@
         <activity android:name=".ui.ModifyPwdActivity" />
         <activity android:name=".ui.PersonTraceActivity" />
         <activity android:name=".ui.UserConfirmActivity" />
+        <activity android:name=".ui.UserLevelActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

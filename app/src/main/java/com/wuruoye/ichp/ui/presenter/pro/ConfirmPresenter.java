@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui.presenter.pro;
 
+import com.wuruoye.ichp.base.App;
 import com.wuruoye.ichp.ui.contract.pro.ConfirmContract;
 import com.wuruoye.library.model.WConfig;
 
@@ -18,11 +19,21 @@ public class ConfirmPresenter extends ConfirmContract.Presenter {
                 try {
                     Thread.sleep(2000);
                     if (isAvailable()) {
-                        getView().onResultUpload();
+                        App.runOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                getView().onResultUpload();
+                            }
+                        });
                     }
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     if (isAvailable()) {
-                        getView().onResultError(e.getMessage());
+                        App.runOnMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                getView().onResultError(e.getMessage());
+                            }
+                        });
                     }
                 }
             }

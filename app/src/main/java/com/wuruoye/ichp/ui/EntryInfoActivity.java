@@ -131,7 +131,7 @@ public class EntryInfoActivity extends WBaseActivity<EntryInfoContract.Presenter
                 })
                 .submit();
 
-        changeCollect(mEntry.isApprove());
+        changeCollect(mEntry.isColl());
     }
 
     private void initViewPager() {
@@ -176,8 +176,8 @@ public class EntryInfoActivity extends WBaseActivity<EntryInfoContract.Presenter
                 startActivity(intent);
                 break;
             case 2:
-                boolean collect = !mEntry.isApprove();
-                mEntry.setApprove(collect);
+                boolean collect = !mEntry.isColl();
+                mEntry.setColl(collect);
                 changeCollect(collect);
                 mPresenter.requestCollectEntry(mEntry.getEntry_id(), collect);
                 break;

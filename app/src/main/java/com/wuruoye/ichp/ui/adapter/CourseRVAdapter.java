@@ -10,7 +10,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
+import com.wuruoye.ichp.base.util.NetResultUtil;
 import com.wuruoye.ichp.ui.model.bean.Course;
+import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.library.util.DateUtil;
 
 /**
@@ -36,10 +38,12 @@ public class CourseRVAdapter extends BaseRVAdapter<Course> {
                 onItemClick(course);
             }
         });
-        String[] imgs = course.getImage_src().split(",");
-        Glide.with(viewHolder.iv)
-                .load(imgs[0])
-                .into(viewHolder.iv);
+        Media m = NetResultUtil.getFirstImage(course);
+        if (m != null) {
+            Glide.with(viewHolder.iv)
+                    .load(m.getContent())
+                    .into(viewHolder.iv);
+        }
         viewHolder.tvTitle.setText(course.getTitle());
         viewHolder.tvAuthor.setText(DateUtil.formatTime((long)course.getIssue_date() * 1000,
                 "yyyy-MM-dd"));

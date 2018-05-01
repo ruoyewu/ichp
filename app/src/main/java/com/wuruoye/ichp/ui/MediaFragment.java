@@ -1,12 +1,14 @@
 package com.wuruoye.ichp.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
+import com.wuruoye.ichp.base.util.NetResultUtil;
 import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.library.ui.WBaseFragment;
 
@@ -45,6 +47,8 @@ public class MediaFragment extends WBaseFragment implements View.OnClickListener
                 break;
             case VIDEO:
                 ivPlay.setVisibility(View.VISIBLE);
+                Bitmap bitmap = NetResultUtil.getFirstFrame(mMedia.getContent());
+                ivBg.setImageBitmap(bitmap);
                 break;
             case IMAGE:
                 Glide.with(ivBg)

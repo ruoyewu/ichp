@@ -75,9 +75,12 @@ public class NormalRVAdapter extends BaseRVAdapter<Object> {
             viewHolder.civ.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((Course) data).getTitle());
             viewHolder.tvContent.setText(((Course) data).getContent());
-            Glide.with(viewHolder.iv)
-                    .load(((Course) data).getImage_src())
-                    .into(viewHolder.iv);
+            Media m = NetResultUtil.getFirstImage((Course) data);
+            if (m != null) {
+                Glide.with(viewHolder.iv)
+                        .load(m.getContent())
+                        .into(viewHolder.iv);
+            }
         }else if (data instanceof Entry) {
             viewHolder.civ.setVisibility(View.GONE);
             viewHolder.tvTitle.setText(((Entry) data).getName());

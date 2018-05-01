@@ -20,5 +20,6 @@ public interface PersonInfoContract {
     abstract class Presenter extends WPresenter<View> {
         abstract public void requestUploadFile(String path);
         abstract public void requestUpload(User user);
+        abstract public String generatePhotoPath();
     }
 }

@@ -1,5 +1,8 @@
 package com.wuruoye.ichp.base.util;
 
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+
 import com.google.gson.Gson;
 import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Media;
@@ -10,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -85,6 +89,17 @@ public class NetResultUtil {
         return null;
     }
 
+    public static Media getFirstImage(Course course) {
+        String[] urls = course.getImage_src().split(",");
+        String[] types = course.getType().split(",");
+        for (int i = 0; i < types.length; i++) {
+            if (types[i].equals("1")) {
+                return new Media(Media.Type.IMAGE, urls[i]);
+            }
+        }
+        return null;
+    }
+
     public static String generateUrl(String url, String type) throws JSONException {
         String[] urls = url.split(",");
         String[] types = type.split(",");
@@ -97,5 +112,25 @@ public class NetResultUtil {
             array.put(object.toString());
         }
         return array.toString();
+    }
+
+    public static Bitmap getFirstFrame(String path) {
+        Bitmap bitmap = null;
+
+        try {
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            if (path.startsWith("http")) {
+
+                retriever.setDataSource(path, new HashMap<String, String>());
+
+            }else {
+                retriever.setDataSource(path);
+            }
+            bitmap = retriever.getFrameAtTime();
+        } catch (IllegalArgumentException ignored) {
+
+        }
+
+        return bitmap;
     }
 }

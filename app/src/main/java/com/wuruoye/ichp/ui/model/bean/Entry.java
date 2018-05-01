@@ -14,14 +14,14 @@ public class Entry implements Parcelable {
     private String content;
     private int editor;
     private String url;
-    private boolean isApprove;
+    private boolean isColl;
 
-    public boolean isApprove() {
-        return isApprove;
+    public boolean isColl() {
+        return isColl;
     }
 
-    public void setApprove(boolean approve) {
-        isApprove = approve;
+    public void setColl(boolean coll) {
+        isColl = coll;
     }
 
     public int getEntry_id() {
@@ -89,7 +89,7 @@ public class Entry implements Parcelable {
         dest.writeString(this.content);
         dest.writeInt(this.editor);
         dest.writeString(this.url);
-        dest.writeByte(this.isApprove ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isColl ? (byte) 1 : (byte) 0);
     }
 
     protected Entry(Parcel in) {
@@ -98,7 +98,7 @@ public class Entry implements Parcelable {
         this.content = in.readString();
         this.editor = in.readInt();
         this.url = in.readString();
-        this.isApprove = in.readByte() != 0;
+        this.isColl = in.readByte() != 0;
     }
 
     public static final Creator<Entry> CREATOR = new Creator<Entry>() {

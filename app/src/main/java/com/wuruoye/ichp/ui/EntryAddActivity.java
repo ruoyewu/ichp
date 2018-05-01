@@ -178,6 +178,7 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
 
     @Override
     public void onResultError(String error) {
+        dlgUpload.dismiss();
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 

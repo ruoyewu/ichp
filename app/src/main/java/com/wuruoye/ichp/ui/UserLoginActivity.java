@@ -102,4 +102,10 @@ public class UserLoginActivity extends WBaseActivity<UserLoginPresenter>
     private void register() {
         startActivity(new Intent(this, RegisterActivity.class));
     }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
 }

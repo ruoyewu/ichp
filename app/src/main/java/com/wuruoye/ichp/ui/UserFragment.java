@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.wuruoye.ichp.ui.contract.pro.UserAttentionContract.TYPE_ATTED;
 import static com.wuruoye.ichp.ui.contract.pro.UserAttentionContract.TYPE_ATTEN;
@@ -54,7 +55,6 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
     private TextView tvFocused;
     private LinearLayout llUser;
 
-    private TextView tvLogin;
     private AlertDialog dlgLogout;
 
     private User mUser;
@@ -88,9 +88,12 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == USER_INFO && resultCode == RESULT_OK) {
-            mUser = data.getParcelableExtra("user");
+            User user = data.getParcelableExtra("user");
+            onResultUserInfo(user);
+        }else if (requestCode == USER_LOGIN && resultCode == RESULT_CANCELED) {
+            getActivity().finish();
         }else if (requestCode == USER_LOGIN && resultCode == RESULT_OK) {
-            tvLogin.setText("注销登录");
+            getActivity().recreate();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -140,10 +143,6 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
             tv.setText(ITEM_TITLE[i]);
             iv.setImageResource(ITEM_ICON[i]);
             llUser.addView(view);
-            if (i == 7) {
-                tvLogin = tv;
-                tv.setText(mPresenter.isLogin() ? "注销登录" : "登录");
-            }
             if (!confirm && i == 1) {
                 view.setVisibility(View.GONE);
             }
@@ -209,6 +208,8 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
                 break;
             case 6:
                 // 非遗拾贝
+                intent = new Intent(getContext(), UserLevelActivity.class);
+                startActivity(intent );
                 break;
             case 7:
                 // 注销登录
@@ -270,7 +271,7 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
 
     @Override
     public void onResultLogout() {
-        tvLogin.setText("登录");
         Toast.makeText(getContext(), "已注销登录", Toast.LENGTH_SHORT).show();
+        startActivityForResult(new Intent(getContext(), UserLoginActivity.class), USER_LOGIN);
     }
 }

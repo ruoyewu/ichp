@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +30,6 @@ public class RegisterActivity extends WBaseActivity<RegisterContract.Presenter>
     private EditText etName;
     private EditText etPwd;
     private EditText etPwdCon;
-    private Switch switchRole;
     private Button btn;
 
     @Override
@@ -53,7 +51,6 @@ public class RegisterActivity extends WBaseActivity<RegisterContract.Presenter>
         etName = findViewById(R.id.et_register_name);
         etPwd = findViewById(R.id.et_register_pwd);
         etPwdCon = findViewById(R.id.et_register_pwd_con);
-        switchRole = findViewById(R.id.switch_register);
         btn = findViewById(R.id.btn_register);
 
         initLayout();
@@ -95,7 +92,7 @@ public class RegisterActivity extends WBaseActivity<RegisterContract.Presenter>
             Toast.makeText(this, "两次输入密码不一样", Toast.LENGTH_SHORT).show();
             return;
         }
-        int role = switchRole.isChecked() ? 1 : 0;
+        int role = 0;
         mPresenter.requestRegister(name, pwd, role);
     }
 

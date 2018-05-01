@@ -27,7 +27,7 @@ object Api {
     val GET_ENTRY = REMOTE_HOST + "getEntry"
     val ADD_REC = REMOTE_HOST + "addRec"
     val MODIFY_REC = REMOTE_HOST + "modifyRec"
-    val MODIFY_ACT = REMOTE_HOST + "modfiyAct"
+    val MODIFY_ACT = REMOTE_HOST + "modifyAct"
     val DELETE_REC = REMOTE_HOST + "delRec"
     val GET_ALL_REC = REMOTE_HOST + "getAllRec"
     val GET_USER_REC = REMOTE_HOST + "getUserRec"
@@ -60,5 +60,8 @@ object Api {
     val GET_ENTRY_ACT = REMOTE_HOST + "getEntryAct"
     val MODIFY_REC_LAB = REMOTE_HOST + "modifyRecLab"
     val REMOVE_APPR_REC = REMOTE_HOST + "removeApprRec"
-    val DEL_COLL_REC = REMOVE_APPR_REC + "delCollRec"
+    val DEL_COLL_REC = REMOTE_HOST + "delCollRec"
+    val MODIFY_PWD = REMOTE_HOST + "modifyPsw"
+    val GET_PAY_REC = REMOTE_HOST + "getPayRec"
+    val GET_POINT = REMOTE_HOST + "getPoint"
 }
