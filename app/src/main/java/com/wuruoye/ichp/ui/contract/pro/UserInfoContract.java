@@ -12,7 +12,6 @@ import com.wuruoye.library.contract.WPresenter;
 public interface UserInfoContract {
     interface View extends WIView {
         void onResultError(String error);
-        void onResultAttention(boolean attention);
     }
 
     abstract class Presenter extends WPresenter<View> {

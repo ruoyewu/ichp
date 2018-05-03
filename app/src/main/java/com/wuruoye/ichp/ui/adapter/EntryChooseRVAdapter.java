@@ -32,6 +32,12 @@ public class EntryChooseRVAdapter extends BaseRVAdapter<Entry> {
         if (getItemViewType(position) == TYPE_NORMAL) {
             final Entry entry = getData(position - 1);
             viewHolder.tv.setText(entry.getName());
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClick(entry);
+                }
+            });
             viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {

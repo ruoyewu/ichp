@@ -40,48 +40,50 @@ public class NoteAddPresenter extends AddNoteContract.Presenter {
 
     @Override
     public void requestLocation(final Context context) {
-        new Thread(new Runnable() {
+        LocationUtil.INSTANCE.getLocation(context, new Listener<Double[]>() {
             @Override
-            public void run() {
-                LocationUtil.INSTANCE.getLocation(context, new Listener<Double[]>() {
+            public void onSuccess(final Double[] model) {
+                new Thread(new Runnable() {
                     @Override
-                    public void onSuccess(final Double[] model) {
+                    public void run() {
                         try {
                             Geocoder geocoder = new Geocoder(context);
                             List<Address> addresses = geocoder.getFromLocation(model[0],
                                     model[1], 1);
-                            final String[] location = new String[addresses.get(0)
-                                    .getMaxAddressLineIndex()];
-                            for (int i = 0; i < addresses.get(0)
-                                    .getMaxAddressLineIndex(); i++) {
-                                location[i] = addresses.get(0).getAddressLine(i);
-                            }
-                            if (isAvailable()) {
-                                App.runOnMainThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        getView().onResultLocation(model, location);
-                                    }
-                                });
+                            if (addresses.size() > 0) {
+                                final String[] location = new String[addresses.get(0)
+                                        .getMaxAddressLineIndex()];
+                                for (int i = 0; i < addresses.get(0)
+                                        .getMaxAddressLineIndex(); i++) {
+                                    location[i] = addresses.get(0).getAddressLine(i);
+                                }
+                                if (isAvailable()) {
+                                    App.runOnMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            getView().onResultLocation(model, location);
+                                        }
+                                    });
+                                }
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-                    @Override
-                    public void onFail(@NotNull final String message) {
-                        if (isAvailable()) {
-                            App.runOnMainThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    getView().onResultLocationError(message);
-                                }
-                            });
-                        }
-                    }
-                });
+                }).start();
             }
-        }).start();
+            @Override
+            public void onFail(@NotNull final String message) {
+                if (isAvailable()) {
+                    App.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            getView().onResultLocationError(message);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override

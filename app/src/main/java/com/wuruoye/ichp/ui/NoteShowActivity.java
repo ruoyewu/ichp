@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
+import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
 import com.wuruoye.ichp.base.util.ShareUtil;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
@@ -51,7 +52,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> implements
-        View.OnClickListener, NoteShowContract.View{
+        View.OnClickListener, NoteShowContract.View, BaseRVAdapter.OnItemClickListener<Entry> {
     public static final String[] ITEM_BOTTOM = {"点赞", "收藏", "评论", "词条", "分享"};
     public static final int[] ICON_BOTTOM = {R.drawable.ic_like_white, R.drawable.ic_star_white,
             R.drawable.ic_comment, R.drawable.ic_entry, R.drawable.ic_share};
@@ -118,9 +119,10 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         initVP();
         initRecyclerView();
 
-        mPresenter.requestEntryList(mNote.getLabels_id_str());
+//        mPresenter.requestEntryList(mNote.getLabels_id_str());
         mPresenter.requestUserInfo(mNote.getRecorder());
         mPresenter.requestCommentList(mNote.getRec_id());
+        mPresenter.requestNoteInfo(mNote.getRec_id());
     }
 
     @SuppressLint("InflateParams")
@@ -226,6 +228,7 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
 
     private void initEntryRV() {
         EntryChooseRVAdapter adapter = new EntryChooseRVAdapter();
+        adapter.setOnItemClickListener(this);
         rvEntry.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         DividerItemDecoration decoration = new DividerItemDecoration(this,
@@ -398,6 +401,22 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
     }
 
     @Override
+    public void onResultNoteInfo(Note note) {
+        mNote = note;
+        mPresenter.requestEntryList(note.getLabels_id_str());
+
+        tvTitle.setText(note.getTitle());
+        tvTime.setText(mPresenter.parseDate(note.getIssue_date()));
+        tvContent.setText(note.getDiscribe());
+        tvLocation.setText(mPresenter.parseLocation(note.getAddr())[0]);
+
+        changePraise(note.isApprove());
+        changeCollect(note.isColl());
+        checkModify();
+        initVP();
+    }
+
+    @Override
     public void onBackPressed() {
         if (isModifyEntry) {
             dlgEntry.show();
@@ -406,5 +425,14 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         }else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onItemClick(Entry model) {
+        Intent intent = new Intent(this, EntryInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("entry", model);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

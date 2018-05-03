@@ -41,6 +41,7 @@ public class UserAttentionActivity extends WBaseActivity<UserAttentionContract.P
     private SwipeRefreshLayout srl;
     private RecyclerView rv;
 
+    private int mUserId;
     private int mType;
 
     @Override
@@ -50,6 +51,7 @@ public class UserAttentionActivity extends WBaseActivity<UserAttentionContract.P
 
     @Override
     public void initData(@Nullable Bundle bundle) {
+        mUserId = bundle.getInt("userId");
         mType = bundle.getInt("type");
 
         setPresenter(new UserAttentionPresenter());
@@ -66,7 +68,7 @@ public class UserAttentionActivity extends WBaseActivity<UserAttentionContract.P
 
         initLayout();
         initRecyclerView();
-        mPresenter.requestData(mType);
+        mPresenter.requestData(mUserId, mType);
     }
 
     private void initLayout() {
@@ -102,7 +104,7 @@ public class UserAttentionActivity extends WBaseActivity<UserAttentionContract.P
 
     private void requestData() {
         srl.setRefreshing(true);
-        mPresenter.requestData(mType);
+        mPresenter.requestData(mUserId, mType);
     }
 
     @Override

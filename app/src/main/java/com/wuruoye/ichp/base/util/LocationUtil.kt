@@ -17,7 +17,6 @@ object LocationUtil {
 
     @SuppressLint("MissingPermission")
     fun getLocation(context: Context, listener: Listener<Array<Double>>) {
-        Looper.prepare()
         val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val providers = lm.getProviders(true)
         if (providers.size > 0) {
@@ -29,11 +28,11 @@ object LocationUtil {
                     }else {
                         providers[0]
                     }
-//            val location = lm.getLastKnownLocation(provider)
-//            if (location != null) {
-//                listener.onSuccess(arrayOf(location.latitude, location.longitude))
-//            }
-            lm.requestLocationUpdates(provider, 10, 10F, object : LocationListener {
+            val location = lm.getLastKnownLocation(provider)
+            if (location != null) {
+                listener.onSuccess(arrayOf(location.latitude, location.longitude))
+            }
+            lm.requestLocationUpdates(provider, 1L, 0.01F, object : LocationListener {
                 override fun onLocationChanged(p0: Location?) {
                     listener.onSuccess(arrayOf(p0!!.latitude, p0.longitude))
                     lm.removeUpdates(this)
@@ -52,8 +51,6 @@ object LocationUtil {
                 }
 
             }, Looper.myLooper())
-
-            Looper.loop()
         }else {
             listener.onFail("error")
         }

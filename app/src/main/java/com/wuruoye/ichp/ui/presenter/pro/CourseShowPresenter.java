@@ -6,6 +6,7 @@ import com.wuruoye.ichp.base.model.Api;
 import com.wuruoye.ichp.base.util.NetResultUtil;
 import com.wuruoye.ichp.ui.contract.pro.CourseShowContract;
 import com.wuruoye.ichp.ui.model.UserCache;
+import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.model.bean.User;
@@ -115,6 +116,39 @@ public class CourseShowPresenter extends CourseShowContract.Presenter {
                             getView().onResultError(obj.getString("msg"));
                         }
                     } catch (JSONException e) {
+                        getView().onResultError(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(String s) {
+                if (isAvailable()) {
+                    getView().onResultError(s);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void requestCourseInfo(int courseId) {
+        ArrayMap<String, String> values = new ArrayMap<>();
+        values.put("token", mUserCache.getToken());
+        values.put("act_id", "" + courseId);
+
+        WNet.postInBackGround(Api.INSTANCE.getGET_ACT(), values, new Listener<String>() {
+            @Override
+            public void onSuccessful(String s) {
+                if (isAvailable()) {
+                    try {
+                        List<Course> courses = NetResultUtil.net2localCourse(NetResultUtil.
+                                parseDataList(s, Course.class));
+                        if (courses.size() > 0) {
+                            getView().onResultCourseInfo(courses.get(0));
+                        }else {
+                            getView().onResultError("活动不存在");
+                        }
+                    } catch (Exception e) {
                         getView().onResultError(e.getMessage());
                     }
                 }

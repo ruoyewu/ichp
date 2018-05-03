@@ -2,7 +2,6 @@ package com.wuruoye.ichp.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -23,8 +22,6 @@ import android.widget.Toast;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.MediaActivity;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
-import com.wuruoye.ichp.base.model.Config;
-import com.wuruoye.ichp.base.util.PermissionUtil;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.MediaRVAdapter;
 import com.wuruoye.ichp.ui.contract.pro.AddNoteContract;
@@ -33,6 +30,9 @@ import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.presenter.pro.NoteAddPresenter;
+import com.wuruoye.library.model.WConfig;
+import com.wuruoye.library.util.permission.IWPermission;
+import com.wuruoye.library.util.permission.WPermission;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -88,6 +88,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     private Object mData;
     private List<Entry> mEntryList;
 
+    private WPermission mPermission;
     private Double[] mAddress;
     private String[] mLocation;
     private HashMap<String, Integer> mUrlMap = new HashMap<>();
@@ -111,6 +112,7 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
 
         }
 
+        mPermission = new WPermission(this);
         setPresenter(new NoteAddPresenter());
     }
 
@@ -581,8 +583,23 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
     private void getLocation() {
         if (mType == TYPE_NOTE) {
             if (!mModify) {
-                if (new PermissionUtil(this)
-                        .requestPermission(Config.INSTANCE.getLOCATION_PERMISSION(), LOCATION_CODE)) {
+                if (WPermission.isNeedPermissionRequest()) {
+                    mPermission.requestPermission(WConfig.LOCATION_PERMISSION, LOCATION_CODE,
+                            new IWPermission.OnWPermissionListener() {
+                                @Override
+                                public void onPermissionResult(int i, @NonNull String[] strings,
+                                                               @NonNull int[] ints) {
+                                    if (i == LOCATION_CODE) {
+                                        if (WPermission.isGranted(strings, ints)) {
+                                            mPresenter.requestLocation(getApplicationContext());
+                                        }else {
+                                            Toast.makeText(NoteAddActivity.this,
+                                                    "没有地理位置权限", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                            });
+                }else {
                     mPresenter.requestLocation(getApplicationContext());
                 }
             }else {
@@ -701,21 +718,6 @@ public class NoteAddActivity extends MediaActivity<AddNoteContract.Presenter>
         Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
         finish();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == LOCATION_CODE) {
-            if (grantResults.length > 0 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLocation();
-            }else {
-                Toast.makeText(this, "无获取地理信息权限，请进入手机设置打开对象权限",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

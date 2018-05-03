@@ -2,6 +2,7 @@ package com.wuruoye.ichp.ui.contract.pro;
 
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
+import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.model.bean.NoteComment;
 import com.wuruoye.ichp.ui.model.bean.User;
 import com.wuruoye.library.contract.WIView;
@@ -23,6 +24,7 @@ public interface NoteShowContract {
         void onResultNoteComment(List<NoteComment> commentList);
         void onResultUpComment(boolean result, String info);
         void onResultModifyEntry(boolean result, String info);
+        void onResultNoteInfo(Note note);
     }
 
     abstract class Presenter extends WPresenter<View> {
@@ -32,6 +34,7 @@ public interface NoteShowContract {
         abstract public void requestCommentList(int id);
         abstract public void requestEntryList(String str);
         abstract public void requestUserInfo(int id);
+        abstract public void requestNoteInfo(int noteId);
         abstract public void requestModifyEntry(int recId, List<Entry> entryList);
         abstract public String parseDate(float time);
         abstract public List<Media> parseMedia(String url, String type)

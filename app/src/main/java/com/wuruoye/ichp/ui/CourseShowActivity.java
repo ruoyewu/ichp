@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
+import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
 import com.wuruoye.ichp.base.util.ClipboardUtil;
 import com.wuruoye.ichp.base.util.ShareUtil;
@@ -45,7 +46,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class CourseShowActivity extends WBaseActivity<CourseShowContract.Presenter>
-        implements CourseShowContract.View, View.OnClickListener {
+        implements CourseShowContract.View, View.OnClickListener, BaseRVAdapter.OnItemClickListener<Entry> {
     public static final String[] ITEM_BOTTOM = {"返回", "入口地址", "收藏", "分享"};
     public static final int[] ICON_BOTTOM = {R.drawable.ic_goleft_black, R.drawable.ic_edit,
             R.drawable.ic_star_white, R.drawable.ic_share};
@@ -70,6 +71,7 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
     private ImageView ivCollect;
     private AlertDialog dlgEntrance;
 
+    private User mUser;
     private Course mCourse;
 
     @Override
@@ -104,14 +106,15 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
         initVP();
         initRV();
         mPresenter.requestUserInfo(mCourse.getPublisher());
-        mPresenter.requestEntryList(mCourse.getLabels_id_str());
+//        mPresenter.requestEntryList(mCourse.getLabels_id_str());
+        mPresenter.requestCourseInfo(mCourse.getAct_id());
     }
 
     private void initLayout() {
         setSupportActionBar(toolbar);
         ivBack.setOnClickListener(this);
-        tvTitle.setText(mCourse.getTitle());
         tvManager.setVisibility(View.INVISIBLE);
+        tvTitle.setText(mCourse.getTitle());
         tvTime.setText(mPresenter.parseDate(mCourse.getIssue_date()));
         tvContent.setText(mCourse.getContent());
         tvPlace.setText(mCourse.getHold_addr());
@@ -135,6 +138,7 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
                 ivCollect = iv;
             }
         }
+        civ.setOnClickListener(this);
 
         changeCollect(mCourse.isColl());
 
@@ -144,11 +148,11 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
     private void initDlg() {
         dlgEntrance = new AlertDialog.Builder(this)
                 .setTitle("入口地址")
-                .setMessage(mCourse.getHold_addr())
+                .setMessage(mCourse.getAct_src())
                 .setPositiveButton("复制", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ClipboardUtil.copyText(mCourse.getHold_addr(), CourseShowActivity.this);
+                        ClipboardUtil.copyText(mCourse.getAct_src(), CourseShowActivity.this);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -182,6 +186,7 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
 
     private void initRV() {
         EntryChooseRVAdapter adapter = new EntryChooseRVAdapter();
+        adapter.setOnItemClickListener(this);
         rvEntry.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         DividerItemDecoration decoration = new DividerItemDecoration(this,
@@ -214,6 +219,7 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
 
     @Override
     public void onResultUserInfo(User user) {
+        mUser = user;
         Glide.with(civ)
                 .load(user.getImage_src())
                 .into(civ);
@@ -224,6 +230,22 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
     public void onResultEntryList(List<Entry> entryList) {
         EntryChooseRVAdapter adapter = (EntryChooseRVAdapter) rvEntry.getAdapter();
         adapter.setData(entryList);
+    }
+
+    @Override
+    public void onResultCourseInfo(Course course) {
+        mCourse = course;
+        tvTitle.setText(course.getTitle());
+        tvTime.setText(mPresenter.parseDate(course.getIssue_date()));
+        tvContent.setText(course.getContent());
+        tvPlace.setText(course.getHold_addr());
+        tvDate.setText(mPresenter.parseDate(course.getHold_date()));
+
+        changeCollect(course.isColl());
+        mPresenter.requestUserInfo(course.getPublisher());
+        mPresenter.requestEntryList(course.getLabels_id_str());
+        initVP();
+        initDlg();
     }
 
     @Override
@@ -242,6 +264,13 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
                         ((EntryChooseRVAdapter)rvEntry.getAdapter()).getData());
                 intent.putExtras(bundle);
                 startActivityForResult(intent, COURSE_MODIFY);
+                break;
+            case R.id.civ_course_show:
+                Intent intent1 = new Intent(this, UserInfoActivity.class);
+                Bundle bundle1 = new Bundle();
+                bundle1.putParcelable("user", mUser);
+                intent1.putExtras(bundle1);
+                startActivity(intent1);
                 break;
         }
     }
@@ -265,5 +294,14 @@ public class CourseShowActivity extends WBaseActivity<CourseShowContract.Present
                 ShareUtil.INSTANCE.shareText(text, this);
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(Entry model) {
+        Intent intent = new Intent(this, EntryInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("entry", model);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

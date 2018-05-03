@@ -1,5 +1,6 @@
 package com.wuruoye.ichp.ui.contract.pro;
 
+import com.wuruoye.ichp.ui.model.bean.Course;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
 import com.wuruoye.ichp.ui.model.bean.User;
@@ -19,12 +20,14 @@ public interface CourseShowContract {
         void onResultError(String error);
         void onResultUserInfo(User user);
         void onResultEntryList(List<Entry> entryList);
+        void onResultCourseInfo(Course course);
     }
 
     abstract class Presenter extends WPresenter<View> {
         abstract public void requestUserInfo(int id);
         abstract public void requestEntryList(String s);
         abstract public void requestCollect(int id, boolean collect);
+        abstract public void requestCourseInfo(int courseId);
         abstract public List<Media> parseMedia(String url, String type);
         abstract public String parseDate(float time);
         abstract public int getUserId();

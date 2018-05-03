@@ -31,6 +31,7 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
         implements View.OnClickListener, EntryAddContract.View {
     public static final String[] ITEM_PHOTO = {"图库", "拍摄"};
     public static final String[] ITEM_BOTTOM = {"返回", "发布"};
+    public static final int[] ICON_BOTTOM = {R.drawable.ic_goleft_black, R.drawable.ic_edit};
 
     private CircleImageView civ;
     private EditText etTitle;
@@ -82,6 +83,7 @@ public class EntryAddActivity extends WPhotoActivity<EntryAddContract.Presenter>
             ImageView iv = llBottom[i].findViewById(R.id.iv_icon_text);
             TextView tv = llBottom[i].findViewById(R.id.tv_icon_text);
             tv.setText(ITEM_BOTTOM[i]);
+            iv.setImageResource(ICON_BOTTOM[i]);
             llBottom[i].setOnClickListener(this);
         }
 

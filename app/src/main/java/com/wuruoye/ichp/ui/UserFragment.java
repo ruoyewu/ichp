@@ -232,12 +232,14 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
         Intent intent;
         switch (v.getId()) {
             case R.id.tv_user_focus:
+                bundle.putInt("userId", mUser.getUser_id());
                 bundle.putInt("type", TYPE_ATTEN);
                 intent = new Intent(getContext(), UserAttentionActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             case R.id.tv_user_focused:
+                bundle.putInt("userId", mUser.getUser_id());
                 bundle.putInt("type", TYPE_ATTED);
                 intent = new Intent(getContext(), UserAttentionActivity.class);
                 intent.putExtras(bundle);
@@ -264,6 +266,8 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
         mUser = user;
         tvName.setText(user.getAccount_name());
         tvId.setText(String.valueOf(user.getUser_id()));
+        tvFocus.setText("关注\t" + user.getPayNum());
+        tvFocused.setText("粉丝\t" + user.getBePaidNum());
         Glide.with(civ)
                 .load(user.getImage_src())
                 .into(civ);

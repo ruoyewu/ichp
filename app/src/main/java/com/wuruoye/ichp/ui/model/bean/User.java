@@ -19,6 +19,24 @@ public class User implements Parcelable {
     private String sign;
     private int user_id;
     private boolean isConcern;
+    private int payNum;
+    private int bePaidNum;
+
+    public int getPayNum() {
+        return payNum;
+    }
+
+    public void setPayNum(int payNum) {
+        this.payNum = payNum;
+    }
+
+    public int getBePaidNum() {
+        return bePaidNum;
+    }
+
+    public void setBePaidNum(int bePaidNum) {
+        this.bePaidNum = bePaidNum;
+    }
 
     public boolean isConcern() {
         return isConcern;
@@ -120,6 +138,8 @@ public class User implements Parcelable {
         dest.writeString(this.sign);
         dest.writeInt(this.user_id);
         dest.writeByte(this.isConcern ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.payNum);
+        dest.writeInt(this.bePaidNum);
     }
 
     protected User(Parcel in) {
@@ -133,6 +153,8 @@ public class User implements Parcelable {
         this.sign = in.readString();
         this.user_id = in.readInt();
         this.isConcern = in.readByte() != 0;
+        this.payNum = in.readInt();
+        this.bePaidNum = in.readInt();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {

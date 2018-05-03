@@ -107,7 +107,7 @@ public class EntryInfoActivity extends WBaseActivity<EntryInfoContract.Presenter
         }
 
         tvTitle.setText(mEntry.getName());
-        tvIntro.setText(mEntry.getName());
+        tvIntro.setText(mEntry.getContent());
 
         Glide.with(civ)
                 .asBitmap()

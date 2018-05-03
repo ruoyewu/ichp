@@ -127,10 +127,10 @@
     <LinearLayout
         android:id="@+id/ll_user_info_bottom"
         android:layout_gravity="bottom"
-        android:gravity="center"
         app:layout_behavior="com.wuruoye.ichp.ui.adapter.CustomBottomBehavior"
         android:background="@color/mainColor"
         android:layout_width="match_parent"
+        android:baselineAligned="false"
         android:layout_height="80dp">
 
         <include

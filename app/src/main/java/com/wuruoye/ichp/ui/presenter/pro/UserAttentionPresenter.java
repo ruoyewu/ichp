@@ -22,11 +22,18 @@ public class UserAttentionPresenter extends UserAttentionContract.Presenter {
     private UserCache mUserCache = UserCache.getInstance();
 
     @Override
-    public void requestData(int type) {
+    public void requestData(int userId, int type) {
         ArrayMap<String, String> values = new ArrayMap<>();
         values.put("token", mUserCache.getToken());
+        values.put("user_id", "" + userId);
+        String url;
+        if (type == UserAttentionContract.TYPE_ATTEN) {
+            url = Api.INSTANCE.getGET_ATTENTION();
+        }else {
+            url = Api.INSTANCE.getGET_ATTENED();
+        }
 
-        WNet.postInBackGround(Api.INSTANCE.getGET_ATTENTION(), values, new Listener<String>() {
+        WNet.postInBackGround(url, values, new Listener<String>() {
             @Override
             public void onSuccessful(String s) {
                 if (isAvailable()) {

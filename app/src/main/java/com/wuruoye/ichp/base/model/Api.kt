@@ -42,6 +42,7 @@ object Api {
     val GET_ACT = REMOTE_HOST + "getAct"
     val SEARCH_USER_INFO = REMOTE_HOST + "searchUserInfo"
     val GET_ATTENTION = REMOTE_HOST + "getMyConc"
+    val GET_ATTENED = REMOTE_HOST + "getConcMe"
     val PRAISE_REC = REMOTE_HOST + "apprRec"
     val COMMENT_REC = REMOTE_HOST + "commRec"
     val GET_COMMENT_REC = REMOTE_HOST + "getCommRec"

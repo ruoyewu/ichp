@@ -8,6 +8,7 @@ import com.wuruoye.ichp.ui.contract.pro.NoteShowContract;
 import com.wuruoye.ichp.ui.model.UserCache;
 import com.wuruoye.ichp.ui.model.bean.Entry;
 import com.wuruoye.ichp.ui.model.bean.Media;
+import com.wuruoye.ichp.ui.model.bean.Note;
 import com.wuruoye.ichp.ui.model.bean.NoteComment;
 import com.wuruoye.ichp.ui.model.bean.User;
 import com.wuruoye.library.model.Listener;
@@ -225,6 +226,39 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
                     }
                 } catch (Exception e) {
                     if (isAvailable()) {
+                        getView().onResultError(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(String s) {
+                if (isAvailable()) {
+                    getView().onResultError(s);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void requestNoteInfo(int noteId) {
+        ArrayMap<String, String> values = new ArrayMap<>();
+        values.put("token", mUserCache.getToken());
+        values.put("rec_id", "" + noteId);
+
+        WNet.postInBackGround(Api.INSTANCE.getGET_REC(), values, new Listener<String>() {
+            @Override
+            public void onSuccessful(String s) {
+                if (isAvailable()) {
+                    try {
+                        List<Note> notes = NetResultUtil.net2localNote(NetResultUtil
+                                .parseDataList(s, Note.class));
+                        if (notes.size() > 0) {
+                            getView().onResultNoteInfo(notes.get(0));
+                        }else {
+                            getView().onResultError("记录不存在");
+                        }
+                    } catch (Exception e) {
                         getView().onResultError(e.getMessage());
                     }
                 }

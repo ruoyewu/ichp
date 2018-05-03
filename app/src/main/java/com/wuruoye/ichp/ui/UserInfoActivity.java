@@ -116,8 +116,8 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
 
         tvTitle.setText(mUser.getAccount_name());
         tvIntro.setText(mUser.getSign());
-        tvFocus.setText("关注");
-        tvFocused.setText("被关注");
+        tvFocus.setText("关注\t" + mUser.getPayNum());
+        tvFocused.setText("粉丝\t" + mUser.getBePaidNum());
         Glide.with(civ)
                 .asBitmap()
                 .load(mUser.getImage_src())
@@ -182,11 +182,6 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
     }
 
     @Override
-    public void onResultAttention(boolean attention) {
-        Toast.makeText(this, "关注用户", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onClick(View view) {
         Intent intent;
         Bundle bundle = new Bundle();
@@ -194,12 +189,14 @@ public class UserInfoActivity extends WBaseActivity<UserInfoContract.Presenter>
             case R.id.tv_user_info_focus:
                 intent = new Intent(this, UserAttentionActivity.class);
                 bundle.putInt("type", TYPE_ATTEN);
+                bundle.putInt("userId", mUser.getUser_id());
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             case R.id.tv_user_info_focused:
                 intent = new Intent(this, UserAttentionActivity.class);
                 bundle.putInt("type", TYPE_ATTED);
+                bundle.putInt("userId", mUser.getUser_id());
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
