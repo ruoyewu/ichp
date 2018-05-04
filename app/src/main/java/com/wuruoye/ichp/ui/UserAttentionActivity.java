@@ -24,8 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.wuruoye.ichp.ui.contract.pro.UserAttentionContract.TYPE_ATTEN;
-
 /**
  * Created by wuruoye on 2018/2/3.
  * this file is to
@@ -75,11 +73,7 @@ public class UserAttentionActivity extends WBaseActivity<UserAttentionContract.P
         setSupportActionBar(toolbar);
 
         tvManager.setVisibility(View.GONE);
-        if (mType == TYPE_ATTEN) {
-            tvTitle.setText("我的关注");
-        }else {
-            tvTitle.setText("关注我的");
-        }
+        tvTitle.setText(mPresenter.getTitle(mUserId, mType));
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

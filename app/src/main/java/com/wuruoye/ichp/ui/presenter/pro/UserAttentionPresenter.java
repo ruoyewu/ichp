@@ -54,4 +54,21 @@ public class UserAttentionPresenter extends UserAttentionContract.Presenter {
             }
         });
     }
+
+    @Override
+    public String getTitle(int userId, int type) {
+        if (mUserCache.getUserId() == userId) {
+            if (type == UserAttentionContract.TYPE_ATTEN) {
+                return "我的关注";
+            }else {
+                return "关注我的";
+            }
+        }else {
+            if (type == UserAttentionContract.TYPE_ATTEN) {
+                return "TA的关注";
+            }else {
+                return "关注TA的";
+            }
+        }
+    }
 }

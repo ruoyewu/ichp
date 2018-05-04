@@ -22,5 +22,6 @@ public interface UserAttentionContract {
 
     abstract class Presenter extends WPresenter<View> {
         public abstract void requestData(int userId, int type);
+        public abstract String getTitle(int userId, int type);
     }
 }

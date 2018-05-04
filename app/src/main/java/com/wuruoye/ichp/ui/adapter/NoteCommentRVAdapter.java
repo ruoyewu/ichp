@@ -19,7 +19,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * this file is to
  */
 
-public class NoteCommentRVAdapter extends BaseRVAdapter<NoteComment> {
+public class NoteCommentRVAdapter extends BaseRVAdapter<NoteComment> implements View.OnClickListener {
     public static final int TYPE_DATA = 1;
     public static final int TYPE_TAIL = 2;
 
@@ -48,6 +48,9 @@ public class NoteCommentRVAdapter extends BaseRVAdapter<NoteComment> {
             Glide.with(viewHolder.civ)
                     .load(comment.getImage_src())
                     .into(viewHolder.civ);
+
+            viewHolder.itemView.setTag(comment);
+            viewHolder.itemView.setOnClickListener(this);
         }
     }
 
@@ -63,6 +66,12 @@ public class NoteCommentRVAdapter extends BaseRVAdapter<NoteComment> {
         }else {
             return TYPE_TAIL;
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        NoteComment comment = (NoteComment) view.getTag();
+        onItemClick(comment);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

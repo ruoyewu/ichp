@@ -222,6 +222,7 @@ public class UserFragment extends WBaseFragment<UserContract.Presenter>
                 break;
             case 8:
                 // 关于
+                startActivity(new Intent(getContext(), AboutActivity.class));
                 break;
         }
     }

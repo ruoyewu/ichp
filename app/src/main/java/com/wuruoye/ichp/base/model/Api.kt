@@ -65,4 +65,5 @@ object Api {
     val MODIFY_PWD = REMOTE_HOST + "modifyPsw"
     val GET_PAY_REC = REMOTE_HOST + "getPayRec"
     val GET_POINT = REMOTE_HOST + "getPoint"
+    val DELETE_COMMENT = REMOTE_HOST + "delCommRec"
 }

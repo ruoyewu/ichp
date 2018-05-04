@@ -316,6 +316,38 @@ public class NoteShowPresenter extends NoteShowContract.Presenter {
     }
 
     @Override
+    public void requestDeleteComment(int commentId) {
+        ArrayMap<String, String> values = new ArrayMap<>();
+        values.put("token", mUserCache.getToken());
+        values.put("comm_rec_id", "" + commentId);
+
+        WNet.postInBackGround(Api.INSTANCE.getDELETE_COMMENT_REC(), values, new Listener<String>() {
+            @Override
+            public void onSuccessful(String s) {
+                if (isAvailable()) {
+                    try {
+                        JSONObject obj = new JSONObject(s);
+                        if (obj.getInt("code") == 0) {
+                            getView().onResultDeleteComment();
+                        }else {
+                            getView().onResultError(obj.getString("msg"));
+                        }
+                    } catch (JSONException e) {
+                        getView().onResultError(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(String s) {
+                if (isAvailable()) {
+                    getView().onResultError(s);
+                }
+            }
+        });
+    }
+
+    @Override
     public String parseDate(float time) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy / MM / dd HH : mm : ss",
                 Locale.ENGLISH);

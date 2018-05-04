@@ -25,6 +25,7 @@ public interface NoteShowContract {
         void onResultUpComment(boolean result, String info);
         void onResultModifyEntry(boolean result, String info);
         void onResultNoteInfo(Note note);
+        void onResultDeleteComment();
     }
 
     abstract class Presenter extends WPresenter<View> {
@@ -36,6 +37,7 @@ public interface NoteShowContract {
         abstract public void requestUserInfo(int id);
         abstract public void requestNoteInfo(int noteId);
         abstract public void requestModifyEntry(int recId, List<Entry> entryList);
+        abstract public void requestDeleteComment(int commentId);
         abstract public String parseDate(float time);
         abstract public List<Media> parseMedia(String url, String type)
                 throws IllegalArgumentException;

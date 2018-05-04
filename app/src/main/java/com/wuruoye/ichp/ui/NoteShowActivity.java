@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.wuruoye.ichp.R;
 import com.wuruoye.ichp.base.adapter.BaseRVAdapter;
 import com.wuruoye.ichp.base.adapter.FragmentVPAdapter;
+import com.wuruoye.ichp.base.util.ClipboardUtil;
 import com.wuruoye.ichp.base.util.ShareUtil;
 import com.wuruoye.ichp.ui.adapter.EntryChooseRVAdapter;
 import com.wuruoye.ichp.ui.adapter.NoteCommentRVAdapter;
@@ -54,6 +55,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> implements
         View.OnClickListener, NoteShowContract.View, BaseRVAdapter.OnItemClickListener<Entry> {
     public static final String[] ITEM_BOTTOM = {"点赞", "收藏", "评论", "词条", "分享"};
+    public static final String[] ITEM_COMMENT = {"复制", "举报", "删除"};
+    public static final String[] ITEM_COMMENT_2 = {"复制", "举报"};
     public static final int[] ICON_BOTTOM = {R.drawable.ic_like_white, R.drawable.ic_star_white,
             R.drawable.ic_comment, R.drawable.ic_entry, R.drawable.ic_share};
 
@@ -241,6 +244,12 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
 
     private void initCommentRV() {
         NoteCommentRVAdapter adapter = new NoteCommentRVAdapter();
+        adapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener<NoteComment>() {
+            @Override
+            public void onItemClick(final NoteComment model) {
+                showCommentDlg(model);
+            }
+        });
         rvComment.setLayoutManager(new LinearLayoutManager(this));
         rvComment.setAdapter(adapter);
         DividerItemDecoration decoration = new DividerItemDecoration(this,
@@ -271,6 +280,37 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         tvCollect.setTextColor(collect ? Color.BLACK : Color.WHITE);
         ivCollect.setImageResource(collect ? R.drawable.ic_star_black : R.drawable.ic_star_white);
         ivCollect.setTag(collect);
+    }
+
+    private void showCommentDlg(final NoteComment comment) {
+        String[] items;
+        if (comment.getCommer() == mPresenter.getUserId()) {
+            items = ITEM_COMMENT;
+        }else {
+            items = ITEM_COMMENT_2;
+        }
+
+        new AlertDialog.Builder(this)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (i) {
+                            case 0:
+                                ClipboardUtil.copyText(comment.getContent(),
+                                        getApplicationContext());
+                                break;
+                            case 1:
+                                Toast.makeText(NoteShowActivity.this,
+                                        "举报成功，等待管理员审核",
+                                        Toast.LENGTH_SHORT).show();
+                                break;
+                            case 2:
+                                mPresenter.requestDeleteComment(comment.getComm_rec_id());
+                                break;
+                        }
+                    }
+                })
+                .show();
     }
 
     private void share() {
@@ -414,6 +454,11 @@ public class NoteShowActivity extends WBaseActivity<NoteShowContract.Presenter> 
         changeCollect(note.isColl());
         checkModify();
         initVP();
+    }
+
+    @Override
+    public void onResultDeleteComment() {
+        mPresenter.requestCommentList(mNote.getRec_id());
     }
 
     @Override
